@@ -1,19 +1,20 @@
+import React , { useState } from "react";
+import Login from "./screens/login";
+import AuthScreen from "./screens/AuthScreen";
 
 
 function App() {
-  // const [greetMsg, setGreetMsg] = useState("");
-  // const [name, setName] = useState("");
 
-  // async function greet() {
-  //   // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-  //   setGreetMsg(await invoke("greet", { name }));
-  // }
+  const [authState , setAuthState] = useState("login")
+  const [loading , setLoading] = useState(true);
 
   return (
     // Add Login , registration screens and game screens
-    <div className="container">
-      
-    </div>
+   <div>
+    
+    <AuthScreen/>
+   </div>
+ 
   );
 }
 
