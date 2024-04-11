@@ -18,10 +18,10 @@ const AuthScreen = () => {
         duration: 0.8,
         ease: "easeInOut",
       }}
-      className="relative flex flex-col gap-4 items-center justify-center px-4"
+      className="relative flex flex-col gap-2 items-center justify-center px-1"
     >
       <div className="text-3xl md:text-7xl font-bold dark:text-white text-center">
-       {authState === "login" ? <Login />  : <Registration />}
+       {authState === "login" ? <Login setAuthState={setAuthState}/>  : <Registration setAuthState={setAuthState} />}
       </div>
     </motion.div>
   </AuroraBackground>

@@ -5,7 +5,6 @@ import AuthScreen from "./screens/AuthScreen";
 
 function App() {
 
-  const [authState , setAuthState] = useState("login")
   const [loading , setLoading] = useState(true);
 
   return (
