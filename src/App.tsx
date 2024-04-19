@@ -1,6 +1,7 @@
-import React , { useState } from "react";
-import Login from "./screens/login";
+import React , { useEffect, useState } from "react";
 import AuthScreen from "./screens/AuthScreen";
+import Loading from "./screens/Loading";
+import UserHomeScreen from "./screens/UserHomeScreen";
 
 
 function App() {
@@ -9,11 +10,18 @@ function App() {
   const [userState , setUserState] = useState("");
 
 
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false)
+    } , 5000)
+  } , [])
+
+
   return (
     // Add Login , registration screens and game screens
    <div>
     
-    <AuthScreen/>
+   {loading ?  <Loading/> : userState === "" ? <AuthScreen /> : <UserHomeScreen/>}
    </div>
  
   );
