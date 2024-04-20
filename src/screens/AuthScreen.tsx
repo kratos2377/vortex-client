@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import React, { useState } from 'react'
-import { AuroraBackground } from '../components/ui/aurora-background'
+import { AuroraBackground } from '../components/common/aurora-background'
 import Login from './login'
 import Registration from './registration'
 

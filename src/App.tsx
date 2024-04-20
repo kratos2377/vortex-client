@@ -14,6 +14,10 @@ function App() {
     setTimeout(() => {
       setLoading(false)
     } , 5000)
+
+    setTimeout(() => {
+      setUserState("new-state")
+    }, 8000)
   } , [])
 
 
