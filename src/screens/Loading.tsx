@@ -1,5 +1,5 @@
 import React from "react";
-import { Vortex } from "../components/common/vortex";
+import { Vortex } from "../components/backgrounds/vortex";
  
 
 const Loading = () => {
