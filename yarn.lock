@@ -534,10 +534,10 @@
   resolved "https://registry.yarnpkg.com/@tabler/icons/-/icons-3.2.0.tgz#4adcde021943d50f2c228dab6145fd9c9b639f85"
   integrity sha512-h8GQ2rtxgiSjltrVz4vcopAxTPSpUSUi5nBfJ09H3Bk4fJk6wZ/dVUjzhv/BHfDwGTkAxZBiYe/Q/T95cPeg5Q==
 
-"@tauri-apps/api@2.0.0-alpha.11":
-  version "2.0.0-alpha.11"
-  resolved "https://registry.yarnpkg.com/@tauri-apps/api/-/api-2.0.0-alpha.11.tgz#091afafc1d49a7009aa8ea18864e4f4e38133905"
-  integrity sha512-aw7jic+MQAe/LH4fYhbd3bwx3YjXhDIwqKJIn5QO4yKmGdVURIhZSFcyeKkSe4P6Itdto0Pcz99vLfkgBwdQKw==
+"@tauri-apps/api@^1.5.2":
+  version "1.5.4"
+  resolved "https://registry.yarnpkg.com/@tauri-apps/api/-/api-1.5.4.tgz#69bf7f93abe7b00d69c313016a6c1d0d59dca5cd"
+  integrity sha512-LKYae9URbdEdbHrOXBeXb/lZgVyWTX0E98rSFBuQlmkLr8OeG+akuE41PfLjBVyk1Q+fq7wxo4ieenLSMUAUhA==
 
 "@tauri-apps/cli-darwin-arm64@1.5.11":
   version "1.5.11"
@@ -589,7 +589,7 @@
   resolved "https://registry.yarnpkg.com/@tauri-apps/cli-win32-x64-msvc/-/cli-win32-x64-msvc-1.5.11.tgz#c003ce00b36d056a8b08e0ecf4633c2bba00c497"
   integrity sha512-1CexcqUFCis5ypUIMOKllxUBrna09McbftWENgvVXMfA+SP+yPDPAVb8fIvUcdTIwR/yHJwcIucmTB4anww4vg==
 
-"@tauri-apps/cli@^1.1.0":
+"@tauri-apps/cli@^1.5.8":
   version "1.5.11"
   resolved "https://registry.yarnpkg.com/@tauri-apps/cli/-/cli-1.5.11.tgz#02beb559b3b55836c90a1ba9121b3fc50e3760cd"
   integrity sha512-B475D7phZrq5sZ3kDABH4g2mEoUIHtnIO+r4ZGAAfsjMbZCwXxR/jlMGTEL+VO3YzjpF7gQe38IzB4vLBbVppw==
@@ -604,13 +604,6 @@
     "@tauri-apps/cli-win32-arm64-msvc" "1.5.11"
     "@tauri-apps/cli-win32-ia32-msvc" "1.5.11"
     "@tauri-apps/cli-win32-x64-msvc" "1.5.11"
-
-"@tauri-apps/plugin-clipboard-manager@2.0.0-alpha.3":
-  version "2.0.0-alpha.3"
-  resolved "https://registry.yarnpkg.com/@tauri-apps/plugin-clipboard-manager/-/plugin-clipboard-manager-2.0.0-alpha.3.tgz#a47cc50d28556d1bf123539e12f2ec1ea999645b"
-  integrity sha512-Lo30EM8VRo9bYMeRHhZT65OUgajbxaK1A9UhD7/9VZIFoWGbzKU/jrP78mcJ77lc+RrcCcSJvkAgOaLtuOlhxw==
-  dependencies:
-    "@tauri-apps/api" "2.0.0-alpha.11"
 
 "@types/babel__core@^7.20.5":
   version "7.20.5"
@@ -1822,6 +1815,11 @@ yargs@^17.0.0:
     string-width "^4.2.3"
     y18n "^5.0.5"
     yargs-parser "^21.1.1"
+
+zod@^3.23.0:
+  version "3.23.0"
+  resolved "https://registry.yarnpkg.com/zod/-/zod-3.23.0.tgz#a25dab5052702834233e0041e9dd8b6a8480e744"
+  integrity sha512-OFLT+LTocvabn6q76BTwVB0hExEBS0IduTr3cqZyMqEDbOnYmcU+y0tUAYbND4uwclpBGi4I4UUBGzylWpjLGA==
 
 zustand@^4.5.0:
   version "4.5.2"
