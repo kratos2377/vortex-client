@@ -30,11 +30,11 @@ export const ParallaxScroll = ({
    
     return (
       <div
-        className={cn("h-[45rem] items-start overflow-y-auto w-9/10", className)}
+        className={cn("h-[calc(100vh-10rem)] items-start overflow-y-auto w-9/10", className)}
         ref={gridRef}
       >
         <div
-          className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 items-start  mx-auto gap-10 py-40 px-10"
+          className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 items-start  mx-auto gap-10 py-10 px-10"
           ref={gridRef}
         >
           <div className="grid gap-10">
@@ -44,10 +44,13 @@ export const ParallaxScroll = ({
                 key={"grid-1" + idx}
               >
    <div className="card card-side bg-slate-700 shadow-xl">
-  <figure className="avatar w-30 rounded-full"><img src={`https://robohash.org/${el.username}`} alt={`${el.username}`}/></figure>
+    <div className="flex flex-col item-center justify-center">
+  <figure className={`ml-2 my-2 avatar w-20 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2`}><img src={`https://robohash.org/${el.username}`} alt={`${el.username}`}/></figure>
+  </div>
   <div className="card-body">
-    <h3 className="text-white card-title">{el.first_name + " " + el.last_name}</h3>
+    <div className="text-white w-full text-lg">{el.first_name + " " + el.last_name}</div>
     <p className="text-white">{el.username}</p>
+    {el.online_status ? <span className="text-white">🟢</span> : <span className="text-white">◯</span>}
   </div>
 
 </div>

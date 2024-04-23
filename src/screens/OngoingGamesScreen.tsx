@@ -1,10 +1,16 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { OngoingGameCard } from '../components/ui/HoverCards'
+import ongoingGames from '../data/ongoing_games_data.json'
+
 
 const OngoingGamesScreen = () => {
+
+  const [ongoingGamesData , setOngoingGamesData] = useState([...ongoingGames])
+
   return (
-    <p className="text-4xl sm:text-7xl font-bold relative bg-clip-text text-transparent bg-gradient-to-b from-neutral-200 to-neutral-500 py-8">
-   Ongoing Games
-  </p>
+    <div className="px-4">
+      <OngoingGameCard items={ongoingGamesData} />
+    </div>
   )
 }
 
