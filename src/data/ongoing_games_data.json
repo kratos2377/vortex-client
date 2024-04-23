@@ -4,7 +4,7 @@
       "game_type": "chess",
       "game_image_url": "https://images.unsplash.com/photo-1528819622765-d6bcf132f793?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       "staked_game": true,
-      "staked_value": 2.5
+      "staked_value": "1.5"
     },
     {
       "id": "123e4567-e89b-12d3-a456-426614174001",
@@ -18,14 +18,14 @@
       "game_type": "chess",
       "game_image_url": "https://images.unsplash.com/photo-1528819622765-d6bcf132f793?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       "staked_game": true,
-      "staked_value": 3.5
+      "staked_value": "3.5"
     },
     {
       "id": "123e4567-e89b-12d3-a456-426614174003",
       "game_type": "poker",
       "game_image_url": "https://plus.unsplash.com/premium_photo-1671683371907-c70593326032?q=80&w=1972&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       "staked_game": true,
-      "staked_value": 1.5
+      "staked_value": "1.5"
     },
     {
       "id": "123e4567-e89b-12d3-a456-426614174004",
@@ -39,7 +39,7 @@
       "game_type": "poker",
       "game_image_url": "https://plus.unsplash.com/premium_photo-1671683371907-c70593326032?q=80&w=1972&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       "staked_game": true,
-      "staked_value": 2.5
+      "staked_value": "2.5"
     },
     {
       "id": "123e4567-e89b-12d3-a456-426614174006",
@@ -60,7 +60,7 @@
       "game_type": "scribble",
       "game_image_url": "https://images.unsplash.com/photo-1532483578477-e81e1513c3a7?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       "staked_game": true,
-      "staked_value": 1.8
+      "staked_value": "1.8"
     },
     {
       "id": "123e4567-e89b-12d3-a456-426614174009",
@@ -74,14 +74,14 @@
       "game_type": "chess",
       "game_image_url": "https://images.unsplash.com/photo-1528819622765-d6bcf132f793?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       "staked_game": true,
-      "staked_value": 2.2
+      "staked_value": "2.2"
     },
     {
       "id": "123e4567-e89b-12d3-a456-426614174011",
       "game_type": "poker",
       "game_image_url": "https://plus.unsplash.com/premium_photo-1671683371907-c70593326032?q=80&w=1972&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       "staked_game": true,
-      "staked_value": 1.2
+      "staked_value": "1.2"
     },
     {
       "id": "123e4567-e89b-12d3-a456-426614174012",

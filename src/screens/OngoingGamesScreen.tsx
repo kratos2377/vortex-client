@@ -8,7 +8,7 @@ const OngoingGamesScreen = () => {
   const [ongoingGamesData , setOngoingGamesData] = useState([...ongoingGames])
 
   return (
-    <div className="px-4">
+    <div className="px-2">
       <OngoingGameCard items={ongoingGamesData} />
     </div>
   )

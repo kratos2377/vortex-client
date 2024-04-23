@@ -11,6 +11,12 @@ const UserHomeScreen = () => {
 
   const [currentScreen , setCurrentScreen] = useState<string>("ongoing-games")
 
+  const [createLobbyModalOpen , setCreateLobbyModalOpen] = useState(true)
+
+  const onCreateLobbyModalClose = () => {
+    setCreateLobbyModalOpen(false)
+  }
+
 
   return (
     <div className="h-screen w-screen dark:bg-black bg-white  dark:bg-grid-small-white/[0.2] bg-grid-small-black/[0.2] relative">

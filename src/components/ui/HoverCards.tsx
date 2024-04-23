@@ -2,6 +2,7 @@
 import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion";
 import { useRef, useState } from "react";
 import { cn } from "../../utils/cn";
+import { IconCurrencySolana } from "@tabler/icons-react";
 
 export const OngoingGameCard = ({
   items,
@@ -12,7 +13,7 @@ export const OngoingGameCard = ({
     game_type: string;
     game_image_url: string;
     staked_game: boolean;
-    staked_value?: Number | null;
+    staked_value?: string | null;
   }[];
   className?: string;
 }) => {
@@ -27,7 +28,7 @@ export const OngoingGameCard = ({
   const translateFirst = useTransform(scrollYProgress, [0, 1], [0, -200]);
 
   return (
-   <div  className={cn("h-[calc(100vh-10rem)] items-start overflow-y-auto w-full")} ref={gridRef}>
+   <div  className={cn("h-[calc(100vh-10rem)] items-start overflow-y-auto w-full ")} ref={gridRef}>
      <div
       className={cn(
         "grid grid-cols-1 md:grid-cols-2  lg:grid-cols-3  py-5 overflow-y-auto",
@@ -40,29 +41,35 @@ export const OngoingGameCard = ({
         style={{ y: translateFirst }} // Apply the translateY motion value here
         key={"grid-1" + idx}
         >
-                 <div className="relative group  block p-2 h-full w-full">
-          <AnimatePresence>
-            {hoveredIndex === idx && (
-              <motion.span
-                className="absolute inset-0 h-full w-full bg-neutral-200 dark:bg-slate-800/[0.8] block  rounded-3xl"
-                layoutId="hoverBackground"
-                initial={{ opacity: 0 }}
-                animate={{
-                  opacity: 1,
-                  transition: { duration: 0.15 },
-                }}
-                exit={{
-                  opacity: 0,
-                  transition: { duration: 0.15, delay: 0.2 },
-                }}
-              />
-            )}
-          </AnimatePresence>
-          <Card className="flex flex-row item-center justify-center">
-            <img className="w-20 rounded-full" src={`${item.game_image_url}`}/>
-          <div>
-          <CardDescription>{item.game_type.toUpperCase()}</CardDescription>
-          </div>
+                 <div className="p-2 h-full w-full">
+
+          <Card key={item.id} className=" hover:cursor-pointer">
+            <img className="w-20 h-20 mr-4 rounded-full self-center" src={`${item.game_image_url}`}/>
+        
+            <div>
+            <CardDescription className="w-8/10 lg:text-2xl md:text-xl sm:text-md">{item.game_type.toUpperCase()}</CardDescription>
+            <div className="flex flex-col mt-1">
+
+            <div className="flex flex-row">
+            <div className="mr-3 text-zinc-100 font-bold">
+              {item.staked_game ? "Staked Game" : "Normal"}
+            </div>
+
+            {item.staked_game ? <div className="flex flex-row text-zinc-100">
+              <span className="mr-0.5">{item.staked_value}</span>
+              <span><IconCurrencySolana/></span>
+               </div> : <div></div>}
+
+           
+            </div>
+
+            <div className="w-30 h-15 mt-1 items-end">
+               <button className="btn btn-outline btn-error">Spectate game</button>
+               </div>
+
+            </div>
+            </div>
+         
           </Card>
        </div>
         </motion.div>
@@ -82,12 +89,12 @@ export const Card = ({
   return (
     <div
       className={cn(
-        "rounded-2xl h-full w-full p-4 overflow-hidden bg-black border border-transparent dark:border-white/[0.2] group-hover:border-slate-700 relative z-20",
+        "rounded-xl h-full w-full p-1 overflow-hidden bg-black border border-transparent dark:border-white/[0.2] group-hover:border-slate-700",
         className
       )}
     >
-      <div className="relative z-50">
-        <div className="p-4">{children}</div>
+      <div>
+        <div className="p-1 w-full flex flex-row">{children}</div>
       </div>
     </div>
   );
@@ -100,7 +107,7 @@ export const CardTitle = ({
   children: React.ReactNode;
 }) => {
   return (
-    <h4 className={cn("text-zinc-100 font-bold tracking-wide mt-4", className)}>
+    <h4 className={cn("text-zinc-100 font-bold  mt-4", className)}>
       {children}
     </h4>
   );
@@ -115,7 +122,7 @@ export const CardDescription = ({
   return (
     <p
       className={cn(
-        "mt-8 text-zinc-400 tracking-wide leading-relaxed text-sm",
+        "mt-3 text-zinc-400  text-sm",
         className
       )}
     >
