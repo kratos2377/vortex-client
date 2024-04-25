@@ -29,7 +29,7 @@ const UserHomeScreen = () => {
    
 
    {
-     currentScreen === "ongoing-games" ? <OngoingGamesScreen/> : currentScreen === "create-lobby" ? <CreateLobby/> : <ProfileScreen/>
+     currentScreen === "ongoing-games" ? <OngoingGamesScreen/> : currentScreen === "create-lobby" ? <CreateLobby setCurrentScreen={setCurrentScreen}/> : <ProfileScreen/>
    }
          </div>
       
