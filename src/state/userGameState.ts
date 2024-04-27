@@ -45,3 +45,13 @@ const useGameStore = create<GameState & GameAction> ((set) => ({
     updateLobbyId: (lobby_id) => set(() => ({lobby_id: lobby_id})),
     updateOtherPlayerIds: (other_player_ids) => set(() => ({other_player_ids: other_player_ids})),
 }))
+
+
+
+const userChessPlayerStateStore = create<> ((set) => ({
+    
+})) 
+
+const useChessGameStateStore = create<> ((set) => ({
+
+}))
