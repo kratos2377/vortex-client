@@ -1,7 +1,7 @@
 type XPos = number;
 type YPos = number;
 
-type Player = "B" | "W";
+type Player = "Black" | "White";
 
 type GameStatus =
   | "NOT STARTED"

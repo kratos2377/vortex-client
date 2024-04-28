@@ -2,6 +2,8 @@ import React , { useEffect, useState } from "react";
 import AuthScreen from "./screens/AuthScreen";
 import Loading from "./screens/Loading";
 import UserHomeScreen from "./screens/UserHomeScreen";
+import ChessGame from "./chess";
+import './App.css'
 
 
 function App() {
@@ -25,7 +27,8 @@ function App() {
     // Add Login , registration screens and game screens
    <div>
     
-   {loading ?  <Loading/> : userState === "" ? <AuthScreen /> : <UserHomeScreen/>}
+   {/* {loading ?  <Loading/> : userState === "" ? <AuthScreen /> : <UserHomeScreen/>} */}
+   {loading ?  <Loading/> : <ChessGame />}
    </div>
  
   );

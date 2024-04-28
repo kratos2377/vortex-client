@@ -1,0 +1,18 @@
+* {
+    @apply box-border m-0 p-0;
+  }
+  button {
+    @apply cursor-pointer text-[white] bg-[#363636] p-[5px] rounded-[3px] border-[none] hover:bg-[#595858];
+  }
+  input:focus {
+    outline: none;
+  }
+  .App {
+    @apply flex justify-center items-center h-screen;
+    background: radial-gradient(
+      circle at 10% 20%,
+      rgb(110, 206, 156) 0%,
+      rgb(77, 120, 135) 100.2%
+    );
+  }
+  

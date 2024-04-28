@@ -1,0 +1,20 @@
+.game-controls {
+    position: fixed;
+    left: 50px;
+    top: 25px;
+    max-width: 200px;
+
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.game-states {
+    position: fixed;
+    right: 50px;
+    top: 25px;
+    width: 200px;
+}
