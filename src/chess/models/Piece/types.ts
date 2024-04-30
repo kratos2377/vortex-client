@@ -15,7 +15,7 @@ export enum PieceIcons {
   PIECE = "",
   KING = "♚",
   KNIGHT = "♞",
-  PAWN = "♟︎",
+  PAWN = "♙",
   QUEEN = "♛",
   ROOK = "♜",
   BISHOP = "♝",

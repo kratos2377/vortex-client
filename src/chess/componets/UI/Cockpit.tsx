@@ -18,8 +18,8 @@ const Cockpit = () => {
 
   return isGameActive ? (
     <div
-    className={`border border-gray-300
-    transition duration-400 ease-in-out hidden h-full flex flex-col justify-between w-full}`}
+    className={`border border-gray-300 opacity-1 
+     h-full flex flex-col justify-between w-full}`}
     >
       <WrappedTimer player={Color.BLACK} />
       {/* <MoveHistory /> */}

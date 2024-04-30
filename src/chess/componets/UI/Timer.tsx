@@ -4,6 +4,7 @@ import { map, mapTo, scan, switchMap,  takeWhile, tap } from "rxjs/operators";
 import { useChessMainStore } from "../../../state/UserAndGameState";
 import { useEffect, useMemo, useState } from "react";
 import { Color } from "../../models/Piece/types";
+import usePlayerStore from "../../../state/chess_store/player";
 interface TimerProps {
   maxTimeInSeconds: number;
   incrementInSeconds?: number;
@@ -20,7 +21,7 @@ const Timer = ({
   player,
 }: TimerProps) => {
   const { status, currentTurn } = useChessMainStore.getState()
-
+  const {currentPlayer} = usePlayerStore()
   const [timeRemaining, setTimeRemaining] =useState(
     maxTimeInSeconds * 1000
   );
@@ -29,9 +30,9 @@ const Timer = ({
   
   useEffect(() => {
     if (status === "IN PROGRESS") {
-      pause$.next(currentTurn !== player);
+      pause$.next(currentPlayer !== player);
     }
-  }, [player, currentTurn, status]);
+  }, [player, currentPlayer, status, currentTurn]);
   
   useEffect(() => {
     if (status !== "IN PROGRESS") {
@@ -57,7 +58,7 @@ const Timer = ({
 
     return () => {
       pause$.next(true);
-     pause$.unsubscribe();
+   //  pause$.unsubscribe();
     };
   }, [status]);
 
@@ -68,7 +69,7 @@ const Timer = ({
   });
 
   const warningTime = maxTimeInSeconds > 60 ? 60 : 30;
-  const isMyTurn = currentTurn === player;
+  const isMyTurn = currentPlayer === player;
   return (
     <div
     className={`w-full p-[20px] ${isMyTurn && displayTime <= warningTime ? "text-white bg-red-800" : "decoration-inherit bg-inherit"}` }
@@ -85,17 +86,17 @@ const WrappedTimer = ({ player }: WrappedTimeProps) => {
     currentTurn,
   } = useChessMainStore.getState()
 
-  const isMyTurn = player === currentTurn;
 
-  let maxTimeInMinutes = player === Color.WHITE ? whiteTimeLeft : blackTimeLeft;
+
+  let maxTimeInSeconds = player === Color.WHITE ? whiteTimeLeft : blackTimeLeft;
 
   return (
     <div
-    className="text-4xl w-fit p-5 text-center bg-gray-200 text-green-500 py-4 sm:px-2 sm:mx-auto"
+    className="text-4xl w-fit p-5 text-center bg-gray-200 text-green-500 py-4"
     >
     
         <Timer
-          maxTimeInSeconds={maxTimeInMinutes * 60}
+          maxTimeInSeconds={maxTimeInSeconds}
           incrementInSeconds={0}
           player={player}
         />

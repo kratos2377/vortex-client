@@ -20,6 +20,7 @@ const CellComponent: FC<CellProps> = ({ clickHandler, cell, selected }) => {
   const attackedCellAroundKing =
     selectedCell?.piece?.name === PieceNames.KING && !piece && canAttack && selectedCell.piece?.canMove(cell);
 
+
   const cellClasses = [
     "cell",
     cell.color === Color.BLACK ? "dark" : "light",
@@ -27,8 +28,15 @@ const CellComponent: FC<CellProps> = ({ clickHandler, cell, selected }) => {
     selected ? "active" : "",
   ].join(" ");
 
+  if (piece?.name === PieceNames.PAWN) {
+    console.log("Pawn info")
+    console.log(piece.icon)
+    console.log(cellClasses)
+    console.log(piece.color)
+  }
+
   return (
-    <div onClick={() => clickHandler(cell)} className={cellClasses}>
+    <div onClick={() => clickHandler(cell)} className={`${cellClasses}`}>
       {!piece && canMove && <div className="highlight empty"></div>}
       {helpers && (
         <>

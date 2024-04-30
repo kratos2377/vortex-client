@@ -1,30 +1,14 @@
 export enum Color {
-  WHITE = "White",
-  BLACK = "Black",
-}
-export enum PieceNames {
-  PIECE = "PIECE",
-  KING = "KING",
-  KNIGHT = "KNIGHT",
-  PAWN = "PAWN",
-  QUEEN = "QUEEN",
-  ROOK = "ROOK",
-  BISHOP = "BISHOP",
-}
-export enum PieceIcons {
-  PIECE = "",
-  KING = "♚",
-  KNIGHT = "♞",
-  PAWN = "♟︎",
-  QUEEN = "♛",
-  ROOK = "♜",
-  BISHOP = "♝",
-}
+    WHITE = "White",
+    BLACK = "Black",
+  }
 
-
-export enum ChessStates {
-  STARTING = "STARTING",
-  IN_PROGRESS = "IN PROGRESS",
-  OVER = "OVER",
-  READY = "READY"
-}
+  
+  
+  export enum ChessStates {
+    STARTING = "STARTING",
+    IN_PROGRESS = "IN PROGRESS",
+    OVER = "OVER",
+    READY = "READY",
+    NOT_STARTED = "NOT STARTED"
+  }

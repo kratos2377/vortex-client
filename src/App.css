@@ -16,3 +16,112 @@
     );
   }
   
+
+  .row {
+    @apply text-center flex;
+  }
+  .ranks {
+    @apply text-center text-xl pl-[8.63px];
+  }
+  .ranks span {
+    @apply inline-block w-[55px];
+  }
+  .files {
+    @apply text-xl pl-0 pr-[5px] pt-3.5 pb-0;
+  }
+  .castling img {
+    @apply w-[25px];
+  }
+  .castling {
+    @apply flex gap-[15px];
+  }
+  .castling button {
+    @apply text-xl;
+  }
+  .castling button img {
+    @apply align-sub;
+  }
+  .mirrored {
+    @apply -scale-x-100;
+  }
+  .cell {
+    @apply relative w-[55px] h-[55px] cursor-pointer select-none text-[41px];
+  }
+  .highlight {
+    @apply absolute w-full h-full;
+  }
+  .highlight.empty {
+    @apply w-[15px] h-[15px] bg-[#0000005f] rounded-[50%] left-[35%] top-[35%];
+  }
+  .highlight.piece {
+    @apply shadow-[inset_0px_0px_4px_3px_#9e0101];
+  }
+  .highlight.king {
+    @apply shadow-[inset_0px_0px_4px_3px_#0019f9];
+  }
+  .highlight.passant {
+    @apply shadow-[inset_0px_0px_4px_3px_#1cb014];
+  }
+  .highlight.underAttack {
+    @apply text-sm p-4;
+  }
+  .cell.light {
+      @apply bg-[#ebccae]
+  }
+  .cell.dark {
+      @apply bg-[#d2694c]
+  }
+  .cell.black-piece {
+    @apply text-black;
+    text-shadow: 1px 1px white;
+  }
+  .cell.light-piece {
+    @apply text-white ;
+    text-shadow: 1px 2px rgb(0, 0, 0);
+  }
+  .cell.active {
+    @apply text-[#7e3ff6];
+    text-shadow: 1px 2px #51e5f5;
+  }
+  .fen-form {
+    @apply flex flex-wrap justify-center gap-[5px] bg-[#36363691] p-2.5 rounded-[5px];
+  }
+  .fen-form input {
+    @apply w-full p-[3px] rounded-[5px] border-[none];
+  }
+  .game-controls {
+    @apply fixed max-w-[200px] flex flex-row gap-2.5 justify-center items-center flex-wrap left-[50px] top-[25px];
+  }
+  .game-states {
+    @apply fixed w-[200px] right-[50px] top-[25px];
+  }
+  .helpers {
+    @apply cursor-pointer bg-[#363636] text-[white] select-none px-[5px] py-0.5 rounded-[3px];
+  }
+  .helpers * {
+    @apply mr-2.5;
+  }
+  
+  .chose-piece-container {
+    @apply flex fixed -translate-x-2/4 bg-[#ebccae] text-[dimgray] text-[41px] shadow-[rgba(50,50,93,0.25)_0px_50px_100px_-20px,rgba(0,0,0,0.3)_0px_30px_60px_-30px,rgba(10,37,64,0.35)_0px_-2px_6px_0px_inset] px-[5px] py-0 rounded-[5px] left-2/4;
+  }
+  .chose-piece-container div {
+    @apply cursor-pointer transition-all duration-[0.1s] ease-[ease-in-out] hover:scale-95;
+    text-shadow: 1px 2px rgb(255, 255, 255);
+  }
+  .taken-pieces {
+    @apply fixed w-[200px] text-center shadow-[rgba(0,0,0,0.24)_0px_3px_8px_2px] rounded-[5px] top-[250px];
+  }
+  .piece-container {
+    @apply flex flex-wrap;
+  }
+  .piece {
+    @apply text-[40px];
+  }
+  .taken-pieces.left {
+    @apply left-[50px];
+  }
+  .taken-pieces.right {
+    @apply right-[50px];
+  }
+  

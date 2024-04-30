@@ -11,6 +11,7 @@ import { IPawnTransformUtils } from "./types";
 import { useChessMainStore } from "../../state/UserAndGameState";
 import { initialCastlingState } from "../../state/chess_store/initial_states/castlingUtils";
 import { rankCoordinates } from "../../state/chess_store/initial_states/rankCoordinates";
+import { Color } from "../../types/chess_types/constants";
 
 const BoardComponent: FC = () => {
   const initialState: IPawnTransformUtils = { visible: false, targetCell: null };
@@ -28,7 +29,7 @@ const BoardComponent: FC = () => {
     colorInStaleMate,
     colorInCheckMate,
   } = useChessGameStore();
-  const { setGameCondition, setTakenPieces, setCastlingBtn } = useChessMainStore();
+  const { currentTurn , setGameCondition, setTakenPieces, setCastlingBtn, setCurrentTurn } = useChessMainStore();
 
   const [pawnTransformUtils, setPawnTransformUtils] = useState<IPawnTransformUtils>(initialState);
   const [passantAvailable, setPassantAvailable] = useState<boolean>(false);
@@ -36,10 +37,10 @@ const BoardComponent: FC = () => {
 
   const clickHandler = (cell: Cell): void => {
     if (colorInCheckMate || colorInStaleMate) return;
-    // выбор фигуры
+
     if (currentPlayer === cell?.piece?.color) {
       setSelectedCell(cell);
-      // Проверка взятия на проходе
+
       resetPassantCells();
       const canPassant = pawnPassant.canPassant(currentPlayer, cell, board);
       if (canPassant) {
@@ -47,23 +48,23 @@ const BoardComponent: FC = () => {
         pawnPassant.makePassantAvailable(board, currentPlayer, cell);
       }
     }
-    // ход фигуры
+
     if (cell.availableToMove && selectedCell !== cell) {
-      // запрет брать короля
+
       if (cell.piece instanceof King) return;
-      // Реализация взятия на проходе
+
       if (cell.availableToPassant) {
         const pieceGetByPassant = pawnPassant.getPawnByPassant(cell, selectedCell!, board);
         setTakenPieces(pieceGetByPassant!);
       }
-      // проверка для превращения пешки
+
       if (!colorInCheck && pawnUtils.isPawnOnLastLine(currentPlayer, selectedCell!, cell))
         setPawnTransformUtils({ ...pawnTransformUtils, visible: true, targetCell: cell });
-      // проверка шаха
+
       else {
         isCheck(cell);
       }
-      // обнуление клеток для взятия на проходе
+
       resetPassantCells();
     }
   };
@@ -83,6 +84,7 @@ const BoardComponent: FC = () => {
       if (cell.piece) setTakenPieces(cell.piece);
       selectedCell?.movePiece(cell);
       validateCheck();
+      setCurrentTurn(currentTurn === Color.WHITE ? Color.BLACK : Color.WHITE)
       passTurn();
       setSelectedCell(null);
     }

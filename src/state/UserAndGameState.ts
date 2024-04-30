@@ -65,7 +65,7 @@ export const useChessMainStore = create<ChessGameState>((set) => {
     blackTimeLeft: 900,
     whiteTimeLeft: 900,
     currentTurn: Color.WHITE,
-    status: ChessStates.READY ,
+    status: ChessStates.NOT_STARTED ,
     setBlackTimeLeft: (timeLeft) => {
       set((state) => ({...state , blackTimeLeft: timeLeft }))
     },
