@@ -7,8 +7,8 @@
   input:focus {
     outline: none;
   }
-  .App {
-    @apply flex justify-center items-center h-screen;
+  .chess_app {
+    @apply flex flex-row justify-center items-center h-screen;
     background: radial-gradient(
       circle at 10% 20%,
       rgb(110, 206, 156) 0%,

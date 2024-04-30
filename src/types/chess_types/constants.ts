@@ -20,3 +20,11 @@ export enum PieceIcons {
   ROOK = "♜",
   BISHOP = "♝",
 }
+
+
+export enum ChessStates {
+  STARTING = "STARTING",
+  IN_PROGRESS = "IN PROGRESS",
+  OVER = "OVER",
+  READY = "READY"
+}

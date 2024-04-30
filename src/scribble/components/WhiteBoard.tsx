@@ -249,7 +249,7 @@ const WhiteBoard = ({ io, gameId }: { io: any; gameId: string}) => {
     const ctx = canvasRef.current!.getContext("2d")!;
     console.log("CONTEXT", ctx);
     if (ctx) {
-      const imageData = ctx.getImageData(
+      const imageData = ctxmageData(
         0,
         0,
         canvasRef.current?.width || canvasWidth,

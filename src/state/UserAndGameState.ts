@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { ChessGameState } from './chess_store/chess_store_types'
-import { Color } from '../types/chess_types/constants'
+import { ChessStates, Color } from '../types/chess_types/constants'
 import useBoardStore from './chess_store/board'
 import usePlayerStore from './chess_store/player'
 import useChessGameStore from './chess_store/game'
@@ -62,6 +62,22 @@ export const useChessMainStore = create<ChessGameState>((set) => {
     gameCondition: "",
     takenPieces: [],
     castlingBtn: true,
+    blackTimeLeft: 900,
+    whiteTimeLeft: 900,
+    currentTurn: Color.WHITE,
+    status: ChessStates.READY ,
+    setBlackTimeLeft: (timeLeft) => {
+      set((state) => ({...state , blackTimeLeft: timeLeft }))
+    },
+    setWhiteTimeLeft: (timeLeft) => {
+      set((state) => ({...state , whiteTimeLeft: timeLeft }))
+    },
+    setCurrentTurn: (turn) => {
+      set((state) => ({...state , currentTurn: turn }))
+    },
+    setGameCurrentStatus: (status) => {
+      set((state) => ({...state , status: status }))
+    },
     setCastlingBtn: (condition) => {
       set((state) => ({ ...state, castlingBtn: condition }));
     },

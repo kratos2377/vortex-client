@@ -4,7 +4,6 @@ import Helpers from "./Helpers";
 import CastlingComponent from "../CastlingComponent";
 import { Color } from "../../models/Piece/types";
 import TakenPieces from "./TakenPieces";
-import FenForm from "./FenForm";
 import { useChessMainStore } from "../../../state/UserAndGameState";
 
 const GameInformation: FC = () => {
@@ -12,12 +11,6 @@ const GameInformation: FC = () => {
 
   return (
     <>
-      <div className="game-controls">
-        <FenForm />
-        <Helpers />
-        <button onClick={() => restart()}>Restart</button>
-        <CastlingComponent />
-      </div>
 
       <div className="game-states">
         <GameStates />

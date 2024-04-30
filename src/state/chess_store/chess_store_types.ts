@@ -22,6 +22,14 @@ export interface ChessGameState {
   gameCondition: string;
   takenPieces: Piece[];
   castlingBtn: boolean;
+  blackTimeLeft: number;
+  whiteTimeLeft: number;
+  currentTurn: string;
+  status: string;
+  setBlackTimeLeft: (timeLeft: number) => void;
+  setWhiteTimeLeft: (timeLeft: number) => void;
+  setGameCurrentStatus: (status: string) => void;
+  setCurrentTurn: (current: string) => void;
   setCastlingBtn: (condition: boolean) => void;
   setTakenPieces: (piece: Piece) => void;
   setGameCondition: (gameCondition: string) => void;
