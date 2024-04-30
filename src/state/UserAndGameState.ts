@@ -4,6 +4,7 @@ import { ChessStates, Color } from '../types/chess_types/constants'
 import useBoardStore from './chess_store/board'
 import usePlayerStore from './chess_store/player'
 import useChessGameStore from './chess_store/game'
+import { CanvasState } from './scribble_store/canvasStore'
 
 type UserState  = {
     user_id: string,
@@ -105,3 +106,11 @@ export const useChessMainStore = create<ChessGameState>((set) => {
   };
 });
 
+export const useCanvasStore = create<CanvasState>(set => ({
+  strokeColor: '#000',
+  strokeWidth: [3],
+  dashGap: [0],
+  setStrokeColor: strokeColor => set({ strokeColor }),
+  setStrokeWidth: strokeWidth => set({ strokeWidth }),
+  setDashGap: dashGap => set({ dashGap }),
+}))
