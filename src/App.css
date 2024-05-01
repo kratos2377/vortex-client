@@ -15,6 +15,15 @@
       rgb(77, 120, 135) 100.2%
     );
   }
+
+  .scribble_app {
+    @apply flex flex-row h-screen w-screen;
+    background: radial-gradient(
+      circle at 10% 20%,
+      rgb(110, 206, 156) 0%,
+      rgb(77, 120, 135) 100.2%
+    );
+  }
   
 
   .row {

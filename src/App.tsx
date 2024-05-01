@@ -4,6 +4,7 @@ import Loading from "./screens/Loading";
 import UserHomeScreen from "./screens/UserHomeScreen";
 import ChessGame from "./chess";
 import './App.css'
+import ScribbleGame from "./scribble";
 
 
 function App() {
@@ -28,7 +29,8 @@ function App() {
    <div>
     
    {/* {loading ?  <Loading/> : userState === "" ? <AuthScreen /> : <UserHomeScreen/>} */}
-   {loading ?  <Loading/> : <ChessGame />}
+   {/* {loading ?  <Loading/> : <ChessGame />} */}
+   {loading ?  <Loading/> : <ScribbleGame />}
    </div>
  
   );
