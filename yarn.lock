@@ -1043,6 +1043,11 @@
   resolved "https://registry.yarnpkg.com/@tabler/icons/-/icons-3.2.0.tgz#4adcde021943d50f2c228dab6145fd9c9b639f85"
   integrity sha512-h8GQ2rtxgiSjltrVz4vcopAxTPSpUSUi5nBfJ09H3Bk4fJk6wZ/dVUjzhv/BHfDwGTkAxZBiYe/Q/T95cPeg5Q==
 
+"@tauri-apps/api@2.0.0-beta.11":
+  version "2.0.0-beta.11"
+  resolved "https://registry.yarnpkg.com/@tauri-apps/api/-/api-2.0.0-beta.11.tgz#7ec6f6f007da4e55315270619448ce39fd11b4e3"
+  integrity sha512-wJRY+fBUm3KpqZDHMIz5HRv+1vlnvRJ/dFxiyY3NlINTx2qXqDou5qWYcP1CuZXsd39InWVPV3FAZvno/kGCkA==
+
 "@tauri-apps/api@^1.5.2":
   version "1.5.4"
   resolved "https://registry.yarnpkg.com/@tauri-apps/api/-/api-1.5.4.tgz#69bf7f93abe7b00d69c313016a6c1d0d59dca5cd"
@@ -1113,6 +1118,13 @@
     "@tauri-apps/cli-win32-arm64-msvc" "1.5.12"
     "@tauri-apps/cli-win32-ia32-msvc" "1.5.12"
     "@tauri-apps/cli-win32-x64-msvc" "1.5.12"
+
+"@tauri-apps/plugin-store@^2.0.0-beta.3":
+  version "2.0.0-beta.3"
+  resolved "https://registry.yarnpkg.com/@tauri-apps/plugin-store/-/plugin-store-2.0.0-beta.3.tgz#3eb46ea9be81902bfe6ceb8a11572e5ab02d09aa"
+  integrity sha512-qTvbG2aGTME3TcBBIBizwhN0f3Iqy5tgeaEtj5gWaisAD0PJfrNAAaUnpXvO4O3PUTS8idZt933z1uAiBhY7FA==
+  dependencies:
+    "@tauri-apps/api" "2.0.0-beta.11"
 
 "@types/argparse@1.0.38":
   version "1.0.38"

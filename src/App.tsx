@@ -5,6 +5,8 @@ import UserHomeScreen from "./screens/UserHomeScreen";
 import ChessGame from "./chess";
 import './App.css'
 import ScribbleGame from "./scribble";
+import { invoke } from '@tauri-apps/api/tauri'
+import { getUserTokenFromStore, saveUserDetails } from "./persistent_storage/save_user_details";
 
 
 function App() {
@@ -12,15 +14,30 @@ function App() {
   const [loading , setLoading] = useState(true);
   const [userState , setUserState] = useState("");
 
+  const getUserToken = async () => {
+    
+  }
 
   useEffect(() => {
-    setTimeout(() => {
-      setLoading(false)
-    } , 5000)
 
-    setTimeout(() => {
-      setUserState("new-state")
-    }, 8000)
+    const newFunc = async () => {
+      await saveUserDetails("new_id", "new_token")
+      const userToken =  await getUserTokenFromStore()
+      console.log("USER TOKEN IS")
+      console.log(userToken)
+      setLoading(false)
+    }
+
+    // invoke('verify_token_request', { payload: JSON.stringify( { token: userToken})  }).then((message) => {
+    //   console.log("Response message is")
+    //   console.log(message)
+    //   setLoading(false)
+    // })
+
+
+
+
+    newFunc()
   } , [])
 
 
@@ -28,9 +45,7 @@ function App() {
     // Add Login , registration screens and game screens
    <div>
     
-   {/* {loading ?  <Loading/> : userState === "" ? <AuthScreen /> : <UserHomeScreen/>} */}
-   {/* {loading ?  <Loading/> : <ChessGame />} */}
-   {loading ?  <Loading/> : <ScribbleGame />}
+   {loading ?  <Loading/> : userState === "" ? <AuthScreen /> : <UserHomeScreen/>}
    </div>
  
   );
