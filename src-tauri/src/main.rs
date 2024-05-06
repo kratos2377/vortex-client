@@ -18,6 +18,7 @@ async fn main() {
         client:  Arc::new(reqwest::Client::new())
     };
     tauri::Builder::default()
+     .plugin(tauri_plugin_store::Builder::default().build())
         .manage(client)
         .invoke_handler(tauri::generate_handler![
             // User auth logic

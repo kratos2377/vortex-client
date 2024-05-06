@@ -8,11 +8,19 @@ use crate::{constants::api_constants::{BASE_URL, USER_AUTH_API_ROUTE}, state::We
 pub async fn verify_token_request(payload: String , state: State<'_ , WebClient>) -> Result<String , ()> {
 let req_url = BASE_URL.to_string() + USER_AUTH_API_ROUTE + "/verify_token";
 
-let res = state.client.get(req_url).body(payload).send().await.unwrap();
+let res = state.client.get(req_url).body(payload).send().await;
 
-let rec = res.text().await.unwrap();
+if res.is_err() {
+    return Ok("no response recieved".to_string())
+}
 
-Ok(rec)
+let rec = res.unwrap().text().await;
+
+if rec.is_err() {
+    return Ok("no response recieved".to_string())
+}
+
+Ok(rec.unwrap())
 }
 
 

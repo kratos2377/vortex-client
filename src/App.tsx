@@ -21,18 +21,16 @@ function App() {
   useEffect(() => {
 
     const newFunc = async () => {
-      await saveUserDetails("new_id", "new_token")
+  //    await saveUserDetails("new_id", "new_token")
       const userToken =  await getUserTokenFromStore()
-      console.log("USER TOKEN IS")
-      console.log(userToken)
-      setLoading(false)
+      invoke('verify_token_request', { payload: JSON.stringify( { token: userToken})  }).then((message) => {
+        console.log("Response message is")
+        console.log(message)
+        setLoading(false)
+      })
+  
     }
 
-    // invoke('verify_token_request', { payload: JSON.stringify( { token: userToken})  }).then((message) => {
-    //   console.log("Response message is")
-    //   console.log(message)
-    //   setLoading(false)
-    // })
 
 
 
