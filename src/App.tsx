@@ -34,8 +34,10 @@ function App() {
 
 
 
-
-    newFunc()
+setTimeout(() => {
+  setLoading(false)
+} , 4000)
+   // newFunc()
   } , [])
 
 
@@ -43,7 +45,8 @@ function App() {
     // Add Login , registration screens and game screens
    <div>
     
-   {loading ?  <Loading/> : userState === "" ? <AuthScreen /> : <UserHomeScreen/>}
+   {/* {loading ?  <Loading/> : userState === "" ? <AuthScreen /> : <UserHomeScreen/>} */}
+   {loading ? <Loading/> : <ChessGame/>}
    </div>
  
   );

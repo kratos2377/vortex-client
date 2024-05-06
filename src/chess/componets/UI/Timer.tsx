@@ -21,7 +21,7 @@ const Timer = ({
   player,
 }: TimerProps) => {
   const { status, currentTurn } = useChessMainStore.getState()
-  const {currentPlayer} = usePlayerStore()
+  const {startingPlayerColor} = usePlayerStore.getState()
   const [timeRemaining, setTimeRemaining] =useState(
     maxTimeInSeconds * 1000
   );
@@ -30,9 +30,9 @@ const Timer = ({
   
   useEffect(() => {
     if (status === "IN PROGRESS") {
-      pause$.next(currentPlayer !== player);
+      pause$.next(currentTurn !== player);
     }
-  }, [player, currentPlayer, status, currentTurn]);
+  }, [player, currentTurn , status, currentTurn]);
   
   useEffect(() => {
     if (status !== "IN PROGRESS") {
@@ -69,7 +69,7 @@ const Timer = ({
   });
 
   const warningTime = maxTimeInSeconds > 60 ? 60 : 30;
-  const isMyTurn = currentPlayer === player;
+  const isMyTurn = startingPlayerColor === player;
   return (
     <div
     className={`w-full p-[20px] ${isMyTurn && displayTime <= warningTime ? "text-white bg-red-800" : "decoration-inherit bg-inherit"}` }

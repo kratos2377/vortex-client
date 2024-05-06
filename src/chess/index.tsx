@@ -13,7 +13,7 @@ const ChessGame = () => {
   const [startGame , setStartGame] = useState(false)
   const [colorType, setColorType] = useState(Color.WHITE)
   const {restart , setGameCurrentStatus} = useChessMainStore()
-  const {setCurrentPlayer} = usePlayerStore()
+  const {setPlayerStartingColor} = usePlayerStore()
 
   useEffect(() => {
     restart()
@@ -28,15 +28,20 @@ const ChessGame = () => {
 
 <button onClick={() => {
   
-  setCurrentPlayer(colorType)
+  setPlayerStartingColor(colorType)
         setGameCurrentStatus(ChessStates.IN_PROGRESS)
         setStartGame(true)
        }}>Start the fooking game</button>
 
       <br/>
 
-       <button onClick={() => setColorType(Color.WHITE)}>Set color white</button>
-       <button onClick={() => setColorType(Color.BLACK)}>Set color black</button>
+       <button onClick={() => {
+        setColorType(Color.WHITE)
+       }}>Set color white</button>
+       <button onClick={() => {
+        setColorType(Color.BLACK)
+
+       }}>Set color black</button>
 
        </div> :  (
         <><div className='w-2/3 p-5 flex flex-row justify-center'>

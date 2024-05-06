@@ -16,7 +16,7 @@ import { Color } from "../../types/chess_types/constants";
 const BoardComponent: FC = () => {
   const initialState: IPawnTransformUtils = { visible: false, targetCell: null };
   const { update, board, selectedCell, setSelectedCell } = useBoardStore();
-  const { currentPlayer, passTurn } = usePlayerStore();
+  const { currentPlayer, passTurn , startingPlayerColor} = usePlayerStore();
   const {
     pawnPassant,
     setCastlingUtils,
