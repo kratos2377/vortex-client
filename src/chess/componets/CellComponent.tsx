@@ -28,13 +28,6 @@ const CellComponent: FC<CellProps> = ({ clickHandler, cell, selected }) => {
     selected ? "active" : "",
   ].join(" ");
 
-  if (piece?.name === PieceNames.PAWN) {
-    console.log("Pawn info")
-    console.log(piece.icon)
-    console.log(cellClasses)
-    console.log(piece.color)
-  }
-
   return (
     <div onClick={() => clickHandler(cell)} className={`${cellClasses}`}>
       {!piece && canMove && <div className="highlight empty"></div>}

@@ -28,6 +28,8 @@ export interface ChessGameState {
   whiteTimeLeft: number;
   currentTurn: string;
   status: string;
+  movesHistory: ChessMove[];
+  setMovesHistory: (chessMove: ChessMove) => void;
   setBlackTimeLeft: (timeLeft: number) => void;
   setWhiteTimeLeft: (timeLeft: number) => void;
   setGameCurrentStatus: (status: string) => void;
@@ -64,4 +66,10 @@ export interface BoardStore {
   restartBoard: () => void;
   update: () => void;
   startGameFromFen: (fen: string) => void;
+}
+
+export interface ChessMove {
+  cellString: string;
+  moveType: string;
+
 }

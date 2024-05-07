@@ -92,7 +92,7 @@ const WrappedTimer = ({ player }: WrappedTimeProps) => {
 
   return (
     <div
-    className="text-4xl w-fit p-5 text-center bg-gray-200 text-green-500 py-4"
+    className="text-2xl w-full text-center bg-gray-200 text-green-500 py-2"
     >
     
         <Timer

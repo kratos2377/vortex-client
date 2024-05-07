@@ -12,6 +12,7 @@ import { useChessMainStore } from "../../state/UserAndGameState";
 import { initialCastlingState } from "../../state/chess_store/initial_states/castlingUtils";
 import { rankCoordinates } from "../../state/chess_store/initial_states/rankCoordinates";
 import { Color } from "../../types/chess_types/constants";
+import { convertChessCell } from "../../helper_functions/convertChessCell";
 
 const BoardComponent: FC = () => {
   const initialState: IPawnTransformUtils = { visible: false, targetCell: null };
@@ -29,7 +30,7 @@ const BoardComponent: FC = () => {
     colorInStaleMate,
     colorInCheckMate,
   } = useChessGameStore();
-  const { currentTurn , setGameCondition, setTakenPieces, setCastlingBtn, setCurrentTurn } = useChessMainStore();
+  const { currentTurn , setGameCondition, setTakenPieces, setCastlingBtn, setCurrentTurn , setMovesHistory } = useChessMainStore();
 
   const [pawnTransformUtils, setPawnTransformUtils] = useState<IPawnTransformUtils>(initialState);
   const [passantAvailable, setPassantAvailable] = useState<boolean>(false);
@@ -37,7 +38,7 @@ const BoardComponent: FC = () => {
 
   const clickHandler = (cell: Cell): void => {
     if (colorInCheckMate || colorInStaleMate) return;
-
+ 
     if (currentPlayer === cell?.piece?.color) {
       setSelectedCell(cell);
 
@@ -66,6 +67,9 @@ const BoardComponent: FC = () => {
       }
 
       resetPassantCells();
+
+      setMovesHistory( {  cellString: convertChessCell(cell), moveType: "normal" })
+      
     }
   };
   const isCheck = (cell: Cell): void => {
