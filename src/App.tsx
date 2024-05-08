@@ -7,6 +7,7 @@ import './App.css'
 import ScribbleGame from "./scribble";
 import { invoke } from '@tauri-apps/api/tauri'
 import { getUserTokenFromStore, saveUserDetails } from "./persistent_storage/save_user_details";
+import Walletscreen from "./screens/walletscreen";
 
 
 function App() {
@@ -46,7 +47,8 @@ setTimeout(() => {
    <div>
     
    {/* {loading ?  <Loading/> : userState === "" ? <AuthScreen /> : <UserHomeScreen/>} */}
-   {loading ? <Loading/> : <ChessGame/>}
+   {/* {loading ? <Loading/> : <ChessGame/>} */}
+   {loading ? <Loading/> : <Walletscreen/>}
    </div>
  
   );

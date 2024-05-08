@@ -4,6 +4,7 @@
     "useDefineForClassFields": true,
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
+    "allowJs": true,
     "skipLibCheck": true,
     "preserveConstEnums": true,
     "experimentalDecorators": true,
@@ -28,7 +29,7 @@
     "./src/**/*.tsx"
   ],
   "exclude": [
-    "./node_modules"
+    "node_modules"
   ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
