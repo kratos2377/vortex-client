@@ -22,3 +22,8 @@ export const getUserTokenFromStore = async () => {
     const val = await store.get('user_token');
     return val
 }
+
+export const deleteUserDetailsFromStore = async () => {
+     await store.delete('user_token');
+     await store.delete('user_id');
+}

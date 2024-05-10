@@ -23,34 +23,13 @@ const ChessGame = () => {
     <>
       <div className="chess_app">
       {/* <GameInformation /> */}
-      {
-       !startGame ? <div> 
 
-<button onClick={() => {
-  
-  setPlayerStartingColor(colorType)
-        setGameCurrentStatus(ChessStates.IN_PROGRESS)
-        setStartGame(true)
-       }}>Start the fooking game</button>
-
-      <br/>
-
-       <button onClick={() => {
-        setColorType(Color.WHITE)
-       }}>Set color white</button>
-       <button onClick={() => {
-        setColorType(Color.BLACK)
-
-       }}>Set color black</button>
-
-       </div> :  (
         <><div className='w-2/3 p-5 flex flex-row justify-center'>
               <BoardComponent />
             </div><div className='flex flex-col w-1/3 mx-10 justify-between'>
                 <Cockpit />
               </div></>
-       )
-      }
+    
     </div>
     </>
   )

@@ -13,6 +13,8 @@ import { initialCastlingState } from "../../state/chess_store/initial_states/cas
 import { rankCoordinates } from "../../state/chess_store/initial_states/rankCoordinates";
 import { Color } from "../../types/chess_types/constants";
 import { convertChessCell } from "../../helper_functions/convertChessCell";
+import { socket } from "../../socket/socket";
+import { GameEventPayload } from "../../types/ws_and_game_events";
 
 const BoardComponent: FC = () => {
   const initialState: IPawnTransformUtils = { visible: false, targetCell: null };
@@ -69,6 +71,13 @@ const BoardComponent: FC = () => {
       resetPassantCells();
 
       setMovesHistory( {  cellString: convertChessCell(cell), moveType: "normal" })
+
+      let gameEvent: GameEventPayload = {
+        user_id: "user_id",
+        game_event: JSON.stringify( convertChessCell(selectedCell!) + "-" + convertChessCell(cell) ),
+        game_id: "game_id"
+      }
+      socket.emit("game-event" , JSON.stringify(gameEvent))
       
     }
   };
@@ -112,6 +121,7 @@ const BoardComponent: FC = () => {
     update();
     setPawnTransformUtils(initialState);
   }, [selectedCell]);
+
 
   return (
     <>

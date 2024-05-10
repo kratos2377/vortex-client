@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Menu, MenuItem } from '../components/ui/MenuComponents';
 import { cn } from '../utils/cn';
 import { BackgroundGradient } from '../components/backgrounds/background-gradient';
@@ -6,8 +6,12 @@ import OngoingGamesScreen from './OngoingGamesScreen';
 import ProfileScreen from './ProfileScreen';
 import { ParallaxScroll } from '../components/ui/ParallaxScroll';
 import CreateLobby from './CreateLobby';
+import { socket } from '../socket/socket';
+import { useUserStore } from '../state/UserAndGameState';
 
 const UserHomeScreen = () => {
+
+  const { user_details } = useUserStore.getState()
 
   const [currentScreen , setCurrentScreen] = useState<string>("ongoing-games")
 
@@ -17,6 +21,11 @@ const UserHomeScreen = () => {
     setCreateLobbyModalOpen(false)
   }
 
+
+  useEffect(() => {
+    let user_connection_payload = 
+      socket.emit("user-connection-event" , JSON.stringify(user_details) )
+  } , [])
 
   return (
     <div className="h-screen w-screen dark:bg-black bg-white  dark:bg-grid-small-white/[0.2] bg-grid-small-black/[0.2] relative">

@@ -5,12 +5,13 @@ import useBoardStore from './chess_store/board'
 import usePlayerStore from './chess_store/player'
 import useChessGameStore from './chess_store/game'
 import { CanvasState } from './scribble_store/canvasStore'
+import { UserModel } from '../types/models'
 
 type UserState  = {
     user_id: string,
     score: number,
     token: string,
-
+    user_details: UserModel
 }
 
 type GameState = {
@@ -23,7 +24,7 @@ type UserAction = {
     updateUserId: (user_id: UserState['user_id']) => void
     updateUserScore: (score: UserState['score']) => void
     updateUserToken: (token: UserState['token']) => void
-   
+    updateUserDetails: (user_mod: UserModel) => void
   }
 
   type GameAction =  {
@@ -33,20 +34,24 @@ type UserAction = {
   }
   
 
-interface ChessGameActions {
-
-}
-
-const useUserStore = create<UserState & UserAction>((set) => ({
+export const useUserStore = create<UserState & UserAction>((set) => ({
     user_id: '',
+    user_details: {
+      username: '',
+      user_id: '',
+      email: '',
+      first_name: '',
+      last_name: ''
+    },
     score: 0,
     token: '',
-    updateUserId: (user_id) => set(() => ({user_id: user_id})),
-    updateUserScore: (score) => set(() => ({score: score})),
-    updateUserToken: (token) => set(() => ({token: token})),
+    updateUserId: (user_id) => set((state) => ({...state , user_id: user_id})),
+    updateUserScore: (score) => set((state) => ({...state, score: score})),
+    updateUserToken: (token) => set((state) => ({...state, token: token})),
+    updateUserDetails: (user_mod) => set((state) => ({...state , user_details: user_mod}))
 }))
 
-const useUserGameStore = create<GameState & GameAction> ((set) => ({
+export const useOngoingGameStore = create<GameState & GameAction> ((set) => ({
     game_id: '',
     lobby_id: '',
     other_player_ids: [],

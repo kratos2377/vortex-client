@@ -2,18 +2,15 @@ import React , { useEffect, useState } from "react";
 import AuthScreen from "./screens/AuthScreen";
 import Loading from "./screens/Loading";
 import UserHomeScreen from "./screens/UserHomeScreen";
-import ChessGame from "./chess";
 import './App.css'
-import ScribbleGame from "./scribble";
 import { invoke } from '@tauri-apps/api/tauri'
 import { getUserTokenFromStore, saveUserDetails } from "./persistent_storage/save_user_details";
-import LobbyScreen from "./screens/LobbyScreen";
 
 
 function App() {
 
   const [loading , setLoading] = useState(true);
-  const [userState , setUserState] = useState("");
+  const [userState , setUserState] = useState<"valid" | "invalid">("invalid");
 
   const getUserToken = async () => {
     
@@ -21,7 +18,7 @@ function App() {
 
   useEffect(() => {
 
-    const newFunc = async () => {
+    const getAndVerifyToken = async () => {
   //    await saveUserDetails("new_id", "new_token")
       const userToken =  await getUserTokenFromStore()
       invoke('verify_token_request', { payload: JSON.stringify( { token: userToken})  }).then((message) => {
@@ -31,14 +28,8 @@ function App() {
       })
   
     }
-
-
-
-
-setTimeout(() => {
-  setLoading(false)
-} , 4000)
-   // newFunc()
+   
+    getAndVerifyToken()
   } , [])
 
 
@@ -46,7 +37,7 @@ setTimeout(() => {
     // Add Login , registration screens and game screens
    <div>
     
-   {loading ?  <Loading/> : userState === "" ? <AuthScreen /> : <UserHomeScreen/>}
+   {loading ?  <Loading/> : userState === "invalid" ? <AuthScreen /> : <UserHomeScreen/>}
    </div>
  
   );
