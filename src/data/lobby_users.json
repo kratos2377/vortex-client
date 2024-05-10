@@ -1,0 +1,72 @@
+[
+    {
+      "id": 1,
+      "first_name": "John",
+      "last_name": "Doe",
+      "username": "johndoe",
+      "online_status": true
+    },
+    {
+      "id": 2,
+      "first_name": "Jane",
+      "last_name": "Smith",
+      "username": "janesmith",
+      "online_status": false
+    },
+    {
+      "id": 3,
+      "first_name": "Michael",
+      "last_name": "Lee",
+      "username": "mleel",
+      "online_status": true
+    },
+    {
+      "id": 4,
+      "first_name": "Sarah",
+      "last_name": "Garcia",
+      "username": "sg123",
+      "online_status": false
+    },
+    {
+      "id": 5,
+      "first_name": "David",
+      "last_name": "Miller",
+      "username": "davidmiller",
+      "online_status": true
+    },
+    {
+      "id": 6,
+      "first_name": "Amanda",
+      "last_name": "Robinson",
+      "username": "amandarob",
+      "online_status": false
+    },
+    {
+      "id": 7,
+      "first_name": "Charles",
+      "last_name": "Clark",
+      "username": "charlesc",
+      "online_status": true
+    },
+    {
+      "id": 8,
+      "first_name": "Emily",
+      "last_name": "Jones",
+      "username": "emilyj",
+      "online_status": false
+    },
+    {
+      "id": 9,
+      "first_name": "Matthew",
+      "last_name": "Williams",
+      "username": "mwilliams",
+      "online_status": true
+    },
+    {
+      "id": 10,
+      "first_name": "Jennifer",
+      "last_name": "Brown",
+      "username": "jennbrown",
+      "online_status": false
+    }
+  ]
