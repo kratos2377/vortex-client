@@ -45,7 +45,7 @@ const CreateLobby = ( { setCurrentScreen } : { setCurrentScreen:  React.Dispatch
             >
               <option value="">Select</option>
               <option value="chess">Chess</option>
-              <option value="poker">Poker</option>
+              {/* <option value="poker">Poker</option> */}
               <option value="scribble">Scribble</option>
             </select>
           </div>
@@ -59,7 +59,7 @@ const CreateLobby = ( { setCurrentScreen } : { setCurrentScreen:  React.Dispatch
               className="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             >
               <option value="">Select</option>
-              <option value="staked">Staked</option>
+              {/* <option value="staked">Staked</option> */}
               <option value="normal">Normal</option>
             </select>
           </div>

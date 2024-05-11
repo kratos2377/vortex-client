@@ -2,6 +2,8 @@
 
 - [ ] Add socket events in both games
 - [ ] Add Cli and spectating feature
+- [ ] Add Support for Sending and Checking recieved friend requests
+- [ ] Add by search username feature while sending friend requests
 - [ ] Add rust functions for solana rpc apis
 - [ ] Add layer to listen to realtime events from mqtt broker and publish it to frontend
 - [ ] Fix profile screen and add logout feature

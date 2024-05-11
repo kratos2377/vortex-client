@@ -15,6 +15,7 @@ import { Color } from "../../types/chess_types/constants";
 import { convertChessCell } from "../../helper_functions/convertChessCell";
 import { socket } from "../../socket/socket";
 import { GameEventPayload } from "../../types/ws_and_game_events";
+import { convertStringToGameEvent } from "../../helper_functions/convertGameEvents";
 
 const BoardComponent: FC = () => {
   const initialState: IPawnTransformUtils = { visible: false, targetCell: null };
@@ -121,6 +122,21 @@ const BoardComponent: FC = () => {
     update();
     setPawnTransformUtils(initialState);
   }, [selectedCell]);
+
+  useEffect(() => {
+
+    socket.on("send-user-game-event" , (data) => {
+          let game_event = convertStringToGameEvent(data)
+
+          console.log("GAME EVENT RECIEVED IS")
+          console.log(game_event)
+    })
+
+    return () => {
+      socket.off("send-user-game-event")
+    };
+
+  })
 
 
   return (

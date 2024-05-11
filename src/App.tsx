@@ -29,7 +29,11 @@ function App() {
   
     }
    
-    getAndVerifyToken()
+    //getAndVerifyToken()
+
+    setTimeout(() => {
+setLoading(false)
+    }, 4000)
   } , [])
 
 
@@ -37,7 +41,8 @@ function App() {
     // Add Login , registration screens and game screens
    <div>
     
-   {loading ?  <Loading/> : userState === "invalid" ? <AuthScreen /> : <UserHomeScreen/>}
+   {/* {loading ?  <Loading/> : userState === "invalid" ? <AuthScreen /> : <UserHomeScreen/>} */}
+   {loading ?  <Loading/> : <UserHomeScreen/>}
    </div>
  
   );

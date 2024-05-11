@@ -23,7 +23,6 @@ const UserHomeScreen = () => {
 
 
   useEffect(() => {
-    let user_connection_payload = 
       socket.emit("user-connection-event" , JSON.stringify(user_details) )
   } , [])
 

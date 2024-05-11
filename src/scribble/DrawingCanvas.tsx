@@ -6,6 +6,8 @@ import { DrawOptions } from '../types/scribble_types'
 import ClearButton from './ClearButton'
 import UndoButton from './UndoButton'
 import { Skeleton } from './ui/Skeleton'
+import { socket } from '../socket/socket'
+import { GameEventPayload } from '../types/ws_and_game_events'
 
 
 export default function DrawingCanvas() {
@@ -32,7 +34,15 @@ export default function DrawingCanvas() {
         dashGap,
       }
       draw(drawOptions)
-     // socket.emit('draw', { drawOptions, roomId })
+
+
+      let gameEvent: GameEventPayload = {
+        user_id: 'user_id',
+        game_event: JSON.stringify(drawOptions),
+        game_id: 'game_id'
+      }
+
+      socket.emit('game_event', gameEvent)
      
     },
     
@@ -45,30 +55,17 @@ export default function DrawingCanvas() {
     const canvasElement = canvasRef.current
     const ctx = canvasElement?.getContext('2d')
 
-    // socket.emit('client-ready', roomId)
+    socket.on('canvas-state-from-server', (canvasState: string) => {
+      if (!ctx || !canvasElement) return
 
-    // socket.on('client-loaded', () => {
-    //   setIsCanvasLoading(false)
-    // })
+      drawWithDataURL(canvasState, ctx, canvasElement)
+      setIsCanvasLoading(false)
+    })
 
-    // socket.on('get-canvas-state', () => {
-    //   const canvasState = canvasRef.current?.toDataURL()
-    //   if (!canvasState) return
-
-    //   socket.emit('send-canvas-state', { canvasState, roomId })
-    // })
-
-    // socket.on('canvas-state-from-server', (canvasState: string) => {
-    //   if (!ctx || !canvasElement) return
-
-    //   drawWithDataURL(canvasState, ctx, canvasElement)
-    //   setIsCanvasLoading(false)
-    // })
-
-    // socket.on('update-canvas-state', (drawOptions: DrawOptions) => {
-    //   if (!ctx) return
-    //   draw({ ...drawOptions, ctx })
-    // })
+    socket.on('update-canvas-state', (drawOptions: DrawOptions) => {
+      if (!ctx) return
+      draw({ ...drawOptions, ctx })
+    })
 
     // socket.on('undo-canvas', canvasState => {
     //   if (!ctx || !canvasElement) return
@@ -76,20 +73,12 @@ export default function DrawingCanvas() {
     //   drawWithDataURL(canvasState, ctx, canvasElement)
     // })
 
-    // return () => {
-    //   socket.off('get-canvas-state')
-    //   socket.off('canvas-state-from-server')
-    //   socket.off('update-canvas-state')
-    //   socket.off('undo-canvas')
-    // }
-    if(isCanvasLoading) {
-      
-    setIsCanvasLoading(false)
+    return () => {
+      socket.off('get-canvas-state')
+      socket.off('update-canvas-state')
+      socket.off('undo-canvas')
     }
-    
-    if(!ctx) {
-      return
-    }
+
   }, [canvasRef])
 
   useEffect(() => {
