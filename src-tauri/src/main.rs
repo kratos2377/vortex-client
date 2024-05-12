@@ -3,7 +3,7 @@
 
 use std::sync::Arc;
 
-use state::WebClient;
+use state::{create_mqtt_client, MessierClient};
 
 
 pub mod api;
@@ -12,10 +12,12 @@ pub mod constants;
 pub mod state;
 
 
+extern crate paho_mqtt as mqtt;
+
 #[tokio::main]
 async fn main() {
-    let client = WebClient {
-        client:  Arc::new(reqwest::Client::new())
+    let client = MessierClient {client:Arc::new(reqwest::Client::new()),mqtt_user_client: Arc::new(create_mqtt_client("users".to_string())),
+     mqtt_game_client:  Arc::new(create_mqtt_client("games".to_string())),
     };
     tauri::Builder::default()
      .plugin(tauri_plugin_store::Builder::default().build())
@@ -32,10 +34,9 @@ async fn main() {
             api::user_logic::send_request,
             api::user_logic::get_user_friend_requests,
             api::user_logic::accept_or_reject_request,
-            api::user_logic::add_wallet_address,
-            api::user_logic::get_user_wallets,
-            api::user_logic::delete_wallet_address,
             api::user_logic::get_all_users_friends,
+            api::user_logic::change_user_password,
+            api::user_logic::change_user_username,
 
             // Game api logic
             api::game::create_lobby,

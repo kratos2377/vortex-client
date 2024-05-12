@@ -13,6 +13,7 @@ const ProfileScreen = () => {
         <button className="w-1/2 btn btn-outline btn-error mb-5" onClick={() => document.getElementById("change_username_modal")!.showModal()}>Change Username</button>
         <button className="w-1/2 btn btn-outline btn-error mb-5">Send Friend Request</button>
         <button className="w-1/2 btn btn-outline btn-error">Friend Requests</button>
+        <button className="w-1/2 btn btn-outline btn-error"> Quit App </button>
       </div>
     
       <div className='w-3/4 flex flex-col justify-center items-center'>

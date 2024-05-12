@@ -34,7 +34,6 @@
     },
     "windows": [
       {
-        "fullscreen": true,
         "resizable": true,
         "title": "vortex-client",
         "width": 800,

@@ -17,20 +17,21 @@ type UserState  = {
 type GameState = {
     game_id: string,
     lobby_id: string,
+    player_turn_id: string,
     other_player_ids: string[]
 }
 
 type UserAction = {
-    updateUserId: (user_id: UserState['user_id']) => void
-    updateUserScore: (score: UserState['score']) => void
-    updateUserToken: (token: UserState['token']) => void
+    updateUserId: (user_id: string) => void
+    updateUserScore: (score: number) => void
+    updateUserToken: (token: string) => void
     updateUserDetails: (user_mod: UserModel) => void
   }
 
   type GameAction =  {
-    updateGameId: (game_id: GameState['game_id']) => void
-    updateLobbyId: (lobby_id: GameState['lobby_id']) => void
-    updateOtherPlayerIds: (other_player_ids: GameState['other_player_ids']) => void
+    updateGameId: (game_id: string) => void
+    updateLobbyId: (lobby_id: string) => void
+    updateOtherPlayerIds: (other_player_ids: string[]) => void
   }
   
 
@@ -51,13 +52,14 @@ export const useUserStore = create<UserState & UserAction>((set) => ({
     updateUserDetails: (user_mod) => set((state) => ({...state , user_details: user_mod}))
 }))
 
-export const useOngoingGameStore = create<GameState & GameAction> ((set) => ({
+export const useGameStore = create<GameState & GameAction> ((set) => ({
     game_id: '',
     lobby_id: '',
+    player_turn_id: '0',
     other_player_ids: [],
-    updateGameId: (game_id) => set(() => ({game_id: game_id})),
-    updateLobbyId: (lobby_id) => set(() => ({lobby_id: lobby_id})),
-    updateOtherPlayerIds: (other_player_ids) => set(() => ({other_player_ids: other_player_ids})),
+    updateGameId: (game_id) => set((state) => ({...state, game_id: game_id})),
+    updateLobbyId: (lobby_id) => set((state) => ({...state, lobby_id: lobby_id})),
+    updateOtherPlayerIds: (other_player_ids) => set((state) => ({ ...state , other_player_ids: other_player_ids})),
 }))
 
 

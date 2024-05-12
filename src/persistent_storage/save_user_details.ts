@@ -6,8 +6,8 @@ export const saveUserDetails = async (user_id: string , user_token: string) => {
   
 
 // Set a value.
-await store.set('user_id', { value: user_id });
-await store.set('user_token', { value: user_token });
+await store.set('user_id', user_id );
+await store.set('user_token', user_token );
 
 }
 

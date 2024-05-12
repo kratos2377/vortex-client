@@ -21,7 +21,7 @@ function App() {
     const getAndVerifyToken = async () => {
   //    await saveUserDetails("new_id", "new_token")
       const userToken =  await getUserTokenFromStore()
-      invoke('verify_token_request', { payload: JSON.stringify( { token: userToken})  }).then((message) => {
+      invoke('verify_token_request', { payload: JSON.stringify( { token: "new_token"})  }).then((message) => {
         console.log("Response message is")
         console.log(message)
         setLoading(false)
@@ -29,11 +29,9 @@ function App() {
   
     }
    
-    //getAndVerifyToken()
+    getAndVerifyToken()
 
-    setTimeout(() => {
-setLoading(false)
-    }, 4000)
+
   } , [])
 
 
@@ -41,8 +39,8 @@ setLoading(false)
     // Add Login , registration screens and game screens
    <div>
     
-   {/* {loading ?  <Loading/> : userState === "invalid" ? <AuthScreen /> : <UserHomeScreen/>} */}
-   {loading ?  <Loading/> : <UserHomeScreen/>}
+   {loading ?  <Loading/> : userState === "invalid" ? <AuthScreen /> : <UserHomeScreen/>}
+  
    </div>
  
   );

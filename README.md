@@ -1,6 +1,7 @@
 # Things to get done
 
-- [ ] Add socket events in both games
+- [ ] Add Better Error handling for backend
+- [x] Add socket events in both games
 - [ ] Add Cli and spectating feature
 - [ ] Add Support for Sending and Checking recieved friend requests
 - [ ] Add by search username feature while sending friend requests
