@@ -1,17 +1,95 @@
 import { Label } from '@radix-ui/react-label'
-import { IconLogin, IconUser } from '@tabler/icons-react'
-import { Input } from '../components/ui/input'
-import React from 'react'
+import React, { useState } from 'react'
 import { cn } from '../utils/cn'
+import { login_call } from '../helper_functions/apiCall'
+import { IconUser } from '@tabler/icons-react'
+import { Input } from '../components/ui/input'
+import { useNavigate } from 'react-router-dom'
 
 interface LoginProps {
-  setAuthState: React.Dispatch<React.SetStateAction<string>>
+  setAuthState: React.Dispatch<React.SetStateAction<"login" | "registration">>,
+  setIsAlert: React.Dispatch<React.SetStateAction<boolean>>,
+  setAlertMessage: React.Dispatch<React.SetStateAction<string>>,
+  setAlertType: React.Dispatch<React.SetStateAction<"success" | "warning" | "error" | "info">>,
 }
 
-const Login: React.FC<LoginProps> = ({setAuthState}) => {
+const Login: React.FC<LoginProps> = ({setAuthState , setIsAlert , setAlertMessage , setAlertType}) => {
+
+  const navigate = useNavigate()
+  const [password, setPassword] = useState("")
+  const [usernameoremail, setUsernameOrEmail] = useState("")
+
+  const handleUserLogin = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    if (password.trim().length < 8) {
+
+      setAlertType("error")
+      setAlertMessage("Password field is either empty or has less than 8 characters")
+      setIsAlert(true)
+      setTimeout(() => {
+      setIsAlert(false)
+      setAlertType("success")
+      setAlertMessage("")
+      }, 3000)
+      return;
+    }
+
+    if (usernameoremail.trim().length < 5) {
+      setAlertType("error")
+      setAlertMessage("Username or Email field is either empty or has less than 5 characters")
+      setIsAlert(true)
+      setTimeout(() => {
+      setIsAlert(false)
+      setAlertType("success")
+      setAlertMessage("")
+      }, 3000)
+      return;
+    }
+
+    let payload = JSON.stringify( {usernameoremail: usernameoremail, pwd: password } )
+    let res = await login_call(payload);
+    console.log("RES IS")
+    console.log(res)
+    if (!res!.status) {
+      setAlertType("error")
+      setAlertMessage("Invalid Credentials")
+      setIsAlert(true)
+      setTimeout(() => {
+        setIsAlert(false)
+        setAlertType("success")
+        setAlertMessage("")
+        }, 3000)
+    } else {
+      setAlertType("success")
+      setAlertMessage("Logged In. Redirecting to HomeScreen")
+      setIsAlert(true)
+
+      setTimeout(() => {
+        setIsAlert(false)
+        setAlertType("success")
+        setAlertMessage("")
+        navigate("/home")
+        }, 2000)
+
+        
+    }
+ 
+  
+  }
 
 
-  const handleUserLogin = () => {
+  const handleValueChanges = (event: React.ChangeEvent<HTMLInputElement>) => {
+
+    const {id , value} = event.target
+
+    if ( id === "usernameoremail") {
+      setUsernameOrEmail(value)
+    }
+
+  
+    if (id === "password") {
+      setPassword(value)
+    }
 
   }
 
@@ -28,11 +106,11 @@ const Login: React.FC<LoginProps> = ({setAuthState}) => {
     <form className="my-8 text-base" onSubmit={handleUserLogin}>
       <LabelInputContainer className="mb-4">
         <Label htmlFor="usernameoremail" className="text-left" >Username or email</Label>
-        <Input id="text" placeholder="tylerdurden_00 or example@gmail.com" type="text" />
+        <Input id="usernameoremail" placeholder="tylerdurden_00 or example@gmail.com" type="text" onChange={handleValueChanges}/>
       </LabelInputContainer>
       <LabelInputContainer className="mb-4">
         <Label htmlFor="password" className="text-left">Password</Label>
-        <Input id="password" placeholder="••••••••" type="password" />
+        <Input id="password" placeholder="••••••••" type="password" onChange={handleValueChanges} />
       </LabelInputContainer>
 
       <button
@@ -53,7 +131,7 @@ const Login: React.FC<LoginProps> = ({setAuthState}) => {
   <button
     className=" relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
     onClick={() => {
-      setAuthState("registraion")
+      setAuthState("registration")
     }}
   >
     <span className="text-neutral-700 dark:text-neutral-300 text-sm">

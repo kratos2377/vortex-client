@@ -2,31 +2,37 @@ import React , { useEffect, useState } from "react";
 import AuthScreen from "./screens/AuthScreen";
 import Loading from "./screens/Loading";
 import UserHomeScreen from "./screens/UserHomeScreen";
-import './App.css'
+import { RouterProvider, createBrowserRouter, useNavigate} from "react-router-dom"
 import { invoke } from '@tauri-apps/api/tauri'
-import { getUserTokenFromStore, saveUserDetails } from "./persistent_storage/save_user_details";
+import { getUserTokenFromStore, saveUserDetails } from "./persistent_storage/save_user_details"
+import LobbyScreen from "./screens/LobbyScreen"
+
+
+
 
 
 function App() {
-
-  const [loading , setLoading] = useState(true);
-  const [userState , setUserState] = useState<"valid" | "invalid">("invalid");
-
-  const getUserToken = async () => {
-    
-  }
+  const navigate = useNavigate();
 
   useEffect(() => {
 
     const getAndVerifyToken = async () => {
-  //    await saveUserDetails("new_id", "new_token")
       const userToken =  await getUserTokenFromStore()
-      invoke('verify_token_request', { payload: JSON.stringify( { token: "new_token"})  }).then((message) => {
-        console.log("Response message is")
-        console.log(message)
-        setLoading(false)
-      })
+      if (userToken === null)  {
+        navigate("/auth")
+      } else {
+        invoke('verify_token_request', { payload: JSON.stringify( { token: userToken})  }).then((message) => {
+          let recv_msg = JSON.parse(message)
+            if(!recv_msg.result.success) {
+         
+              navigate("/auth")
+            } else {
+              navigate("/home")
+            }
   
+  
+        })
+      }  
     }
    
     getAndVerifyToken()
@@ -36,14 +42,11 @@ function App() {
 
 
   return (
-    // Add Login , registration screens and game screens
-   <div>
-    
-   {loading ?  <Loading/> : userState === "invalid" ? <AuthScreen /> : <UserHomeScreen/>}
+    <Loading/>
+  )
   
-   </div>
  
-  );
+ 
 }
 
 export default App;

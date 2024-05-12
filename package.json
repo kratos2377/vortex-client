@@ -39,6 +39,7 @@
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.51.3",
     "react-hotkeys-hook": "^4.5.0",
+    "react-router-dom": "^6.23.1",
     "rxjs": "^6.6.3",
     "simplex-noise": "^4.0.1",
     "socket.io-client": "^4.7.5",

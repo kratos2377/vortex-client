@@ -3,14 +3,20 @@ import { cn } from '../utils/cn';
 import { Label } from '@radix-ui/react-label';
 import {  IconLogin } from '@tabler/icons-react';
 import { Input } from '../components/ui/input';
+import { registration_call } from '../helper_functions/apiCall';
+import { useNavigate } from 'react-router-dom';
 
 
 interface RegistrationProps {
-  setAuthState: React.Dispatch<React.SetStateAction<string>>
+  setAuthState: React.Dispatch<React.SetStateAction<"login" | "registration">>,
+  setIsAlert: React.Dispatch<React.SetStateAction<boolean>>,
+  setAlertMessage: React.Dispatch<React.SetStateAction<string>>,
+  setAlertType: React.Dispatch<React.SetStateAction<"success" | "warning" | "error" | "info">>,
 }
 
-const Registration:  React.FC<RegistrationProps> = ({setAuthState}) => {
-
+const Registration:  React.FC<RegistrationProps> = ({setAuthState , setAlertMessage , setIsAlert , setAlertType}) => {
+  const navigate = useNavigate()
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
   const [email, setEmail] = useState("")
@@ -18,9 +24,84 @@ const Registration:  React.FC<RegistrationProps> = ({setAuthState}) => {
   const [password, setPassword] = useState("")
   const [confirmpassword, setConfirmPassword] = useState("")
 
-  const handleUserRegistration = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleUserRegistration = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Form submitted");
+
+
+    if (password.trim().length < 8 || confirmpassword.trim().length < 8 || confirmpassword !== password) {
+
+      setAlertType("error")
+      setAlertMessage("Password and Confirm Password field are not same or has less than 8 characters")
+      setIsAlert(true)
+      setTimeout(() => {
+      setIsAlert(false)
+      setAlertType("success")
+      setAlertMessage("")
+      }, 4000)
+      return;
+    }
+
+    if (username.trim().length < 5 || username.includes("@")) {
+      setAlertType("error")
+      setAlertMessage("Username should have length greater than 5 and should not have @ character")
+      setIsAlert(true)
+      setTimeout(() => {
+      setIsAlert(false)
+      setAlertType("success")
+      setAlertMessage("")
+      }, 4000)
+      return;
+    }
+
+    if (!emailRegex.test(email)) {
+      setAlertType("error")
+      setAlertMessage("Invalid Email")
+      setIsAlert(true)
+      setTimeout(() => {
+      setIsAlert(false)
+      setAlertType("success")
+      setAlertMessage("")
+      }, 4000)
+      return;
+    }
+
+    if (firstName.trim().length < 2 || lastName.trim().length < 2) {
+      setAlertType("error")
+      setAlertMessage("Firstname and Lastname should have atleast 2 characters")
+      setIsAlert(true)
+      setTimeout(() => {
+      setIsAlert(false)
+      setAlertType("success")
+      setAlertMessage("")
+      }, 4000)
+      return;
+    }
+
+    let payload = JSON.stringify( {first_name: firstName , last_name: lastName , email: email,   username: username, password: password } )
+    let res = await registration_call(payload);
+
+    if (!res!.status) {
+      setAlertType("error")
+      setAlertMessage("Some Error Occured. Try again with different email and username")
+      setIsAlert(true)
+      setTimeout(() => {
+        setIsAlert(false)
+        setAlertType("success")
+        setAlertMessage("")
+        }, 3000)
+    } else {
+      setAlertType("success")
+      setAlertMessage("user Registered. Redirecting to HomeScreen")
+      setIsAlert(true)
+
+      setTimeout(() => {
+        setIsAlert(false)
+        setAlertType("success")
+        setAlertMessage("")
+        navigate("/home")
+        }, 2000)
+    }
+ 
 
   };
 
@@ -70,20 +151,20 @@ const Registration:  React.FC<RegistrationProps> = ({setAuthState}) => {
         </LabelInputContainer>
         <LabelInputContainer>
           <Label htmlFor="lastname" className="text-left">Last name</Label>
-          <Input id="lastname" placeholder="Durden" type="text" />
+          <Input id="lastname" placeholder="Durden" type="text" onChange={handleValueChanges} />
         </LabelInputContainer>
       </div>
       <LabelInputContainer className="mb-4">
         <Label htmlFor="username" className="text-left" >Username</Label>
-        <Input id="text" placeholder="tylerdurden_00" type="text" />
+        <Input id="username" placeholder="tylerdurden_00" type="text"  onChange={handleValueChanges}/>
       </LabelInputContainer>
       <LabelInputContainer className="mb-4">
         <Label htmlFor="email" className="text-left">Email Address</Label>
-        <Input id="email" placeholder="projectmayhem@fc.com" type="email" />
+        <Input id="email" placeholder="projectmayhem@fc.com" type="email"  onChange={handleValueChanges}/>
       </LabelInputContainer>
       <LabelInputContainer className="mb-4">
         <Label htmlFor="password" className="text-left">Password</Label>
-        <Input id="password" placeholder="••••••••" type="password" />
+        <Input id="password" placeholder="••••••••" type="password"  onChange={handleValueChanges}/>
       </LabelInputContainer>
       <LabelInputContainer className="mb-8">
         <Label htmlFor="confirmpassword" className="text-left">Confirm Password</Label>
@@ -91,6 +172,7 @@ const Registration:  React.FC<RegistrationProps> = ({setAuthState}) => {
           id="confirmpassword"
           placeholder="••••••••"
           type="password"
+          onChange={handleValueChanges}
         />
       </LabelInputContainer>
 
