@@ -5,6 +5,7 @@ import { login_call } from '../helper_functions/apiCall'
 import { IconUser } from '@tabler/icons-react'
 import { Input } from '../components/ui/input'
 import { useNavigate } from 'react-router-dom'
+import { saveUserDetails } from '../persistent_storage/save_user_details'
 
 interface LoginProps {
   setAuthState: React.Dispatch<React.SetStateAction<"login" | "registration">>,
@@ -48,8 +49,7 @@ const Login: React.FC<LoginProps> = ({setAuthState , setIsAlert , setAlertMessag
 
     let payload = JSON.stringify( {usernameoremail: usernameoremail, pwd: password } )
     let res = await login_call(payload);
-    console.log("RES IS")
-    console.log(res)
+    
     if (!res!.status) {
       setAlertType("error")
       setAlertMessage("Invalid Credentials")
@@ -63,6 +63,8 @@ const Login: React.FC<LoginProps> = ({setAuthState , setIsAlert , setAlertMessag
       setAlertType("success")
       setAlertMessage("Logged In. Redirecting to HomeScreen")
       setIsAlert(true)
+
+      await saveUserDetails("random-user-id-for-now", res.token)
 
       setTimeout(() => {
         setIsAlert(false)

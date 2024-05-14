@@ -23,7 +23,7 @@ const UserHomeScreen = () => {
 
 
   useEffect(() => {
-      socket.emit("user-connection-event" , JSON.stringify(user_details) )
+      socket.emit("user-connection-event" , JSON.stringify({user_id: "ef2ec146-f38f-4851-b2c6-db79440217f6" , username: "necromorph231"}) )
   } , [])
 
   return (

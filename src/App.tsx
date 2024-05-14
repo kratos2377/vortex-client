@@ -1,11 +1,8 @@
 import React , { useEffect, useState } from "react";
-import AuthScreen from "./screens/AuthScreen";
 import Loading from "./screens/Loading";
-import UserHomeScreen from "./screens/UserHomeScreen";
-import { RouterProvider, createBrowserRouter, useNavigate} from "react-router-dom"
 import { invoke } from '@tauri-apps/api/tauri'
-import { getUserTokenFromStore, saveUserDetails } from "./persistent_storage/save_user_details"
-import LobbyScreen from "./screens/LobbyScreen"
+import { deleteUserDetailsFromStore, getUserTokenFromStore } from "./persistent_storage/save_user_details"
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -16,7 +13,9 @@ function App() {
 
   useEffect(() => {
 
+
     const getAndVerifyToken = async () => {
+      await deleteUserDetailsFromStore()
       const userToken =  await getUserTokenFromStore()
       if (userToken === null)  {
         navigate("/auth")

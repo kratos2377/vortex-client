@@ -5,6 +5,7 @@ import {  IconLogin } from '@tabler/icons-react';
 import { Input } from '../components/ui/input';
 import { registration_call } from '../helper_functions/apiCall';
 import { useNavigate } from 'react-router-dom';
+import { saveUserDetails } from '../persistent_storage/save_user_details';
 
 
 interface RegistrationProps {
@@ -91,9 +92,9 @@ const Registration:  React.FC<RegistrationProps> = ({setAuthState , setAlertMess
         }, 3000)
     } else {
       setAlertType("success")
-      setAlertMessage("user Registered. Redirecting to HomeScreen")
+      setAlertMessage("User Registered. Redirecting to HomeScreen")
       setIsAlert(true)
-
+      await saveUserDetails("random-user-id-for-now", res.token)
       setTimeout(() => {
         setIsAlert(false)
         setAlertType("success")

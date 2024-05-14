@@ -11,13 +11,13 @@ export const login_call = async (payload: string) => {
           if(!recv_msg.result.success) {
             return { "error_message": recv_msg.error_message, "status": false  }
           } else {
-            return {"status": true}
+            return {"status": true, "token": recv_msg.token}
           }
 
 
       });
 
-    
+    return val
 }
 
 
@@ -29,7 +29,7 @@ export const registration_call = async (payload: string) => {
           if(!recv_msg.result.success) {
             return { "error_message": recv_msg.error_message, "status": false  }
           } else {
-            return {"status": true}
+            return {"status": true, "token": recv_msg.token}
           }
 
       })
