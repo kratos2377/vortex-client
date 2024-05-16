@@ -6,6 +6,7 @@ import { Input } from '../components/ui/input';
 import { registration_call } from '../helper_functions/apiCall';
 import { useNavigate } from 'react-router-dom';
 import { saveUserDetails } from '../persistent_storage/save_user_details';
+import { useUserStore } from '../state/UserAndGameState';
 
 
 interface RegistrationProps {
@@ -24,6 +25,7 @@ const Registration:  React.FC<RegistrationProps> = ({setAuthState , setAlertMess
   const [username, setUserName] = useState("")
   const [password, setPassword] = useState("")
   const [confirmpassword, setConfirmPassword] = useState("")
+  const {updateUserDetails} = useUserStore()
 
   const handleUserRegistration = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -94,7 +96,8 @@ const Registration:  React.FC<RegistrationProps> = ({setAuthState , setAlertMess
       setAlertType("success")
       setAlertMessage("User Registered. Redirecting to HomeScreen")
       setIsAlert(true)
-      await saveUserDetails("random-user-id-for-now", res.token)
+      await saveUserDetails(res.user.id, res.token)
+      await updateUserDetails(res.user)
       setTimeout(() => {
         setIsAlert(false)
         setAlertType("success")

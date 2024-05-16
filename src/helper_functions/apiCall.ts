@@ -11,7 +11,9 @@ export const login_call = async (payload: string) => {
           if(!recv_msg.result.success) {
             return { "error_message": recv_msg.error_message, "status": false  }
           } else {
-            return {"status": true, "token": recv_msg.token}
+            return {"status": true, "token": recv_msg.token , "user": { id: recv_msg.user.id, first_name: recv_msg.user.first_name, last_name: recv_msg.user.last_name, username: recv_msg.user.username,
+              score: recv_msg.user.score, verified: recv_msg.user.verified, email: recv_msg.user.email
+              }}
           }
 
 
@@ -29,7 +31,9 @@ export const registration_call = async (payload: string) => {
           if(!recv_msg.result.success) {
             return { "error_message": recv_msg.error_message, "status": false  }
           } else {
-            return {"status": true, "token": recv_msg.token}
+            return {"status": true, "token": recv_msg.token, "user": { id: recv_msg.user.id, first_name: recv_msg.user.first_name, last_name: recv_msg.user.last_name, username: recv_msg.user.username,
+              score: recv_msg.user.score, verified: recv_msg.user.verified, email: recv_msg.user.email
+              }}
           }
 
       })

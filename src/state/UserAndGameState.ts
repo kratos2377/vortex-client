@@ -39,10 +39,12 @@ export const useUserStore = create<UserState & UserAction>((set) => ({
     user_id: '',
     user_details: {
       username: '',
-      user_id: '',
       email: '',
       first_name: '',
-      last_name: ''
+      last_name: '',
+      id: '',
+      score: 0,
+      verified: false
     },
     score: 0,
     token: '',

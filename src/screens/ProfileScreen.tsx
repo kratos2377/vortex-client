@@ -2,8 +2,14 @@ import React, { useState } from 'react'
 import { CardContainer, CardBody, CardItem } from '../components/ui/3d-card'
 import ChangePasswordModal from '../components/screens/ChangePasswordModal'
 import ChangeUsernameModal from '../components/screens/ChangeUsernameModal'
+import { useUserStore } from '../state/UserAndGameState'
+import QuitAppModal from '../components/screens/QuitAppModal'
 
 const ProfileScreen = () => {
+
+
+  const {user_details} = useUserStore.getState()
+  
 
   return (
    <div className='flex flex-row mt-5'>
@@ -12,8 +18,8 @@ const ProfileScreen = () => {
       <button className="w-1/2 btn btn-outline btn-error mb-5" onClick={()=>document.getElementById('change_password_modal')!.showModal()}>Change Password</button>
         <button className="w-1/2 btn btn-outline btn-error mb-5" onClick={() => document.getElementById("change_username_modal")!.showModal()}>Change Username</button>
         <button className="w-1/2 btn btn-outline btn-error mb-5">Send Friend Request</button>
-        <button className="w-1/2 btn btn-outline btn-error">Friend Requests</button>
-        <button className="w-1/2 btn btn-outline btn-error"> Quit App </button>
+        <button className="w-1/2 btn btn-outline btn-error mb-5">Friend Requests</button>
+        <button className="w-1/2 btn btn-outline btn-error" onClick={() => document.getElementById("quit_app_modal")!.showModal()}> Quit App </button>
       </div>
     
       <div className='w-3/4 flex flex-col justify-center items-center'>
@@ -31,14 +37,14 @@ const ProfileScreen = () => {
           translateZ="50"
           className="text-md font-bold text-neutral-600 dark:text-white"
         >
-          Username: {"username"}
+          Username: {`${user_details.username}`}
         </CardItem>
 
         <CardItem
           translateZ="50"
           className="text-md font-bold text-neutral-600 dark:text-white"
         >
-          Name: {"name"}
+          Name: {`${user_details.first_name} ` + `${user_details.last_name}`}
         </CardItem>
 
 
@@ -46,7 +52,7 @@ const ProfileScreen = () => {
           translateZ="50"
           className="text-md font-bold text-neutral-600 dark:text-white"
         >
-          Total Score: {"score"}
+          Total Score: {`${user_details.score}`}
         </CardItem>
 
 
@@ -60,6 +66,7 @@ const ProfileScreen = () => {
 
     <ChangeUsernameModal />
 
+    <QuitAppModal />
 
    </div>
   )

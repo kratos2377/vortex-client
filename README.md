@@ -7,7 +7,7 @@
 - [ ] Add by search username feature while sending friend requests
 - [ ] Add rust functions for solana rpc apis
 - [ ] Add layer to listen to realtime events from mqtt broker and publish it to frontend
-- [ ] Fix profile screen and add logout feature
+- [x] Fix profile screen and add logout feature
 - [ ] Fix minor game css 
 - [ ] Test everything first
 - [ ] Add method to convert game moves into game events and publish it to socket

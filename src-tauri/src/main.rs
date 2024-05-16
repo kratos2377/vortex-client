@@ -10,8 +10,6 @@ pub mod api;
 pub mod models;
 pub mod constants;
 pub mod state;
-
-
 extern crate paho_mqtt as mqtt;
 
 #[tokio::main]
@@ -19,7 +17,7 @@ async fn main() {
     let client = MessierClient {client:Arc::new(reqwest::Client::new()),mqtt_user_client: Arc::new(create_mqtt_client("users".to_string())),
      mqtt_game_client:  Arc::new(create_mqtt_client("games".to_string())),
     };
-    tauri::Builder::default()
+   let builder =  tauri::Builder::default()
      .plugin(tauri_plugin_store::Builder::default().build())
         .manage(client)
         .invoke_handler(tauri::generate_handler![
@@ -48,7 +46,15 @@ async fn main() {
             api::game::get_ongoing_games_for_user,
             api::game::get_current_state_of_game,
             api::game::stake_in_game,
-        ])
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+        ]);
+
+        let app = builder.build(tauri::generate_context!()) .expect("error while running tauri application");
+        app.run(|app_handle, event| match event {
+            tauri::RunEvent::ExitRequested { api, .. } => {
+                api.prevent_exit();
+                tauri::AppHandle::exit(app_handle, 0);
+            }
+            _ => {}
+        });
+       
 }

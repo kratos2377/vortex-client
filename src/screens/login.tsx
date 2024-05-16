@@ -6,6 +6,7 @@ import { IconUser } from '@tabler/icons-react'
 import { Input } from '../components/ui/input'
 import { useNavigate } from 'react-router-dom'
 import { saveUserDetails } from '../persistent_storage/save_user_details'
+import { useUserStore } from '../state/UserAndGameState'
 
 interface LoginProps {
   setAuthState: React.Dispatch<React.SetStateAction<"login" | "registration">>,
@@ -19,6 +20,7 @@ const Login: React.FC<LoginProps> = ({setAuthState , setIsAlert , setAlertMessag
   const navigate = useNavigate()
   const [password, setPassword] = useState("")
   const [usernameoremail, setUsernameOrEmail] = useState("")
+  const {updateUserDetails} = useUserStore()
 
   const handleUserLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -64,7 +66,9 @@ const Login: React.FC<LoginProps> = ({setAuthState , setIsAlert , setAlertMessag
       setAlertMessage("Logged In. Redirecting to HomeScreen")
       setIsAlert(true)
 
-      await saveUserDetails("random-user-id-for-now", res.token)
+      await saveUserDetails(res.user.id, res.token)
+
+      await updateUserDetails(res.user)
 
       setTimeout(() => {
         setIsAlert(false)
