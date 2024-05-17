@@ -1,13 +1,13 @@
 import { Store } from 'tauri-plugin-store-api';
 
-const store = new Store('.store.dat');
+const store = new Store('vortex.bin');
 
 export const saveUserDetails = async (user_id: string , user_token: string) => {
-  
-
-// Set a value.
-await store.set('user_id', user_id );
-await store.set('user_token', user_token );
+    
+    // Set a value.
+    await store.set('user_id', user_id );
+    await store.set('user_token', user_token );
+    await store.save()
 
 }
 
@@ -24,6 +24,8 @@ export const getUserTokenFromStore = async () => {
 }
 
 export const deleteUserDetailsFromStore = async () => {
-     await store.delete('user_token');
-     await store.delete('user_id');
+ 
+    await store.delete('user_id');
+    await store.delete('user_token');
+    await store.save()
 }

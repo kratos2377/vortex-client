@@ -18,12 +18,12 @@ function App() {
 
 
     const getAndVerifyToken = async () => {
-    //  await deleteUserDetailsFromStore()
+      //await deleteUserDetailsFromStore()
       const userToken =  await getUserTokenFromStore()
       if (userToken === null)  {
         navigate("/auth")
       } else {
-        invoke('verify_token_request', { payload: JSON.stringify( { token: userToken})  }).then((message) => {
+        invoke('verify_token_request', { payload: JSON.stringify( { token: userToken})  }).then(async (message) => {
           let recv_msg = JSON.parse(message)
             if(!recv_msg.result.success) {
          
@@ -39,8 +39,14 @@ function App() {
                 verified: recv_msg.user_data.verified
               } 
 
-              updateUserDetails(user_mod)
+              await updateUserDetails(user_mod)
+
+              if(recv_msg.user_data.verified) {
+                
               navigate("/home")
+              } else {
+                navigate("/verify_user")
+              }
             }
   
   

@@ -4,6 +4,8 @@ import ChangePasswordModal from '../components/screens/ChangePasswordModal'
 import ChangeUsernameModal from '../components/screens/ChangeUsernameModal'
 import { useUserStore } from '../state/UserAndGameState'
 import QuitAppModal from '../components/screens/QuitAppModal'
+import SendFriendRequestModal from '../components/screens/SendFriendRequestModal'
+import FriendRequestModal from '../components/screens/FriendRequestModal'
 
 const ProfileScreen = () => {
 
@@ -17,8 +19,8 @@ const ProfileScreen = () => {
 <div className='ml-2 flex flex-col w-1/4 justify-center'>
       <button className="w-1/2 btn btn-outline btn-error mb-5" onClick={()=>document.getElementById('change_password_modal')!.showModal()}>Change Password</button>
         <button className="w-1/2 btn btn-outline btn-error mb-5" onClick={() => document.getElementById("change_username_modal")!.showModal()}>Change Username</button>
-        <button className="w-1/2 btn btn-outline btn-error mb-5">Send Friend Request</button>
-        <button className="w-1/2 btn btn-outline btn-error mb-5">Friend Requests</button>
+        <button className="w-1/2 btn btn-outline btn-error mb-5" onClick={() => document.getElementById("send_friend_request_modal")!.showModal()}>Send Friend Request</button>
+        <button className="w-1/2 btn btn-outline btn-error mb-5" onClick={() => document.getElementById("friend_requests_modal")!.showModal()}>Friend Requests</button>
         <button className="w-1/2 btn btn-outline btn-error" onClick={() => document.getElementById("quit_app_modal")!.showModal()}> Quit App </button>
       </div>
     
@@ -63,9 +65,9 @@ const ProfileScreen = () => {
 
 
     <ChangePasswordModal />
-
     <ChangeUsernameModal />
-
+    <SendFriendRequestModal />
+    <FriendRequestModal />
     <QuitAppModal />
 
    </div>

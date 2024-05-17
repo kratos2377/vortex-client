@@ -1,13 +1,25 @@
 import React, { useState } from 'react'
 import { deleteUserDetailsFromStore } from '../../persistent_storage/save_user_details'
 import { exit } from '@tauri-apps/api/process';
+import { useUserStore } from '../../state/UserAndGameState';
 
 const QuitAppModal = () => {
     
     const [quitPressed, setQuitPressed] = useState(false)
+    const {resetUserModelState} = useUserStore()
 
     const exitVortexApp = async () => {
         await exit(1);
+    }
+
+    const deleteUserDetailsAndExitApp = async () => {
+      await deleteUserDetailsFromStore().then(async (msg) => {
+
+        resetUserModelState()
+    
+        exitVortexApp()
+       
+      })
     }
 
   return (
@@ -25,10 +37,9 @@ const QuitAppModal = () => {
         await exitVortexApp()
      }}>Quit App</button>
 
-     <button type="submit" className="ml-2 btn btn-outline btn-error" onClick={ async () => {
+     <button type="submit" className="ml-2 btn btn-outline btn-error" onClick={() => {
         setQuitPressed(true)
-        await deleteUserDetailsFromStore()
-        await exitVortexApp()
+        deleteUserDetailsAndExitApp()
      }}>Quit App and Logout</button>
     </div>
    

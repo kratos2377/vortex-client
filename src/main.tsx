@@ -4,9 +4,9 @@ import App from "./App";
 import "./styles.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import AuthScreen from "./screens/AuthScreen";
-import Loading from "./screens/Loading";
 import LobbyScreen from "./screens/LobbyScreen";
 import UserHomeScreen from "./screens/UserHomeScreen";
+import VerifyUserScreen from "./screens/VerifyUserScreen";
 
 
 
@@ -14,6 +14,10 @@ let router = createBrowserRouter([
   {
     path: "/",
     element: <App />
+  },
+  {
+    path: "/verify_user",
+    element: <VerifyUserScreen />
   },
   {
     path: "/auth",

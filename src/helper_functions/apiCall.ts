@@ -5,8 +5,6 @@ import { invoke } from "@tauri-apps/api/tauri"
 
 export const login_call = async (payload: string) => {
     let val = await invoke('login_request', { payload: payload  }).then((message) => {
-        console.log("MESSAGE IS")
-        console.log(message)
         let recv_msg = JSON.parse(message)
           if(!recv_msg.result.success) {
             return { "error_message": recv_msg.error_message, "status": false  }
@@ -25,8 +23,7 @@ export const login_call = async (payload: string) => {
 
 export const registration_call = async (payload: string) => {
    let val = await invoke('registration_request', { payload: payload  }).then((message) => {
-    console.log("MESSAGE IS")
-    console.log(message)
+
         let recv_msg = JSON.parse(message)
           if(!recv_msg.result.success) {
             return { "error_message": recv_msg.error_message, "status": false  }
@@ -39,4 +36,33 @@ export const registration_call = async (payload: string) => {
       })
 
       return val
+}
+
+
+export const send_email_call = async (paylod: string) => {
+  let val = await invoke('send_email_request', {payload: paylod}).then((message) => {
+    let recv_msg = JSON.parse(message)
+    console.log("MSG RECEIVED WAS")
+    console.log(recv_msg)
+    if(!recv_msg.result.success) {
+      return { "error_message": recv_msg.error_message, "status": false  }
+    } else {
+      return {"status": true}
+    }
+  });
+
+  return val
+}
+
+export const verify_user_request_call = async (payload: string) => {
+  let val = await invoke('verify_user_request', {payload: payload}).then((message) => {
+    let recv_msg = JSON.parse(message)
+    if(!recv_msg.result.success) {
+      return { "error_message": recv_msg.error_message, "status": false  }
+    } else {
+      return {"status": true}
+    }
+  });
+
+  return val
 }

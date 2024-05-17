@@ -74,7 +74,14 @@ const Login: React.FC<LoginProps> = ({setAuthState , setIsAlert , setAlertMessag
         setIsAlert(false)
         setAlertType("success")
         setAlertMessage("")
+        
+        if (res.user?.verified) {
+          
         navigate("/home")
+        } else {
+          navigate("/verify_user")
+        }
+
         }, 2000)
 
         
