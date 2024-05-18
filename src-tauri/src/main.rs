@@ -10,6 +10,7 @@ pub mod api;
 pub mod models;
 pub mod constants;
 pub mod state;
+pub mod events;
 extern crate paho_mqtt as mqtt;
 
 #[tokio::main]
@@ -46,6 +47,10 @@ async fn main() {
             api::game::get_ongoing_games_for_user,
             api::game::get_current_state_of_game,
             api::game::stake_in_game,
+
+            //MQTT events
+          //  events::mqtt_events::listen_to_user_online_event
+
         ]);
 
         let app = builder.build(tauri::generate_context!()) .expect("error while running tauri application");

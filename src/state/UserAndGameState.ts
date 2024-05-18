@@ -18,7 +18,7 @@ type GameState = {
     game_id: string,
     lobby_id: string,
     player_turn_id: string,
-    other_player_ids: string[]
+    other_player_ids: string[],
 }
 
 type UserAction = {
