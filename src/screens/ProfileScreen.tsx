@@ -20,7 +20,10 @@ const ProfileScreen = () => {
       <button className="w-1/2 btn btn-outline btn-error mb-5" onClick={()=>document.getElementById('change_password_modal')!.showModal()}>Change Password</button>
         <button className="w-1/2 btn btn-outline btn-error mb-5" onClick={() => document.getElementById("change_username_modal")!.showModal()}>Change Username</button>
         <button className="w-1/2 btn btn-outline btn-error mb-5" onClick={() => document.getElementById("send_friend_request_modal")!.showModal()}>Send Friend Request</button>
-        <button className="w-1/2 btn btn-outline btn-error mb-5" onClick={() => document.getElementById("friend_requests_modal")!.showModal()}>Friend Requests</button>
+        <div className="indicator w-1/2 mb-5">
+        <span className="indicator-item badge badge-error text-white">99+</span> 
+        <button className="w-full btn btn-outline btn-error" onClick={() => document.getElementById("friend_requests_modal")!.showModal()}>Friend Requests</button>
+        </div>
         <button className="w-1/2 btn btn-outline btn-error" onClick={() => document.getElementById("quit_app_modal")!.showModal()}> Quit App </button>
       </div>
     

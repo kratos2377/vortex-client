@@ -134,6 +134,22 @@ export const change_user_username  = async (payload: string , token: string) => 
   return val
 }
 
+export const send_friend_request  = async (payload: string , token: string) => {
+  let val = await invoke('send_request', {payload: payload, token: getBearerToken(token)}).then((message) => {
+    let recv_msg = JSON.parse(message)
+
+    logMessage("send_friend_request", recv_msg)
+
+    if(!recv_msg.result.success) {
+      return { "error_message": recv_msg.error_message, "status": false  }
+    } else {
+      return {"status": true}
+    }
+  });
+
+  return val
+}
+
 const getBearerToken = ( token: string) => {
   return "Bearer " + token;
 }

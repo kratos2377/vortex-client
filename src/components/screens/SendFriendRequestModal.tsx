@@ -3,7 +3,9 @@ import React, { useState } from 'react'
 import { cn } from '../../utils/cn'
 import { Input } from '../ui/input'
 import { ErrorAlert, SuccessAlert } from '../ui/AlertMessage'
-import { IconUserSearch } from '@tabler/icons-react'
+import { getUserTokenFromStore } from '../../persistent_storage/save_user_details'
+import { useUserStore } from '../../state/UserAndGameState'
+import { send_friend_request } from '../../helper_functions/apiCall'
 
 const SendFriendRequestModal = () => {
 
@@ -12,16 +14,46 @@ const SendFriendRequestModal = () => {
   const [isAlert , setIsAlert] = useState(false)
   const [alertType, setAlertType] = useState<"success" | "error">("success")
   const [alertMessage, setAlertMessage] = useState("")
+  const {user_details} = useUserStore.getState()
+
+  const handleUsernameChange = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
 
-  const handleUsernameChange = (e: React.FormEvent<HTMLFormElement>) => {
+
       setRequestSent(true)
-      e.preventDefault();
+      let token = await getUserTokenFromStore()
+      let payload = JSON.stringify({user_id: user_details.id , friend_username: username , user_username: user_details.username })
+      let val = await send_friend_request(payload , token)
+
+      if (!val.status) {
+        setRequestSent(false)
+        setAlertMessage(val.error_message)
+        setAlertType("error")
+        setIsAlert(true)
+
+        setTimeout(() => {
+          setIsAlert(false)
+          setAlertMessage("")
+          setAlertType("success")
+        } , 3000)
+
+        return
+      }
+
+      setRequestSent(false)
+
+      setAlertMessage("Request Sent")
+      setAlertType("success")
+      setIsAlert(true)
 
       setTimeout(() => {
-          setRequestSent(false)
-          document.getElementById('send_friend_request_modal')!.close();
-      } , 3000)
+        setIsAlert(false)
+        setAlertMessage("")
+        setAlertType("success")
+        document.getElementById("send_friend_request_modal")!.close();
+      } , 1000)
+
   }
 
   const handleValueChanges = (event: React.ChangeEvent<HTMLInputElement>) => {
