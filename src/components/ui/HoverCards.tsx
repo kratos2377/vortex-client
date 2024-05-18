@@ -28,6 +28,8 @@ export const OngoingGameCard = ({
   const translateFirst = useTransform(scrollYProgress, [0, 1], [0, -200]);
 
   return (
+    <>
+    { items.length === 0 ? <div className="h-[calc(100vh-10rem)] text-white text-2xl flex flex-col justify-center items-center self-center"> No Ongoing Games. You can add more friends or start your own Game! </div> :
    <div  className={cn("h-[calc(100vh-10rem)] items-start overflow-y-auto w-full ")} ref={gridRef}>
      <div
       className={cn(
@@ -36,7 +38,7 @@ export const OngoingGameCard = ({
       )}
       ref={gridRef}
     >
-      {items.map((item, idx) => (
+    {items.map((item, idx) => (
         <motion.div
         style={{ y: translateFirst }} // Apply the translateY motion value here
         key={"grid-1" + idx}
@@ -73,9 +75,11 @@ export const OngoingGameCard = ({
           </Card>
        </div>
         </motion.div>
-      ))}
+      ))
+    }
     </div>
-   </div>
+   </div> }
+   </>
   );
 };
 

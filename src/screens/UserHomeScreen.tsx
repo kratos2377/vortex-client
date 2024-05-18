@@ -4,17 +4,20 @@ import { cn } from '../utils/cn';
 import { BackgroundGradient } from '../components/backgrounds/background-gradient';
 import OngoingGamesScreen from './OngoingGamesScreen';
 import ProfileScreen from './ProfileScreen';
-import { ParallaxScroll } from '../components/ui/ParallaxScroll';
+import { FriendListScroll } from '../components/ui/ParallaxScroll';
 import CreateLobby from './CreateLobby';
 import { socket } from '../socket/socket';
 import { useUserStore } from '../state/UserAndGameState';
+import ScreenLoading from '../components/ui/ScreenLoading';
+import { getUserTokenFromStore } from '../persistent_storage/save_user_details';
+import { get_all_users_friends } from '../helper_functions/apiCall';
 
 const UserHomeScreen = () => {
 
   const { user_details } = useUserStore.getState()
 
   const [currentScreen , setCurrentScreen] = useState<string>("ongoing-games")
-
+  const [loadingFriends , setLoadingFriends] = useState(true)
   const [createLobbyModalOpen , setCreateLobbyModalOpen] = useState(true)
 
   const onCreateLobbyModalClose = () => {
@@ -22,8 +25,21 @@ const UserHomeScreen = () => {
   }
 
 
+  const getAllUsersFriends = async  () => {
+    let user_token = await getUserTokenFromStore()
+    let payload = JSON.stringify({user_id: user_details.id })
+    let val = await get_all_users_friends(payload , user_token as string);
+    
+    setTimeout(() => {
+      setLoadingFriends(false)
+    } , 2000)
+  }
+
   useEffect(() => {
-      socket.emit("user-connection-event" , JSON.stringify({user_id: "ef2ec146-f38f-4851-b2c6-db79440217f6" , username: "necromorph231"}) )
+      socket.emit("user-connection-event" , JSON.stringify({user_id: user_details.id, username: user_details.username}) )
+
+
+    getAllUsersFriends()
   } , [])
 
   return (
@@ -48,7 +64,7 @@ const UserHomeScreen = () => {
             </p>
 
             <div >
-            <ParallaxScroll  />;
+           {loadingFriends ? <ScreenLoading/> :  <FriendListScroll items={[]}  />}
             </div>
            </div>
   

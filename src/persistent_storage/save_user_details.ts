@@ -20,7 +20,7 @@ export const getUserIdFromStore = async () => {
 
 export const getUserTokenFromStore = async () => {
     const val = await store.get('user_token');
-    return val
+    return val as string
 }
 
 export const deleteUserDetailsFromStore = async () => {

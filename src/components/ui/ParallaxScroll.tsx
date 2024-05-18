@@ -2,11 +2,18 @@ import { useScroll, useTransform } from "framer-motion";
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { cn } from "../../utils/cn";
-import usersData from '../../data/online_users.json';
 
-export const ParallaxScroll = ({
+export const FriendListScroll = ({
+  items,
     className,
   }: {
+    items: {
+      user_id: string;
+      username: string;
+      first_name: string;
+      last_name: string;
+      is_user_online: boolean;
+    }[];
     className?: string;
   }) => {
     const gridRef = useRef<any>(null);
@@ -19,7 +26,7 @@ export const ParallaxScroll = ({
     const translateSecond = useTransform(scrollYProgress, [0, 1], [0, 200]);
     const translateThird = useTransform(scrollYProgress, [0, 1], [0, -200]);
    
-    const [sortedUsers, setSortedUsers] = useState([...usersData].sort((a, b) => (b.online_status ? 1 : 0) - ( a.online_status ? 1 : 0) ));
+    const [sortedUsers, setSortedUsers] = useState([...items].sort((a, b) => (b.is_user_online ? 1 : 0) - ( a.is_user_online ? 1 : 0) ));
     // const third = Math.ceil(images.length / 3);
    
     // const firstPart = images.slice(0, third);
@@ -29,7 +36,11 @@ export const ParallaxScroll = ({
 
    
     return (
-      <div
+      <div>
+      {
+        sortedUsers.length === 0 ? <div className="h-[calc(100vh-20rem)] flex flex-col items-center justify-center text-white text-xl">Add Friends From Profile Section
+        {/* <button className="btn btn-outline btn-success mt-2">Go to Profile Section</button> */}
+        </div> :   <div
         className={cn("h-[calc(100vh-10rem)] items-start overflow-y-auto w-9/10", className)}
         ref={gridRef}
       >
@@ -38,7 +49,7 @@ export const ParallaxScroll = ({
           ref={gridRef}
         >
           <div className="grid gap-10">
-            {usersData.map((el, idx) => (
+            {sortedUsers.map((el, idx) => (
               <motion.div
                 style={{ y: translateFirst }} // Apply the translateY motion value here
                 key={"grid-1" + idx}
@@ -50,7 +61,7 @@ export const ParallaxScroll = ({
   <div className="card-body">
     <div className="text-white w-full text-lg">{el.first_name + " " + el.last_name}</div>
     <p className="text-white">{el.username}</p>
-    {el.online_status ? <span className="text-white">🟢</span> : <span className="text-white">◯</span>}
+    {el.is_user_online ? <span className="text-white">🟢</span> : <span className="text-white">◯</span>}
   </div>
 
 </div>
@@ -58,6 +69,8 @@ export const ParallaxScroll = ({
             ))}
           </div>
         </div>
+      </div>
+      }
       </div>
     );
   };

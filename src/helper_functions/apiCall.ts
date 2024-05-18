@@ -66,3 +66,80 @@ export const verify_user_request_call = async (payload: string) => {
 
   return val
 }
+
+export const get_ongoing_games_for_user  = async (payload: string , token: string) => {
+  let val = await invoke('get_ongoing_games_for_user', {payload: payload, token: getBearerToken(token)}).then((message) => {
+    let recv_msg = JSON.parse(message)
+
+    logMessage("get_ongoing_games_for_user", recv_msg)
+
+    if(!recv_msg.result.success) {
+      return { "error_message": recv_msg.error_message, "status": false  }
+    } else {
+      return {"status": true , "games": recv_msg.games}
+    }
+  });
+
+  return val
+}
+
+
+export const get_all_users_friends  = async (payload: string , token: string) => {
+  let val = await invoke('get_all_users_friends', {payload: payload, token: getBearerToken(token)}).then((message) => {
+    let recv_msg = JSON.parse(message)
+
+    logMessage("get_all_users_friends", recv_msg)
+
+    if(!recv_msg.result.success) {
+      return { "error_message": recv_msg.error_message, "status": false  }
+    } else {
+      return {"status": true , "friends": recv_msg.friends}
+    }
+  });
+
+  return val
+}
+
+
+export const change_user_password  = async (payload: string , token: string) => {
+  let val = await invoke('change_user_password', {payload: payload, token: getBearerToken(token)}).then((message) => {
+    let recv_msg = JSON.parse(message)
+
+    logMessage("change_user_password", recv_msg)
+
+    if(!recv_msg.result.success) {
+      return { "error_message": recv_msg.error_message, "status": false  }
+    } else {
+      return {"status": true}
+    }
+  });
+
+  return val
+}
+
+
+export const change_user_username  = async (payload: string , token: string) => {
+  let val = await invoke('change_user_username', {payload: payload, token: getBearerToken(token)}).then((message) => {
+    let recv_msg = JSON.parse(message)
+
+    logMessage("change_user_username", recv_msg)
+
+    if(!recv_msg.result.success) {
+      return { "error_message": recv_msg.error_message, "status": false  }
+    } else {
+      return {"status": true}
+    }
+  });
+
+  return val
+}
+
+const getBearerToken = ( token: string) => {
+  return "Bearer " + token;
+}
+
+
+const logMessage = async (fn_name: string , msg: any) => {
+  console.log("RECEVIED message from " + fn_name )
+  console.log(msg)
+}

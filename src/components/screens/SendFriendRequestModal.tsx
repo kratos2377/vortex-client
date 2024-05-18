@@ -28,7 +28,7 @@ const SendFriendRequestModal = () => {
 
       const {id , value} = event.target
   
-      if (id === "username") {
+      if (id === "friendsusername") {
           setUsername(value)
       }
     }
@@ -45,8 +45,8 @@ requestSent ? <div className='flex flex-row'>Searching <span className="loading 
  <form className='w-full' onSubmit={handleUsernameChange}>
   <div className='flex flex-row'>
   <LabelInputContainer className="mb-1">
-   <Label htmlFor="username" className="text-left" >Search By Username</Label>
-   <Input id="username" placeholder="Enter Your Friends Username" type="text" onChange={handleValueChanges} />
+   <Label htmlFor="friendsusername" className="text-left" >Search By Username</Label>
+   <Input id="friendsusername" placeholder="Enter Your Friends Username" type="text" onChange={handleValueChanges} />
  </LabelInputContainer>
 
   </div>
