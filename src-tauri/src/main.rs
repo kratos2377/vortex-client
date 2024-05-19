@@ -39,7 +39,7 @@ async fn main() {
 
             // Game api logic
             api::game::create_lobby,
-            api::game::verify_game_status,
+            // api::game::verify_game_status,
             api::game::send_game_invite_event,
             api::game::join_lobby,
             api::game::remove_user_lobby,
