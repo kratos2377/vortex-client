@@ -51,8 +51,8 @@ const SendFriendRequestModal = () => {
         setIsAlert(false)
         setAlertMessage("")
         setAlertType("success")
-        document.getElementById("send_friend_request_modal")!.close();
-      } , 1000)
+   //     document.getElementById("send_friend_request_modal")!.close();
+      } , 2000)
 
   }
 

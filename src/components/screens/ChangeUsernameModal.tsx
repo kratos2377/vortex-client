@@ -17,7 +17,7 @@ const ChangeUsernameModal = () => {
         const [alertType , setAlertType] = useState<"success" | "error">("success")
         const [alertMessage, setAlertMessage] = useState("")
         const {user_details} = useUserStore.getState()
-    
+        const {changeUserUsername} = useUserStore()
 
     const handleUsernameChange = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
@@ -80,7 +80,7 @@ const ChangeUsernameModal = () => {
         setAlertMessage("Username Changed")
         setAlertType("success")
         setIsAlert(true)
-
+        changeUserUsername(username)
         setTimeout(() => {
           setIsAlert(false);
           setAlertMessage("")
@@ -115,7 +115,7 @@ const ChangeUsernameModal = () => {
    <form className='w-full' onSubmit={handleUsernameChange}>
    <LabelInputContainer className="mb-1">
      <Label htmlFor="username" className="text-left" >New Username</Label>
-     <Input id="username" placeholder="new username" type="text" onChange={handleValueChanges} />
+     <Input id="username" placeholder="new username" type="text" className='text-white' onChange={handleValueChanges} />
    </LabelInputContainer>
 
      <div className='my-1 flex flex-row'>

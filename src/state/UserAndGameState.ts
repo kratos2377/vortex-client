@@ -27,6 +27,7 @@ type UserAction = {
     updateUserToken: (token: string) => void
     updateUserDetails: (user_mod: UserModel) => void
     updateUserVerifiedStatus: (user_status: boolean) => void
+    changeUserUsername: (username: string) => void
     resetUserModelState: () => void
   }
 
@@ -55,6 +56,7 @@ export const useUserStore = create<UserState & UserAction>((set) => ({
     updateUserToken: (token) => set((state) => ({...state, token: token})),
     updateUserDetails: (user_mod) => set((state) => ({...state , user_details: user_mod})),
     updateUserVerifiedStatus: (user_status) => set((state) => ({...state, user_details: { ...state.user_details , verified: user_status}})),
+    changeUserUsername: (username) => set((state) => ({...state, user_details: {...state.user_details , username: username}})),
     resetUserModelState: () => set((state) => ({...state, user_details:  {
       username: '',
       email: '',

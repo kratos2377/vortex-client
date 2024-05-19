@@ -13,12 +13,11 @@ const FriendRequestCard = ({ username , user_id , first_name , last_name  } : Fr
   return (
     <div key={user_id}>
 
-<div className="card card-side bg-slate-700 shadow-xl">
+<div className="card card-side bg-slate-700 shadow-xl py-2 px-1">
     <div className="flex flex-col item-center justify-center">
-  <figure className={`ml-2 my-2 avatar w-20 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2`}><img src={`https://robohash.org/${username}`} alt={`${username}`}/></figure>
+  <figure className={`ml-4 my-2 avatar w-20 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2`}><img src={`https://robohash.org/${username}`} alt={`${username}`}/></figure>
   </div>
   <div className="card-body">
-    <div className="text-white">{first_name + " " + last_name}</div>
     <p className="text-white w-full text-lg">{username}</p>
   </div>
 
