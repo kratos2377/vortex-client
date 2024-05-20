@@ -1,17 +1,23 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import  ChessLogo  from "../assets/chess.svg";
 import  ScribbleLogo from "../assets/scribble.svg";
 import lobbyUsers from '../data/lobby_users.json'
+import { useParams } from 'react-router-dom';
 
-interface LobbyScreenProps {
-  gameType: string,
-  game_id: string,
-  host_user_id: string
-}
 
-const LobbyScreen = ({  gameType , game_id , host_user_id}: LobbyScreenProps) => {
+
+const LobbyScreen = () => {
 
   //const {currentLobbyUsers} = use
+
+  let {game_id , gameType , host_user_id} = useParams()
+
+  useEffect(() => {
+      console.log("PARAM DETAILS ARE")
+      console.log(game_id)
+      console.log(gameType)
+      console.log(host_user_id)
+  } , [])
 
   return (
     <div className='h-full w-full flex flex-col'>
@@ -22,7 +28,7 @@ const LobbyScreen = ({  gameType , game_id , host_user_id}: LobbyScreenProps) =>
         <div className='p-3 grid grid-cols-5 gap-4'>
           {
             lobbyUsers.map((val , idx) => (
-            <div className="card w-50 bg-base-100 shadow-xl">
+            <div key={val.id} className="card w-50 bg-base-100 shadow-xl">
               <figure className="self-center avatar w-20 rounded-full ring ring-black ring-offset-base-100 ring-offset-2 mt-5">
               <img src={`https://robohash.org/${val.username}`} alt={`${val.username}`}/>
               </figure>

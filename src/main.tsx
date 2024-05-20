@@ -28,8 +28,8 @@ let router = createBrowserRouter([
     element: <UserHomeScreen/>
   },
   {
-    path: "/lobby",
-    element: <LobbyScreen gameType={"asdasd"} game_id={"asdasd"} host_user_id={"dsad"}/>
+    path: "/lobby/:game_id/:gameType/:host_user_id",
+    element: <LobbyScreen />
   }
 ])
 

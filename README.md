@@ -16,3 +16,7 @@
 - [ ] Add Feature in lobby screen to invite other users
 - [ ] Add feature for user to be notified
 - [ ] Add sounds
+
+
+## Errors
+- [ ] Two API calls instead of one in many cases, look into this issue.
