@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
-import { cn } from '../../utils/cn'
-import { Label } from '@radix-ui/react-label'
-import { Input } from '../ui/input'
 import { useUserStore } from '../../state/UserAndGameState'
 import FriendRequestsScroll from '../ui/FriendRequestsScroll'
 
-const FriendRequestModal = () => {
+
+interface FriendReqModalProps {
+  setFriendReqCount: React.Dispatch<React.SetStateAction<number>>
+}
+
+const FriendRequestModal = ({setFriendReqCount}: FriendReqModalProps) => {
 
     const [requestSent, setRequestSent] = useState(false)
     const [username , setUsername] = useState("")
@@ -14,7 +16,7 @@ const FriendRequestModal = () => {
     const [isAlert , setIsAlert] = useState(false)
     const [alertType , setAlertType] = useState<"success" | "error">("success")
     const [alertMessage, setAlertMessage] = useState("")
-    const {user_details} = useUserStore.getState()
+    const {user_details} = useUserStore()
 
     const handleUsernameChange = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
@@ -43,7 +45,7 @@ const FriendRequestModal = () => {
   <div className='flex flex-col justify-end mt-1'>
     <div className='my-1'> 
 
-    <FriendRequestsScroll />
+    <FriendRequestsScroll  setFriendReqCount={setFriendReqCount}/>
 
     </div>
   <button type="button" className="btn btn-outline btn-error" onClick={() => document.getElementById('friend_requests_modal')!.close()}>Close</button>

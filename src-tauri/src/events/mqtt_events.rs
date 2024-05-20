@@ -3,7 +3,7 @@ use tauri::{AppHandle, Manager, State};
 
 use crate::state::MessierClient;
 
-use super::mqtt_event_model::MQTTEventModel;
+use super::mqtt_event_model::{MQTTEventModel, MQTTInvokePayload};
 
 
 #[derive(Clone, Serialize)]
@@ -12,17 +12,26 @@ struct Payload {
 }
 
 
+
 #[tauri::command]
 pub fn subscribe_to_user_topic(payload: String , state: State<'_, MessierClient>) -> Result<String , ()> {
-    let user_topic = serde_json::from_str(&payload).unwrap();
-    let _ = &state.mqtt_user_client.subscribe(user_topic, 0);
+    let invoke_payload: MQTTInvokePayload = serde_json::from_str(&payload).unwrap();
+    let sub_res = &state.mqtt_user_client.subscribe(&invoke_payload.topic_name, 0);
+
+    if sub_res.is_err() {
+        return Ok("error".to_string())
+    }
     Ok("Subscribed to User Topic".to_string())
 }
 
 #[tauri::command]
 pub fn unsubscribe_to_user_topic(payload: String , state: State<'_, MessierClient>) -> Result<String , ()> {
-    let user_topic = serde_json::from_str(&payload).unwrap();
-    let _ = &state.mqtt_user_client.unsubscribe(user_topic);
+    let invoke_payload: MQTTInvokePayload = serde_json::from_str(&payload).unwrap();
+    let sub_res = &state.mqtt_user_client.unsubscribe(&invoke_payload.topic_name);
+
+    if sub_res.is_err() {
+        return Ok("error".to_string())
+    }
     Ok("Unsubscribed to User Topic".to_string())
 }
 

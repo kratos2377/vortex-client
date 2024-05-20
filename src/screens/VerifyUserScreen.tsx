@@ -10,6 +10,7 @@ import { cn } from '../utils/cn'
 import { ErrorAlert, SuccessAlert } from '../components/ui/AlertMessage'
 import { motion } from 'framer-motion'
 import { AuroraBackground } from '../components/backgrounds/aurora-background'
+import { LabelInputContainer } from '../components/ui/LabelInputContainer'
 
 const VerifyUserScreen = () => {
     const navigate = useNavigate()
@@ -18,7 +19,7 @@ const VerifyUserScreen = () => {
     const [alertType, setAlertType] = useState<"success" | "error">("success")
     const [alertMessage, setAlertMessage] = useState("")
     const { updateUserVerifiedStatus , resetUserModelState} = useUserStore()
-    const {user_details} = useUserStore.getState()
+    const {user_details} = useUserStore()
 
     const [sendingEmail, setSendingEmail] = useState(true)
     const [verifying , setVerifying] = useState(false)
@@ -210,19 +211,6 @@ const BottomGradient = () => {
     );
   };
    
-  const LabelInputContainer = ({
-    children,
-    className,
-  }: {
-    children: React.ReactNode;
-    className?: string;
-  }) => {
-    return (
-      <div className={cn("flex flex-col space-y-2 w-full", className)}>
-        {children}
-      </div>
-    );
-  };
   
 
 export default VerifyUserScreen

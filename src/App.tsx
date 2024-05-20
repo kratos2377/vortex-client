@@ -18,12 +18,12 @@ function App() {
 
 
     const getAndVerifyToken = async () => {
-      //await deleteUserDetailsFromStore()
+
       const userToken =  await getUserTokenFromStore()
       if (userToken === null)  {
         navigate("/auth")
       } else {
-        invoke('verify_token_request', { payload: JSON.stringify( { token: userToken})  }).then(async (message) => {
+        await invoke('verify_token_request', { payload: JSON.stringify( { token: userToken})  }).then(async (message) => {
           let recv_msg = JSON.parse(message)
             if(!recv_msg.result.success) {
          

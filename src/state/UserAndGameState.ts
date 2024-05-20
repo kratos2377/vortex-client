@@ -5,13 +5,15 @@ import useBoardStore from './chess_store/board'
 import usePlayerStore from './chess_store/player'
 import useChessGameStore from './chess_store/game'
 import { CanvasState } from './scribble_store/canvasStore'
-import { UserModel } from '../types/models'
+import { FriendRequestModel, GameInviteUserModel, UserModel } from '../types/models'
 
 type UserState  = {
     user_id: string,
     score: number,
     token: string,
-    user_details: UserModel
+    user_details: UserModel,
+    game_invites: GameInviteUserModel[],
+    friend_invites: FriendRequestModel[]
 }
 
 type GameState = {
@@ -28,6 +30,10 @@ type UserAction = {
     updateUserDetails: (user_mod: UserModel) => void
     updateUserVerifiedStatus: (user_status: boolean) => void
     changeUserUsername: (username: string) => void
+    addGameInviteModel: (game_invite: GameInviteUserModel) => void
+    removeGameInviteModel: (game_invite_id: string) => void
+    addFriendRequestModel: (friend_req: FriendRequestModel) => void
+    removeFriendRequestModel: (friend_req_id: string) => void
     resetUserModelState: () => void
   }
 
@@ -51,11 +57,17 @@ export const useUserStore = create<UserState & UserAction>((set) => ({
     },
     score: 0,
     token: '',
+    game_invites: [],
+    friend_invites: [],
     updateUserId: (user_id) => set((state) => ({...state , user_id: user_id})),
     updateUserScore: (score) => set((state) => ({...state, score: score})),
     updateUserToken: (token) => set((state) => ({...state, token: token})),
     updateUserDetails: (user_mod) => set((state) => ({...state , user_details: user_mod})),
     updateUserVerifiedStatus: (user_status) => set((state) => ({...state, user_details: { ...state.user_details , verified: user_status}})),
+    addGameInviteModel: (game_invite) => set((state) => ({...state, game_invites: [game_invite, ...state.game_invites]})),
+    removeGameInviteModel: (game_invite_id) => set((state) => ({...state, game_invites: state.game_invites.filter((ele) => ele.game_id !== game_invite_id)})),
+    addFriendRequestModel: (friend_req) => set((state) => ({...state, friend_invites: [...state.friend_invites, friend_req]})),
+    removeFriendRequestModel: (friend_req_id) => set((state)  => ({...state, friend_invites: state.friend_invites.filter((ele) => ele.friend_request_id !== friend_req_id)})),
     changeUserUsername: (username) => set((state) => ({...state, user_details: {...state.user_details , username: username}})),
     resetUserModelState: () => set((state) => ({...state, user_details:  {
       username: '',

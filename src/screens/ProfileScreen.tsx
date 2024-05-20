@@ -10,7 +10,8 @@ import FriendRequestModal from '../components/screens/FriendRequestModal'
 const ProfileScreen = () => {
 
 
-  const {user_details} = useUserStore.getState()
+  const {user_details} = useUserStore()
+  const [friend_req_count , setrFriendRequestsCount] = useState(0) 
   
 
   return (
@@ -21,7 +22,7 @@ const ProfileScreen = () => {
         <button className="w-1/2 btn btn-outline btn-error mb-5" onClick={() => document.getElementById("change_username_modal")!.showModal()}>Change Username</button>
         <button className="w-1/2 btn btn-outline btn-error mb-5" onClick={() => document.getElementById("send_friend_request_modal")!.showModal()}>Send Friend Request</button>
         <div className="indicator w-1/2 mb-5">
-        <span className="indicator-item badge badge-error text-white">99+</span> 
+        <span className="indicator-item badge badge-error text-white">{friend_req_count}</span> 
         <button className="w-full btn btn-outline btn-error" onClick={() => document.getElementById("friend_requests_modal")!.showModal()}>Friend Requests</button>
         </div>
         <button className="w-1/2 btn btn-outline btn-error" onClick={() => document.getElementById("quit_app_modal")!.showModal()}> Quit App </button>
@@ -70,7 +71,7 @@ const ProfileScreen = () => {
     <ChangePasswordModal />
     <ChangeUsernameModal />
     <SendFriendRequestModal />
-    <FriendRequestModal />
+    <FriendRequestModal setFriendReqCount={setrFriendRequestsCount} />
     <QuitAppModal />
 
    </div>

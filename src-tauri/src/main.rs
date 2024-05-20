@@ -49,7 +49,8 @@ async fn main() {
             api::game::stake_in_game,
 
             //MQTT events
-          //  events::mqtt_events::listen_to_user_online_event
+            events::mqtt_events::subscribe_to_user_topic,
+            events::mqtt_events::listen_to_user_event
 
         ]);
 

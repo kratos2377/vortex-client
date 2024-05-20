@@ -4,42 +4,55 @@ import { cn } from '../utils/cn';
 import { BackgroundGradient } from '../components/backgrounds/background-gradient';
 import OngoingGamesScreen from './OngoingGamesScreen';
 import ProfileScreen from './ProfileScreen';
-import { FriendListScroll } from '../components/ui/ParallaxScroll';
 import CreateLobby from './CreateLobby';
 import { socket } from '../socket/socket';
 import { useUserStore } from '../state/UserAndGameState';
-import ScreenLoading from '../components/ui/ScreenLoading';
-import { getUserTokenFromStore } from '../persistent_storage/save_user_details';
-import { get_all_users_friends } from '../helper_functions/apiCall';
+import { GameInvitesScroll } from '../components/ui/GameInvitesScroll';
+import { GAME_INVITE_EVENT, MQTT_USER_EVENTS } from '../utils/mqtt_event_names';
+import { invoke } from '@tauri-apps/api/tauri';
+import { listen } from '@tauri-apps/api/event';
+import { MQTTPayload } from '../types/models';
 
 const UserHomeScreen = () => {
 
-  const { user_details } = useUserStore.getState()
 
   const [currentScreen , setCurrentScreen] = useState<string>("ongoing-games")
-  const [loadingFriends , setLoadingFriends] = useState(true)
   const [createLobbyModalOpen , setCreateLobbyModalOpen] = useState(true)
-
+  const {user_details} = useUserStore()
   const onCreateLobbyModalClose = () => {
     setCreateLobbyModalOpen(false)
   }
 
 
-  const getAllUsersFriends = async  () => {
-    let user_token = await getUserTokenFromStore()
-    let payload = JSON.stringify({user_id: user_details.id })
-    let val = await get_all_users_friends(payload , user_token as string);
-    
-    setTimeout(() => {
-      setLoadingFriends(false)
-    } , 2000)
+  const subscribe_to_mqtt_user_topic = async () => {
+    let val = await invoke('subscribe_to_user_topic', {payload: JSON.stringify({topic_name: MQTT_USER_EVENTS + user_details.id}) })
+
+    if(val === "error") {
+      return;
+    }
+
   }
+
+
+  const start_listening_to_user_events = async () => {
+    let val = await invoke('listen_to_user_event')
+
+    
+    if(val === "error") {
+      return;
+    }
+  }
+
+
+ 
 
   useEffect(() => {
       socket.emit("user-connection-event" , JSON.stringify({user_id: user_details.id, username: user_details.username}) )
 
 
-    getAllUsersFriends()
+      subscribe_to_mqtt_user_topic().then(() => {
+          start_listening_to_user_events()
+      })
   } , [])
 
   return (
@@ -60,11 +73,11 @@ const UserHomeScreen = () => {
            <div className="w-1/5 divide-y h-screen dark:bg-black bg-white  dark:bg-grid-small-white/[0.2] bg-grid-small-black/[0.2]">
            <div className=" h-1/2 text-xs font-bold relative bg-clip-text text-transparent bg-gradient-to-b from-neutral-200 to-neutral-500 py-8">
             <p className=' text-lg sm:text-md font-bold relative bg-clip-text text-transparent bg-gradient-to-b from-neutral-200 to-neutral-500 flex items-center justify-center'>
-            Friends
+            Game Invites
             </p>
 
             <div >
-           {loadingFriends ? <ScreenLoading/> :  <FriendListScroll items={[]}  />}
+            <GameInvitesScroll />
             </div>
            </div>
   
@@ -93,6 +106,10 @@ function UserHomeScreenNavbar({ className , setCurrentScreen }: { className?: st
         <BackgroundGradient className="rounded-[22px] max-w-sm p-4 sm:p-10 bg-white dark:bg-zinc-900">
         <MenuItem setActive={setActive} active={active} setCurrentScreen={setCurrentScreen} item="Profile" screen_name="profile"/>
         </BackgroundGradient> 
+
+        {/* <BackgroundGradient className="rounded-[22px] max-w-sm p-4 sm:p-10 bg-white dark:bg-zinc-900">
+        <MenuItem setActive={setActive} active={active} setCurrentScreen={setCurrentScreen} item="Marketplace" screen_name="marketplace"/>
+        </BackgroundGradient>  */}
       </Menu>
    
     </div>

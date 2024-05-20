@@ -11,7 +11,7 @@ const OngoingGamesScreen = () => {
 
   const [ongoingGamesData , setOngoingGamesData] = useState([])
   const [loading, setLoading] = useState(true)
-  const {user_details} = useUserStore.getState()
+  const {user_details} = useUserStore()
 
   const get_ongoing_games = async () => {
     let user_token = await getUserTokenFromStore()

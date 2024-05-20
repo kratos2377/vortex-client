@@ -6,6 +6,7 @@ import { ErrorAlert, SuccessAlert } from '../ui/AlertMessage'
 import { getUserTokenFromStore } from '../../persistent_storage/save_user_details'
 import { useUserStore } from '../../state/UserAndGameState'
 import { send_friend_request } from '../../helper_functions/apiCall'
+import { LabelInputContainer } from '../ui/LabelInputContainer'
 
 const SendFriendRequestModal = () => {
 
@@ -14,7 +15,7 @@ const SendFriendRequestModal = () => {
   const [isAlert , setIsAlert] = useState(false)
   const [alertType, setAlertType] = useState<"success" | "error">("success")
   const [alertMessage, setAlertMessage] = useState("")
-  const {user_details} = useUserStore.getState()
+  const {user_details} = useUserStore()
 
   const handleUsernameChange = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -102,19 +103,6 @@ requestSent ? <div className='flex flex-row'>Searching <span className="loading 
 
 
 
-const LabelInputContainer = ({
-  children,
-  className,
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) => {
-  return (
-    <div className={cn("flex flex-col space-y-2 w-full", className)}>
-      {children}
-    </div>
-  );
-};
 
 
 export default SendFriendRequestModal

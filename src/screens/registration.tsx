@@ -7,6 +7,7 @@ import { registration_call } from '../helper_functions/apiCall';
 import { useNavigate } from 'react-router-dom';
 import { saveUserDetails } from '../persistent_storage/save_user_details';
 import { useUserStore } from '../state/UserAndGameState';
+import { LabelInputContainer } from '../components/ui/LabelInputContainer';
 
 
 interface RegistrationProps {
@@ -228,18 +229,6 @@ const BottomGradient = () => {
   );
 };
  
-const LabelInputContainer = ({
-  children,
-  className,
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) => {
-  return (
-    <div className={cn("flex flex-col space-y-2 w-full", className)}>
-      {children}
-    </div>
-  );
-};
+
 
 export default Registration

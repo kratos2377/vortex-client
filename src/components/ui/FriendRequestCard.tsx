@@ -5,11 +5,9 @@ import React from 'react'
 interface FriendRequestCardProps {
     username: string,
     user_id: string,
-    first_name: string,
-    last_name: string,
 }
 
-const FriendRequestCard = ({ username , user_id , first_name , last_name  } : FriendRequestCardProps) => {
+const FriendRequestCard = ({ username , user_id   } : FriendRequestCardProps) => {
   return (
     <div key={user_id}>
 

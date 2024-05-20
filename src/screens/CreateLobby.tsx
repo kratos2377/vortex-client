@@ -18,7 +18,7 @@ const CreateLobby = ( { setCurrentScreen } : { setCurrentScreen:  React.Dispatch
   const [alertType, setAlertType] = useState<"success" | "error">("success")
   const [requestSent, setRequestSent] = useState(false)
   const [redirecting, setRedirecting] = useState(false)
-  const {user_details} = useUserStore.getState()
+  const {user_details} = useUserStore()
 
   const handleGameChange = (event: any) => {
     setSelectedGame(event.target.value);

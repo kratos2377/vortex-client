@@ -7,6 +7,7 @@ import { Input } from '../components/ui/input'
 import { useNavigate } from 'react-router-dom'
 import { saveUserDetails } from '../persistent_storage/save_user_details'
 import { useUserStore } from '../state/UserAndGameState'
+import { LabelInputContainer } from '../components/ui/LabelInputContainer'
 
 interface LoginProps {
   setAuthState: React.Dispatch<React.SetStateAction<"login" | "registration">>,
@@ -170,18 +171,6 @@ const BottomGradient = () => {
   );
 };
  
-const LabelInputContainer = ({
-  children,
-  className,
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) => {
-  return (
-    <div className={cn("flex flex-col space-y-2 w-full", className)}>
-      {children}
-    </div>
-  );
-};
+
 
 export default Login

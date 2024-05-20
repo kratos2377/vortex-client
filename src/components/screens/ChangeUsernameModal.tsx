@@ -6,6 +6,7 @@ import { useUserStore } from '../../state/UserAndGameState'
 import { getUserTokenFromStore } from '../../persistent_storage/save_user_details'
 import { change_user_username } from '../../helper_functions/apiCall'
 import { SuccessAlert, ErrorAlert } from '../ui/AlertMessage'
+import { LabelInputContainer } from '../ui/LabelInputContainer'
 
 const ChangeUsernameModal = () => {
 
@@ -16,8 +17,7 @@ const ChangeUsernameModal = () => {
         const [isAlert , setIsAlert] = useState(false)
         const [alertType , setAlertType] = useState<"success" | "error">("success")
         const [alertMessage, setAlertMessage] = useState("")
-        const {user_details} = useUserStore.getState()
-        const {changeUserUsername} = useUserStore()
+        const {changeUserUsername , user_details} = useUserStore()
 
     const handleUsernameChange = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
@@ -137,19 +137,5 @@ const ChangeUsernameModal = () => {
 
 
 
-const LabelInputContainer = ({
-    children,
-    className,
-  }: {
-    children: React.ReactNode;
-    className?: string;
-  }) => {
-    return (
-      <div className={cn("flex flex-col space-y-2 w-full", className)}>
-        {children}
-      </div>
-    );
-  };
-  
 
 export default ChangeUsernameModal

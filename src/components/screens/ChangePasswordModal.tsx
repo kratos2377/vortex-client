@@ -6,6 +6,7 @@ import { change_user_password } from '../../helper_functions/apiCall';
 import { useUserStore } from '../../state/UserAndGameState';
 import { getUserTokenFromStore } from '../../persistent_storage/save_user_details';
 import { ErrorAlert, SuccessAlert } from '../ui/AlertMessage';
+import { LabelInputContainer } from '../ui/LabelInputContainer';
 
 const ChangePasswordModal = () => {
 
@@ -20,7 +21,7 @@ const ChangePasswordModal = () => {
     const [isAlert , setIsAlert] = useState(false)
     const [alertType , setAlertType] = useState<"success" | "error">("success")
     const [alertMessage, setAlertMessage] = useState("")
-    const {user_details} = useUserStore.getState()
+    const {user_details} = useUserStore()
 
 
     const handleChangePassword = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -145,19 +146,7 @@ const ChangePasswordModal = () => {
 }
 
 
-const LabelInputContainer = ({
-    children,
-    className,
-  }: {
-    children: React.ReactNode;
-    className?: string;
-  }) => {
-    return (
-      <div className={cn("flex flex-col space-y-2 w-full", className)}>
-        {children}
-      </div>
-    );
-  };
+
   
 
 export default ChangePasswordModal

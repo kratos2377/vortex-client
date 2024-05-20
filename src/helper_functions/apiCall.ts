@@ -167,6 +167,22 @@ export const create_lobby_call  = async (payload: string , token: string) => {
   return val
 }
 
+export const get_user_friend_requests = async (payload: string , token: string) => {
+  let val = await invoke('get_user_friend_requests', {payload: payload, token: getBearerToken(token)}).then((message) => {
+    let recv_msg = JSON.parse(message)
+
+    logMessage("get_user_friend_requests", recv_msg)
+
+    if(!recv_msg.result.success) {
+      return { "error_message": recv_msg.error_message, "status": false  }
+    } else {
+      return {"status": true, "friends": recv_msg.friends}
+    }
+  });
+
+  return val
+}
+
 const getBearerToken = ( token: string) => {
   return "Bearer " + token;
 }

@@ -2,6 +2,7 @@ import { Label } from '@radix-ui/react-label'
 import React, { useState } from 'react'
 import { Input } from '../../components/ui/input'
 import { cn } from '../../utils/cn'
+import { LabelInputContainer } from '../../components/ui/LabelInputContainer'
 
 const GuessWordInput = () => {
 
@@ -40,19 +41,5 @@ const GuessWordInput = () => {
     </div>
   )
 }
-
-const LabelInputContainer = ({
-    children,
-    className,
-  }: {
-    children: React.ReactNode;
-    className?: string;
-  }) => {
-    return (
-      <div className={cn("flex flex-col space-y-2 w-full", className)}>
-        {children}
-      </div>
-    );
-  };
 
 export default GuessWordInput
