@@ -5,12 +5,13 @@ import useBoardStore from './chess_store/board'
 import usePlayerStore from './chess_store/player'
 import useChessGameStore from './chess_store/game'
 import { CanvasState } from './scribble_store/canvasStore'
-import { FriendRequestModel, GameInviteUserModel, UserModel } from '../types/models'
+import { FriendRequestModel, GameInviteUserModel, PlayerModel, PlayerTurnMappingModel, UserModel } from '../types/models'
 
 type UserState  = {
     user_id: string,
     score: number,
     token: string,
+    in_game: boolean,
     user_details: UserModel,
     game_invites: GameInviteUserModel[],
     friend_invites: FriendRequestModel[]
@@ -18,10 +19,27 @@ type UserState  = {
 
 type GameState = {
     game_id: string,
-    lobby_id: string,
-    player_turn_id: string,
-    other_player_ids: string[],
+    game_type: string,
+    game_name: string,
+    game_players: PlayerModel[],
+    player_turns_order: PlayerTurnMappingModel[],
+    current_player_turn: string,
+    total_players: number,
+    index_turn: number,
 }
+
+type SpectatorState = {
+    game_id: string,
+    game_name: string,
+    game_type: string,
+    game_players: PlayerModel[],
+    player_turns_order: PlayerTurnMappingModel[],
+    current_player_turn: string,
+    total_players: number,
+    index_turn: number,
+}
+
+
 
 type UserAction = {
     updateUserId: (user_id: string) => void
@@ -34,18 +52,40 @@ type UserAction = {
     removeGameInviteModel: (game_invite_id: string) => void
     addFriendRequestModel: (friend_req: FriendRequestModel) => void
     removeFriendRequestModel: (friend_req_id: string) => void
+    update_in_game_status: (status: boolean) => void
     resetUserModelState: () => void
   }
 
   type GameAction =  {
     updateGameId: (game_id: string) => void
-    updateLobbyId: (lobby_id: string) => void
-    updateOtherPlayerIds: (other_player_ids: string[]) => void
+    updateGameType: (type: string) => void
+    updateGameName: (name: string) => void
+    addGamePlayers: (player: PlayerModel) => void
+    updatePlayerTurnsOrder: (player_turns: PlayerTurnMappingModel) => void
+    updateCurrentPlayerTurn: (current_player: string) => void
+    updateTotalPlayers: (total_player: number) => void
+    updateIndexTurn: (index_turn: number) => void
+    removeGamePlayer: (player: PlayerModel) => void
   }
+
+
+  type SpectatorAction = {
+    updateGameId: (game_id: string) => void
+    updateGameType: (type: string) => void
+    updateGameName: (name: string) => void
+    addGamePlayers: (player: PlayerModel) => void
+    updatePlayerTurnsOrder: (player_turns: PlayerTurnMappingModel) => void
+    updateCurrentPlayerTurn: (current_player: string) => void
+    updateTotalPlayers: (total_player: number) => void
+    updateIndexTurn: (index_turn: number) => void
+    removeGamePlayer: (player: PlayerModel) => void
+  }
+  
   
 
 export const useUserStore = create<UserState & UserAction>((set) => ({
     user_id: '',
+    in_game: false,
     user_details: {
       username: '',
       email: '',
@@ -69,6 +109,7 @@ export const useUserStore = create<UserState & UserAction>((set) => ({
     addFriendRequestModel: (friend_req) => set((state) => ({...state, friend_invites: [...state.friend_invites, friend_req]})),
     removeFriendRequestModel: (friend_req_id) => set((state)  => ({...state, friend_invites: state.friend_invites.filter((ele) => ele.friend_request_id !== friend_req_id)})),
     changeUserUsername: (username) => set((state) => ({...state, user_details: {...state.user_details , username: username}})),
+    update_in_game_status: (status) => set((state) => ({...state, in_game: status})),
     resetUserModelState: () => set((state) => ({...state, user_details:  {
       username: '',
       email: '',
@@ -82,12 +123,43 @@ export const useUserStore = create<UserState & UserAction>((set) => ({
 
 export const useGameStore = create<GameState & GameAction> ((set) => ({
     game_id: '',
-    lobby_id: '',
-    player_turn_id: '0',
-    other_player_ids: [],
+    game_name: '',
+    game_type: '',
+    game_players: [],
+    player_turns_order: [],
+    current_player_turn: '',
+    total_players: 0,
+    index_turn: 0,
     updateGameId: (game_id) => set((state) => ({...state, game_id: game_id})),
-    updateLobbyId: (lobby_id) => set((state) => ({...state, lobby_id: lobby_id})),
-    updateOtherPlayerIds: (other_player_ids) => set((state) => ({ ...state , other_player_ids: other_player_ids})),
+    updateGameType: (type) => set((state) => ({...state, game_type: type})),
+    updateGameName: (name) => set((state) => ({...state, game_name: name})),
+    addGamePlayers: (player) => set((state) => ({...state, game_players: [...state.game_players, player]})),
+    updatePlayerTurnsOrder: (player_turns) => set((state) => ({...state, player_turns_order: [...state.player_turns_order, player_turns].sort((a,b) => Number.parseInt(a.user_game_count_id) - Number.parseInt(b.user_game_count_id))})),
+    updateCurrentPlayerTurn: (current_player) => set((state) => ({...state, current_player_turn: current_player})),
+    updateTotalPlayers: (total_player) => set((state) => ({...state, total_players: total_player})),
+    updateIndexTurn: (index_turn) => set((state) => ({...state, index_turn: (index_turn+ 1)%(state.total_players)})),
+    removeGamePlayer: (player) => set((state) => ({...state,  player_turns_order: state.player_turns_order.filter((el) => el.user_id !== player.player_user_id)}))
+}))
+
+
+export const useSpecatorStore = create<SpectatorState & SpectatorAction> ((set) => ({
+  game_id: '',
+  game_name: '',
+  game_type: '',
+  game_players: [],
+  player_turns_order: [],
+  current_player_turn: '',
+  total_players: 0,
+  index_turn: 0,
+  updateGameId: (game_id) => set((state) => ({...state, game_id: game_id})),
+  updateGameType: (type) => set((state) => ({...state, game_type: type})),
+  updateGameName: (name) => set((state) => ({...state, game_name: name})),
+  addGamePlayers: (player) => set((state) => ({...state, game_players: [...state.game_players, player]})),
+  updatePlayerTurnsOrder: (player_turns) => set((state) => ({...state, player_turns_order: [...state.player_turns_order, player_turns].sort((a,b) => Number.parseInt(a.user_game_count_id) - Number.parseInt(b.user_game_count_id))})),
+  updateCurrentPlayerTurn: (current_player) => set((state) => ({...state, current_player_turn: current_player})),
+  updateTotalPlayers: (total_player) => set((state) => ({...state, total_players: total_player})),
+  updateIndexTurn: (index_turn) => set((state) => ({...state, index_turn: (index_turn+ 1)%(state.total_players)})),
+  removeGamePlayer: (player) => set((state) => ({...state,  player_turns_order: state.player_turns_order.filter((el) => el.user_id !== player.player_user_id)}))
 }))
 
 

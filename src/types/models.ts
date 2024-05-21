@@ -27,6 +27,20 @@ export type GameInviteUserModel = {
 }
 
 
+export type PlayerModel = {
+    player_user_id: string,
+    player_first_name: string,
+    player_last_name: string,
+    player_username: string,
+    player_turn_count: string,
+
+}
+
+export type PlayerTurnMappingModel = {
+    user_game_count_id: string,
+    user_id: string,
+}
+
 export type MQTTPayload = {
     message: string;
 };

@@ -8,20 +8,15 @@ import CreateLobby from './CreateLobby';
 import { socket } from '../socket/socket';
 import { useUserStore } from '../state/UserAndGameState';
 import { GameInvitesScroll } from '../components/ui/GameInvitesScroll';
-import { GAME_INVITE_EVENT, MQTT_USER_EVENTS } from '../utils/mqtt_event_names';
+import {  MQTT_USER_EVENTS } from '../utils/mqtt_event_names';
 import { invoke } from '@tauri-apps/api/tauri';
-import { listen } from '@tauri-apps/api/event';
-import { MQTTPayload } from '../types/models';
 
 const UserHomeScreen = () => {
 
 
   const [currentScreen , setCurrentScreen] = useState<string>("ongoing-games")
-  const [createLobbyModalOpen , setCreateLobbyModalOpen] = useState(true)
   const {user_details} = useUserStore()
-  const onCreateLobbyModalClose = () => {
-    setCreateLobbyModalOpen(false)
-  }
+
 
 
   const subscribe_to_mqtt_user_topic = async () => {
@@ -56,6 +51,7 @@ const UserHomeScreen = () => {
   } , [])
 
   return (
+    <>
     <div className="h-screen w-screen dark:bg-black bg-white  dark:bg-grid-small-white/[0.2] bg-grid-small-black/[0.2] relative">
         
   
@@ -86,6 +82,7 @@ const UserHomeScreen = () => {
 
 
   </div>
+  </>
   )
 }
 
