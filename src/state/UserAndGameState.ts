@@ -142,7 +142,7 @@ export const useGameStore = create<GameState & GameAction> ((set) => ({
 }))
 
 
-export const useSpecatorStore = create<SpectatorState & SpectatorAction> ((set) => ({
+export const useSpectatorStore = create<SpectatorState & SpectatorAction> ((set) => ({
   game_id: '',
   game_name: '',
   game_type: '',

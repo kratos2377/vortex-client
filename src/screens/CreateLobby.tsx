@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { ErrorAlert, SuccessAlert } from '../components/ui/AlertMessage';
-import { useUserStore } from '../state/UserAndGameState';
+import { useGameStore, useUserStore } from '../state/UserAndGameState';
 import { getUserTokenFromStore } from '../persistent_storage/save_user_details';
 import { create_lobby_call } from '../helper_functions/apiCall';
 import { useNavigate } from 'react-router-dom';
@@ -19,7 +19,7 @@ const CreateLobby = ( { setCurrentScreen } : { setCurrentScreen:  React.Dispatch
   const [requestSent, setRequestSent] = useState(false)
   const [redirecting, setRedirecting] = useState(false)
   const {user_details} = useUserStore()
-
+  const {updateGameId, updateGameName, updateGameType} = useGameStore()
   const handleGameChange = (event: any) => {
     setSelectedGame(event.target.value);
   };
@@ -76,6 +76,9 @@ const CreateLobby = ( { setCurrentScreen } : { setCurrentScreen:  React.Dispatch
       } , 3000)
 
     } else {
+      updateGameId(val.game_id)
+      updateGameName(selectedGame)
+      updateGameType(selectedType)
       setRedirecting(true)
       setAlertMessage("Redirecting to Lobby Screen")
       setAlertType("success")

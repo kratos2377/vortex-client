@@ -71,8 +71,8 @@ Ok(rec)
 // }
 
 #[tauri::command]
-pub async fn get_all_users_friends(payload: String , token: String, state: State<'_ , MessierClient>) -> Result<String , ()> {
-let req_url = BASE_URL.to_string() + USER_LOGIC_API_ROUTE + "/get_all_users_friends";
+pub async fn get_user_online_friends(payload: String , token: String, state: State<'_ , MessierClient>) -> Result<String , ()> {
+let req_url = BASE_URL.to_string() + USER_LOGIC_API_ROUTE + "/get_user_online_friends";
 
 let res = state.client.get(req_url).body(payload).header("Authorization" , token).header("Content-Type", "application/json").send().await.unwrap();
 

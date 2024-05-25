@@ -14,6 +14,7 @@ const LobbyScreen = () => {
   let {game_id , gameType , host_user_id} = useParams()
   let {user_details} = useUserStore()
 
+  const [readyState, setReadyState] = useState(false)
   let [roomUsers , setLobbyUsers] = useState([...lobbyUsers])
 
   const startTheGame = async () => {
@@ -42,6 +43,7 @@ const LobbyScreen = () => {
               <div className="card-body items-center text-center">
                 <h2 className="card-title">{val.username}</h2>
                 {user_details.id === host_user_id ? <h3 className="">(Host)</h3> : <div></div>}
+                {readyState ? <h3 className='text-green'>Ready!</h3> : <h3 className='text-red'>Not Ready</h3>}
               </div>
             </div>
             ))
@@ -50,6 +52,8 @@ const LobbyScreen = () => {
 
         <div className='mt-3 self-center'>
        {user_details.id === host_user_id ?  <button className="btn btn-outline btn-success mr-1">Start the Game</button> : <div></div>}
+     
+          { !readyState ?        <button className="btn btn-outline btn-success mr-1 ml-1">Ready!</button> :        <button className="btn btn-outline btn-error mr-1 ml-1">Not Ready</button>}
        <button className="btn btn-outline btn-info mr-1 ml-1">Invite Friends</button>
         <button className="btn btn-outline btn-error ml-1">Leave Lobby</button>
         </div>

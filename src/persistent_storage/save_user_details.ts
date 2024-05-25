@@ -1,6 +1,10 @@
 import { Store } from 'tauri-plugin-store-api';
+import { v4 as uuidv4 } from 'uuid';
+// Commenting this as we have to test it for multiple users. THe best way to do it for now is to create a uuid-id bin every time
+// const store = new Store('vortex.bin');
 
-const store = new Store('vortex.bin');
+const id = uuidv4()
+const store = new Store(id.toString() + ".user.bin")
 
 export const saveUserDetails = async (user_id: string , user_token: string) => {
     

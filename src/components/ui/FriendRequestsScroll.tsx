@@ -53,12 +53,12 @@ const FriendRequestsScroll = ({setFriendReqCount}: FriendReqModalScrollProps) =>
 
     const startListeningToFriendRequestEvent = async () => {
       await listen<MQTTPayload>(FRIEND_REQUEST_EVENT, (event) => {
-        let parsed_payload = JSON.parse(event.payload.message) 
+        let parsed_payload = JSON.parse(event.payload.message) as FriendRequestModel
         let model: FriendRequestModel = {
-          friend_request_id: '',
-          user_who_send_request_id: '',
-          user_who_send_request_username: '',
-          user_who_we_are_sending_event: ''
+          friend_request_id: parsed_payload.friend_request_id,
+          user_who_send_request_id: parsed_payload.user_who_send_request_id,
+          user_who_send_request_username: parsed_payload.user_who_send_request_username,
+          user_who_we_are_sending_event: parsed_payload.user_who_we_are_sending_event
         }
         setFriendRequests([model, ...friendRequests])
         addFriendRequestModel(model)

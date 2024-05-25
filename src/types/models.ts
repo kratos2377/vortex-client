@@ -41,6 +41,14 @@ export type PlayerTurnMappingModel = {
     user_id: string,
 }
 
+export type OnlineUserFriendModel = {
+    user_id: string;
+    username: string;
+    first_name: string;
+    last_name: string;
+    is_user_online: boolean;
+}
+
 export type MQTTPayload = {
     message: string;
 };

@@ -84,11 +84,11 @@ export const get_ongoing_games_for_user  = async (payload: string , token: strin
 }
 
 
-export const get_all_users_friends  = async (payload: string , token: string) => {
-  let val = await invoke('get_all_users_friends', {payload: payload, token: getBearerToken(token)}).then((message) => {
+export const get_user_online_friends  = async (payload: string , token: string) => {
+  let val = await invoke('get_user_online_friends', {payload: payload, token: getBearerToken(token)}).then((message) => {
     let recv_msg = JSON.parse(message)
 
-    logMessage("get_all_users_friends", recv_msg)
+    logMessage("get_user_online_friends", recv_msg)
 
     if(!recv_msg.result.success) {
       return { "error_message": recv_msg.error_message, "status": false  }
@@ -183,6 +183,27 @@ export const get_user_friend_requests = async (payload: string , token: string) 
   return val
 }
 
+
+
+//Game API calls
+export const send_game_invite = async (payload: string , token: string) => {
+  let val = await invoke('send_game_invite', {payload: payload, token: getBearerToken(token)}).then((message) => {
+    let recv_msg = JSON.parse(message)
+
+    logMessage("send_game_invite", recv_msg)
+
+    if(!recv_msg.result.success) {
+      return { "error_message": recv_msg.error_message, "status": false  }
+    } else {
+      return {"status": true}
+    }
+  });
+
+  return val
+}
+
+
+//Helper fns
 const getBearerToken = ( token: string) => {
   return "Bearer " + token;
 }

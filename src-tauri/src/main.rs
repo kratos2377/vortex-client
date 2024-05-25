@@ -33,7 +33,7 @@ async fn main() {
             api::user_logic::send_request,
             api::user_logic::get_user_friend_requests,
             api::user_logic::accept_or_reject_request,
-            api::user_logic::get_all_users_friends,
+            api::user_logic::get_user_online_friends,
             api::user_logic::change_user_password,
             api::user_logic::change_user_username,
 
