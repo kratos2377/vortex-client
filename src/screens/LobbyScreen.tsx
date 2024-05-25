@@ -4,6 +4,7 @@ import  ScribbleLogo from "../assets/scribble.svg";
 import lobbyUsers from '../data/lobby_users.json'
 import { useParams } from 'react-router-dom';
 import { useUserStore } from '../state/UserAndGameState';
+import OnlineFriendInviteModal from '../components/screens/OnlineFriendInviteModal';
 
 
 
@@ -54,10 +55,12 @@ const LobbyScreen = () => {
        {user_details.id === host_user_id ?  <button className="btn btn-outline btn-success mr-1">Start the Game</button> : <div></div>}
      
           { !readyState ?        <button className="btn btn-outline btn-success mr-1 ml-1">Ready!</button> :        <button className="btn btn-outline btn-error mr-1 ml-1">Not Ready</button>}
-       <button className="btn btn-outline btn-info mr-1 ml-1">Invite Friends</button>
+       <button className="btn btn-outline btn-info mr-1 ml-1" onClick={() => document.getElementById("online_friend_invite_modal")!.showModal()}>Invite Friends</button>
         <button className="btn btn-outline btn-error ml-1">Leave Lobby</button>
         </div>
     </div>
+
+    <OnlineFriendInviteModal/>
 
     </>
   )
