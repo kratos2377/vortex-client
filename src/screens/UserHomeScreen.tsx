@@ -10,6 +10,7 @@ import { useUserStore } from '../state/UserAndGameState';
 import { GameInvitesScroll } from '../components/ui/GameInvitesScroll';
 import {  MQTT_USER_EVENTS } from '../utils/mqtt_event_names';
 import { invoke } from '@tauri-apps/api/tauri';
+import { ErrorAlert, SuccessAlert } from '../components/ui/AlertMessage';
 
 const UserHomeScreen = () => {
 
@@ -17,7 +18,9 @@ const UserHomeScreen = () => {
   const [currentScreen , setCurrentScreen] = useState<string>("ongoing-games")
   const {user_details} = useUserStore()
 
-
+  const [isAlert, setIsAlert] = useState(false)
+  const [alertMessage, setAlertMessage] = useState("")
+  const [alertType, setAlertType] = useState<"success" | "error">("success")
 
   const subscribe_to_mqtt_user_topic = async () => {
     let val = await invoke('subscribe_to_user_topic', {payload: JSON.stringify({topic_name: MQTT_USER_EVENTS + user_details.id}) })
@@ -34,12 +37,20 @@ const UserHomeScreen = () => {
 
     
     if(val === "error") {
+      setAlertMessage("Error while subscribing to MQTT Broker. You will not get realtime events")
+      setAlertType("error")
+      setIsAlert(true)
+
+      setTimeout(() => {
+        setIsAlert(false)
+      }, 5000)
       return;
     }
+
+
   }
 
-
- 
+   
 
   useEffect(() => {
       socket.emit("user-connection-event" , JSON.stringify({user_id: user_details.id, username: user_details.username}) )
@@ -58,7 +69,9 @@ const UserHomeScreen = () => {
       
     <div className='flex flex-row divide-x '>
     <div className='w-4/5 items-center justify-center'>
-    <UserHomeScreenNavbar className="top-2 flex space-x-5 "  setCurrentScreen={setCurrentScreen} />
+    <UserHomeScreenNavbar className="top-2 flex space-x-5"  setCurrentScreen={setCurrentScreen} />
+
+    {isAlert ?  alertType === "success" ? <SuccessAlert message={alertMessage}/> : <ErrorAlert message={alertMessage}/> : <div></div>}
    
 
    {

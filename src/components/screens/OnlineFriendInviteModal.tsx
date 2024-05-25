@@ -4,13 +4,14 @@ import FriendRequestsScroll from '../ui/FriendRequestsScroll'
 import { FriendListScroll } from '../ui/ParallaxScroll'
 import { get_user_online_friends } from '../../helper_functions/apiCall'
 import { getUserTokenFromStore } from '../../persistent_storage/save_user_details'
-import { OnlineUserFriendModel } from '../../types/models'
+import { MQTTPayload, OnlineUserFriendModel } from '../../types/models'
+import { listen } from '@tauri-apps/api/event'
+import { USER_ONLINE_EVENT } from '../../utils/mqtt_event_names'
 
 
 
 const OnlineFriendInviteModal = () => {
-
-    const [requestSent, setRequestSent] = useState(false)
+    const [requestSent, setRequestSent] = useState(true)
     const [friendsList , setFriendsList] = useState<OnlineUserFriendModel[]>([])
 
     //Alert states
@@ -21,7 +22,6 @@ const OnlineFriendInviteModal = () => {
 
     const getUserOnlineFriends = async () => {
     
-      setRequestSent(true)
       let payload = {user_id: user_details.id}
       let user_token = await getUserTokenFromStore()
        let val = await get_user_online_friends(JSON.stringify(payload), user_token)
@@ -44,6 +44,7 @@ const OnlineFriendInviteModal = () => {
               last_name: parsed_value.last_name,
               is_user_online: parsed_value.is_user_online
             }
+            return friend
           })
 
           setFriendsList([...friends_list])
@@ -53,8 +54,24 @@ const OnlineFriendInviteModal = () => {
        setRequestSent(false)
     }
 
+    const startListeningToUserOnlineUserEvents = async () => {
+      await  listen<MQTTPayload>(USER_ONLINE_EVENT, (event) => {
+        let parsed_payload = JSON.parse(event.payload.message) as OnlineUserFriendModel
+        let model: OnlineUserFriendModel = {
+          user_id: parsed_payload.user_id,
+          username: parsed_payload.username,
+          first_name: parsed_payload.last_name,
+          last_name: parsed_payload.last_name,
+          is_user_online: true
+        }
+        setFriendsList([model, ...friendsList])
+              })
+    }
+
     useEffect(() => {
-      getUserOnlineFriends()
+      getUserOnlineFriends().then(() => {
+        startListeningToUserOnlineUserEvents()
+      })
     }, [])
 
   return (
@@ -63,7 +80,7 @@ const OnlineFriendInviteModal = () => {
 <div className="modal-box">
 <div className='text-bold text-2xl'>Send Game Invite To Users</div>
 {
-  requestSent ? <span className="loading loading-dots loading-lg"></span> :     
+  requestSent ? <span className="loading loading-dots loading-lg mt-5"></span> :     
   <div className='flex flex-col justify-end mt-1'>
     <div className='my-1'> 
 

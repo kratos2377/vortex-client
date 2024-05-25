@@ -1,13 +1,35 @@
 import { IconCheck, IconX } from '@tabler/icons-react'
-import React from 'react'
+import React, { useState } from 'react'
+import { accept_or_reject_request_call } from '../../helper_functions/apiCall'
+import { getUserTokenFromStore } from '../../persistent_storage/save_user_details'
 
 
 interface FriendRequestCardProps {
     username: string,
     user_id: string,
+    friend_req_id: string,
+    deleteIdFromArray: (id: string) => Promise<void>
 }
 
-const FriendRequestCard = ({ username , user_id   } : FriendRequestCardProps) => {
+const FriendRequestCard = ({ username , user_id, friend_req_id , deleteIdFromArray  } : FriendRequestCardProps) => {
+
+  const [reqSent , setReqSent] = useState(false)
+  const acceptOrRejectRequest = async (value: string) => {
+    setReqSent(true)
+    let payload = JSON.stringify({value: value,friend_request_relation_id: friend_req_id })
+    let user_token = await getUserTokenFromStore()
+    let val = await accept_or_reject_request_call(payload , user_token)
+    
+
+    if(!val.status) {
+      return
+    } 
+
+    deleteIdFromArray(friend_req_id)
+    setReqSent(false)
+  }
+
+
   return (
     <div key={user_id}>
 
@@ -20,8 +42,11 @@ const FriendRequestCard = ({ username , user_id   } : FriendRequestCardProps) =>
   </div>
 
   <div className="card-actions justify-end flex flex-row self-center mr-1">
-      <button className="btn btn-success text-white"><IconCheck/></button>
-      <button className="btn btn-error text-white"><IconX/></button>
+ {reqSent ? <span className="loading loading-spinner loading-md text-white"></span> :
+     <div>
+       <button className="btn btn-success text-white" onClick={() => acceptOrRejectRequest("1")}><IconCheck/></button>
+      <button className="btn btn-error text-white" onClick={() => acceptOrRejectRequest("-1")}><IconX/></button>
+       </div> }
     </div>
 
 </div>

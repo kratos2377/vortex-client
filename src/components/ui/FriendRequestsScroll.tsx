@@ -48,7 +48,9 @@ const FriendRequestsScroll = ({setFriendReqCount}: FriendReqModalScrollProps) =>
 
           setFriendRequests([...friend_requests])
       }
-      setFriendReqCount(friendRequests.length)
+      setTimeout(() => {
+        setFriendReqCount(friendRequests.length)
+      }, 2000)
       setLoading(false)
     }
 
@@ -63,8 +65,16 @@ const FriendRequestsScroll = ({setFriendReqCount}: FriendReqModalScrollProps) =>
         }
         setFriendRequests([model, ...friendRequests])
         addFriendRequestModel(model)
-        setFriendReqCount(friendRequests.length)
+        setTimeout(() => {
+          setFriendReqCount(friendRequests.length)
+        }, 2000)
     });
+    }
+
+    //Replace this function with some zustand global state fn. This is just temp fix
+    const deleteIdFromArray = async (id: string) => {
+      let new_array = friendRequests.filter((el) => el.friend_request_id !== id)
+      setFriendRequests([...new_array])
     }
 
     useEffect(() => {
@@ -75,30 +85,32 @@ const FriendRequestsScroll = ({setFriendReqCount}: FriendReqModalScrollProps) =>
   
     return (
     <div>
-      {
-        friendRequests.length === 0 ? <div className="h-[calc(100vh-50rem)] flex flex-col items-center justify-center text-black text-xl">No Friend Requests Here
-        {/* <button className="btn btn-outline btn-success mt-2">Go to Profile Section</button> */}
-        </div> :   <div
-        className={cn("h-[calc(100vh-20rem)] items-start overflow-y-auto w-full")}
-        ref={gridRef}
-      >
-        <div
-          className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 items-start py-2"
-          ref={gridRef}
-        >
-          <div className="grid gap-10">
-            {friendRequests.map((el, idx) => (
-              <motion.div
-                style={{ y: translateFirst }} // Apply the translateY motion value here
-                key={"grid-1-" + idx}
-              >
-                    <FriendRequestCard key={el.friend_request_id} username={el.user_who_send_request_username} user_id={el.user_who_send_request_id}  />
-              </motion.div>
-            ))}
+        {
+          loading ? <span className="loading loading-dots loading-lg mt-5"></span> : 
+            friendRequests.length === 0 ? <div className="h-[calc(100vh-50rem)] flex flex-col items-center justify-center text-black text-xl my-6">No Friend Requests Here
+            {/* <button className="btn btn-outline btn-success mt-2">Go to Profile Section</button> */}
+            </div> :   <div
+            className={cn("h-[calc(100vh-20rem)] items-start overflow-y-auto w-full")}
+            ref={gridRef}
+          >
+            <div
+              className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 items-start py-2"
+              ref={gridRef}
+            >
+              <div className="grid gap-10">
+                {friendRequests.map((el, idx) => (
+                  <motion.div
+                    style={{ y: translateFirst }} // Apply the translateY motion value here
+                    key={"grid-1-" + idx}
+                  >
+                        <FriendRequestCard key={el.friend_request_id} username={el.user_who_send_request_username} user_id={el.user_who_send_request_id} friend_req_id={el.friend_request_id} deleteIdFromArray={deleteIdFromArray}  />
+                  </motion.div>
+                ))}
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-      }
+          
+        }
       </div>
   )
 }

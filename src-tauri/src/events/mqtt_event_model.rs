@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 
 
-#[derive(Clone , Serialize , Deserialize)]
+#[derive(Clone , Serialize , Deserialize, Debug)]
 pub struct MQTTEventModel {
     pub event_name: String,
     pub payload: String,

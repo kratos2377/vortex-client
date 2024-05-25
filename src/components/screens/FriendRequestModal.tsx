@@ -10,30 +10,7 @@ interface FriendReqModalProps {
 const FriendRequestModal = ({setFriendReqCount}: FriendReqModalProps) => {
 
     const [requestSent, setRequestSent] = useState(false)
-    const [username , setUsername] = useState("")
 
-    //Alert states
-    const [isAlert , setIsAlert] = useState(false)
-    const [alertType , setAlertType] = useState<"success" | "error">("success")
-    const [alertMessage, setAlertMessage] = useState("")
-    const {user_details} = useUserStore()
-
-    const handleUsernameChange = (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-      
-      setRequestSent(true)
-        setTimeout(() => {
-            setRequestSent(false)
-            document.getElementById('friend_requests_modal')!.close();
-        } , 3000)
-    }
-
-    const handleValueChanges = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const {id , value} = event.target
-        if (id === "username") {
-            setUsername(value)
-        }
-      }
 
   return (
     <div className='h-[60vh]'>

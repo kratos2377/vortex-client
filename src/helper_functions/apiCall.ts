@@ -184,6 +184,22 @@ export const get_user_friend_requests = async (payload: string , token: string) 
 }
 
 
+export const accept_or_reject_request_call = async (payload: string , token: string) => {
+  let val = await invoke('accept_or_reject_request', {payload: payload, token: getBearerToken(token)}).then((message) => {
+    let recv_msg = JSON.parse(message)
+
+    logMessage("accept_or_reject_request_call", recv_msg)
+
+    if(!recv_msg.result.success) {
+      return { "error_message": recv_msg.error_message, "status": false  }
+    } else {
+      return {"status": true}
+    }
+  });
+
+  return val
+}
+
 
 //Game API calls
 export const send_game_invite = async (payload: string , token: string) => {
