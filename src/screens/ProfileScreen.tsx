@@ -32,7 +32,7 @@ const ProfileScreen = () => {
  
       <div className='w-1/3 flex flex-col justify-center items-center'>
       <figure className={`avatar  w-1/2 p-4 self-center rounded-xl ring ring-primary ring-offset-base-100 ring-offset-2`}>
-        <img src={`https://robohash.org/randomseed`} alt='random-seed'/>
+        <img src={`https://robohash.org/${user_details.username}`} alt='random-seed'/>
         </figure>
       </div>
 

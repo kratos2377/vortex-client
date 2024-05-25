@@ -33,12 +33,13 @@ const FriendRequestsScroll = ({setFriendReqCount}: FriendReqModalScrollProps) =>
       let val = await get_user_friend_requests(payload , token);
 
       if (val.status) {
-          let friend_requests: FriendRequestModel[] = val.friends.map((el: FriendRequestModel) => {
+          let friend_requests: FriendRequestModel[] = val.friends.map((el) => {
+         
             let new_req: FriendRequestModel = {
-              friend_request_id: el.friend_request_id ,
-              user_who_send_request_id: el.user_who_send_request_id,
-              user_who_send_request_username: el.user_who_send_request_username,
-              user_who_we_are_sending_event: el.user_who_we_are_sending_event
+              friend_request_id: el.id ,
+              user_who_send_request_id: el.user_sent_id,
+              user_who_send_request_username: el.user_sent_username,
+              user_who_we_are_sending_event: el.user_recieved_id
             }
             addFriendRequestModel(new_req)
             
