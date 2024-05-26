@@ -80,7 +80,7 @@ const OnlineFriendInviteModal = () => {
 <div className="modal-box">
 <div className='text-bold text-2xl'>Send Game Invite To Users</div>
 {
-  requestSent ? <span className="loading loading-dots loading-lg mt-5"></span> :     
+  requestSent ? <span className="loading loading-dots loading-lg mt-5 text-black"></span> :     
   <div className='flex flex-col justify-end mt-1'>
     <div className='my-1'> 
 

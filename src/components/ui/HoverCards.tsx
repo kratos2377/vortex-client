@@ -9,11 +9,11 @@ export const OngoingGameCard = ({
   className,
 }: {
   items: {
-    id: string;
+    game_id: string;
     game_type: string;
-    game_image_url: string;
-    staked_game: boolean;
-    staked_value?: string | null;
+    game_image_url: string | null | undefined;
+    is_staked: boolean;
+    total_money_staked?: number | null;
   }[];
   className?: string;
 }) => {
@@ -45,7 +45,7 @@ export const OngoingGameCard = ({
         >
                  <div className="p-2 h-full w-full">
 
-          <Card key={item.id} className=" hover:cursor-pointer">
+          <Card key={item.game_id} className=" hover:cursor-pointer">
             <img className="w-20 h-20 mr-4 rounded-full self-center" src={`${item.game_image_url}`}/>
         
             <div>
@@ -54,11 +54,11 @@ export const OngoingGameCard = ({
 
             <div className="flex flex-row">
             <div className="mr-3 text-zinc-100 font-bold">
-              {item.staked_game ? "Staked Game" : "Normal"}
+              {item.is_staked ? "Staked Game" : "Normal"}
             </div>
 
-            {item.staked_game ? <div className="flex flex-row text-zinc-100">
-              <span className="mr-0.5">{item.staked_value}</span>
+            {item.is_staked ? <div className="flex flex-row text-zinc-100">
+              <span className="mr-0.5">{item.total_money_staked}</span>
               <span><IconCurrencySolana/></span>
                </div> : <div></div>}
 

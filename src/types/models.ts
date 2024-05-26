@@ -11,6 +11,14 @@ export type UserModel = {
 }
 
 
+export type GameModel = {
+    game_id: string,
+    game_type: string,
+    is_staked: boolean,
+    total_money_staked: number | null,
+    game_image_url: string | null | undefined
+}
+
 export type FriendRequestModel = {
     friend_request_id: string,
     user_who_send_request_id: string,
@@ -52,3 +60,16 @@ export type OnlineUserFriendModel = {
 export type MQTTPayload = {
     message: string;
 };
+
+
+export const getGameImageUrl = (game_type: string) => {
+    if (game_type.toLocaleLowerCase() === "chess") {
+        return "https://images.unsplash.com/photo-1528819622765-d6bcf132f793?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+    }
+
+    if (game_type.toLocaleLowerCase() === "scribble") {
+        return "https://images.unsplash.com/photo-1532483578477-e81e1513c3a7?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+    }
+
+    return "https://plus.unsplash.com/premium_photo-1671683371907-c70593326032?q=80&w=1972&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+}
