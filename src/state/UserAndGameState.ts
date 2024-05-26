@@ -21,6 +21,7 @@ type GameState = {
     game_id: string,
     game_type: string,
     game_name: string,
+    user_player_count_id: string,
     game_players: PlayerModel[],
     player_turns_order: PlayerTurnMappingModel[],
     current_player_turn: string,
@@ -61,6 +62,7 @@ type UserAction = {
     updateGameType: (type: string) => void
     updateGameName: (name: string) => void
     addGamePlayers: (player: PlayerModel) => void
+    updateUserPlayerCountId: (count_id: string) => void,
     updatePlayerTurnsOrder: (player_turns: PlayerTurnMappingModel) => void
     updateCurrentPlayerTurn: (current_player: string) => void
     updateTotalPlayers: (total_player: number) => void
@@ -125,6 +127,7 @@ export const useGameStore = create<GameState & GameAction> ((set) => ({
     game_id: '',
     game_name: '',
     game_type: '',
+    user_player_count_id: '',
     game_players: [],
     player_turns_order: [],
     current_player_turn: '',
@@ -133,6 +136,7 @@ export const useGameStore = create<GameState & GameAction> ((set) => ({
     updateGameId: (game_id) => set((state) => ({...state, game_id: game_id})),
     updateGameType: (type) => set((state) => ({...state, game_type: type})),
     updateGameName: (name) => set((state) => ({...state, game_name: name})),
+    updateUserPlayerCountId: (count_id) => set((state) => ({...state, user_player_count_id: count_id })),
     addGamePlayers: (player) => set((state) => ({...state, game_players: [...state.game_players, player]})),
     updatePlayerTurnsOrder: (player_turns) => set((state) => ({...state, player_turns_order: [...state.player_turns_order, player_turns].sort((a,b) => Number.parseInt(a.user_game_count_id) - Number.parseInt(b.user_game_count_id))})),
     updateCurrentPlayerTurn: (current_player) => set((state) => ({...state, current_player_turn: current_player})),

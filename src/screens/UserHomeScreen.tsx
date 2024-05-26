@@ -11,6 +11,7 @@ import { GameInvitesScroll } from '../components/ui/GameInvitesScroll';
 import {  MQTT_USER_EVENTS } from '../utils/mqtt_event_names';
 import { invoke } from '@tauri-apps/api/tauri';
 import { ErrorAlert, SuccessAlert } from '../components/ui/AlertMessage';
+import RedirectingToLobbyModal from '../components/screens/RedirectingToLobbyModal';
 
 const UserHomeScreen = () => {
 
@@ -93,6 +94,7 @@ const UserHomeScreen = () => {
            </div>
     </div>
 
+   <RedirectingToLobbyModal/>
 
   </div>
   </>

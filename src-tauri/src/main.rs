@@ -48,9 +48,15 @@ async fn main() {
             api::game::get_current_state_of_game,
             api::game::stake_in_game,
 
-            //MQTT events
+            //MQTT User events
             events::mqtt_events::subscribe_to_user_topic,
-            events::mqtt_events::listen_to_user_event
+            events::mqtt_events::unsubscribe_to_user_topic,
+            events::mqtt_events::listen_to_user_event,
+
+            //MQTT Game events
+            events::mqtt_events::subscribe_to_game_topic,
+            events::mqtt_events::unsubscribe_to_game_topic,
+            events::mqtt_events::listen_to_game_event,
 
         ]);
 

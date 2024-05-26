@@ -7,20 +7,29 @@ import { IconCheck, IconX } from "@tabler/icons-react";
 import { GameInviteUserModel, MQTTPayload } from "../../types/models";
 import { GAME_INVITE_EVENT } from "../../utils/mqtt_event_names";
 import { useUserStore } from "../../state/UserAndGameState";
+import { join_lobby_call } from "../../helper_functions/apiCall";
+import { getUserTokenFromStore } from "../../persistent_storage/save_user_details";
+import { useNavigate } from "react-router-dom";
 
-export const GameInvitesScroll = ({
-    className,
-  }: {
-    className?: string;
-  }) => {
+
+
+interface GameInviteScrollProps  {
+  setIsAlert: React.Dispatch<React.SetStateAction<boolean>>,
+  setAlertMessage: React.Dispatch<React.SetStateAction<string>>,
+  setAlertType: React.Dispatch<React.SetStateAction<"success" | "error">>
+}
+
+export const GameInvitesScroll = ({setIsAlert , setAlertMessage , setAlertType}: GameInviteScrollProps) => {
     const gridRef = useRef<any>(null);
     const { scrollYProgress } = useScroll({
       container: gridRef,
       offset: ["start start", "end start"], 
     });
+    const navigate = useNavigate()
+    const [requestSent , setRequestSent] = useState(false)
     const {addGameInviteModel, game_invites} = useUserStore()
     const translateFirst = useTransform(scrollYProgress, [0, 1], [0, -200]);
-   
+    const {user_details} = useUserStore()
     const [sortedUsers, setSortedUsers] = useState<GameInviteUserModel[]>([...game_invites]);
     
 
@@ -42,6 +51,43 @@ export const GameInvitesScroll = ({
         startGameInviteListener()
     }, [])
 
+    const acceptAndJoinLobby = async (game_id: string , game_name: string, game_type: string) => {
+      setRequestSent(true)
+      document.getElementById("joining_lobby_modal")!.showModal()
+      let user_token = await getUserTokenFromStore()
+      let payload = JSON.stringify({user_id: user_details.id, game_id: game_id, game_name: game_name})
+      let val = await join_lobby_call( payload,user_token)
+
+      if (!val.status) {
+        setAlertMessage(val.error_message)
+        setAlertType("error")
+        setIsAlert(true)
+
+        setTimeout(() => {
+          setIsAlert(false)
+        }, 3000)
+      } else {
+        document.getElementById('joining_lobby_modal')!.close()
+        document.getElementById("redirecting_to_lobby_modal")!.showModal()
+
+        // Add Game subscription
+        setTimeout(() => {
+          document.getElementById("redirecting_to_lobby_modal")!.close()
+          navigate("/lobby/" + game_id + "/" + game_type + "/" + val.game_host_id)
+        }, 2000)
+      }
+
+
+      setRequestSent(false)
+    }
+
+    // Game Fix
+    const removeGameInvite = async (invite_id: string) => {
+      setRequestSent(true)
+        let new_array = sortedUsers.filter((el) => el.game_id !== invite_id)
+        setSortedUsers([...new_array])
+        setRequestSent(false)
+    }
 
    
     return (
@@ -69,13 +115,21 @@ export const GameInvitesScroll = ({
   </div>
   <div className="card-body">
     <p className="text-white w-full text-lg">{el.username} has invite you to play {el.game_name}</p>
-    <p className="text-white">The game type is- {el.game_type}</p>
+    <p className="text-white">{el.game_type} Game</p>
   </div>
 
 
   <div className="card-actions justify-end flex flex-row self-center mr-1">
-      <button className="btn btn-success text-white"><IconCheck/></button>
-      <button className="btn btn-error text-white"><IconX/></button>
+     {
+      requestSent ? <span className="loading loading-spinner loading-md text-white"></span> :  <div>
+         <button className="btn btn-success text-white" onClick={() => [
+          acceptAndJoinLobby(el.game_id, el.game_name, el.game_type).then(() => {
+            removeGameInvite(el.game_id)
+          })
+      ]}><IconCheck/></button>
+      <button className="btn btn-error text-white" onClick={() => removeGameInvite(el.game_id)}><IconX/></button>
+         </div>
+     }
     </div>
 
 </div>

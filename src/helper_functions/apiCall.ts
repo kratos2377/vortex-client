@@ -218,6 +218,22 @@ export const send_game_invite = async (payload: string , token: string) => {
   return val
 }
 
+export const join_lobby_call = async (payload: string , token: string) => {
+  let val = await invoke('join_lobby', {payload: payload, token: getBearerToken(token)}).then((message) => {
+    let recv_msg = JSON.parse(message)
+
+    logMessage("join_lobby_call", recv_msg)
+
+    if(!recv_msg.result.success) {
+      return { "error_message": recv_msg.error_message, "status": false  }
+    } else {
+      return {"status": true, "game_host_id": recv_msg.game_host_id, "user_count_id": recv_msg.user_cnt_id}
+    }
+  });
+
+  return val
+}
+
 
 //Helper fns
 const getBearerToken = ( token: string) => {
