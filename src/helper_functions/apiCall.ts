@@ -203,7 +203,7 @@ export const accept_or_reject_request_call = async (payload: string , token: str
 
 //Game API calls
 export const send_game_invite = async (payload: string , token: string) => {
-  let val = await invoke('send_game_invite', {payload: payload, token: getBearerToken(token)}).then((message) => {
+  let val = await invoke('send_game_invite_event', {payload: payload, token: getBearerToken(token)}).then((message) => {
     let recv_msg = JSON.parse(message)
 
     logMessage("send_game_invite", recv_msg)

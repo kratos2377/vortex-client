@@ -35,14 +35,13 @@ const OnlineFriendInviteModal = () => {
             setIsAlert(false)
         }, 4000)
        } else {
-          let friends_list: OnlineUserFriendModel[] = val.friends.map((ele) => {
-            let parsed_value = JSON.parse(ele) as OnlineUserFriendModel
+          let friends_list: OnlineUserFriendModel[] = val.friends.map((ele: OnlineUserFriendModel) => {
             let friend: OnlineUserFriendModel = {
-              user_id: parsed_value.user_id,
-              username: parsed_value.username,
-              first_name: parsed_value.first_name,
-              last_name: parsed_value.last_name,
-              is_user_online: parsed_value.is_user_online
+              user_id: ele.user_id,
+              username: ele.username,
+              first_name: ele.first_name,
+              last_name: ele.last_name,
+              is_user_online: ele.is_user_online
             }
             return friend
           })
