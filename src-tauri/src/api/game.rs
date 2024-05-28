@@ -13,15 +13,23 @@ Ok(rec)
 }
 
 
-// #[tauri::command]
-// pub async fn verify_game_status(payload: String , token: String, state: State<'_ , MessierClient>) -> Result<String , ()> {
-// let req_url = BASE_URL.to_string() + GAME_API_ROUTE + "/verify_game_status";
-// let res = state.client.post(req_url).body(payload).header("Authorization" , token).header("Content-Type", "application/json").send().await.unwrap();
-// let rec = res.text().await.unwrap();
+#[tauri::command]
+pub async fn verify_game_status(payload: String , token: String, state: State<'_ , MessierClient>) -> Result<String , ()> {
+let req_url = BASE_URL.to_string() + GAME_API_ROUTE + "/verify_game_status";
+let res = state.client.post(req_url).body(payload).header("Authorization" , token).header("Content-Type", "application/json").send().await.unwrap();
+let rec = res.text().await.unwrap();
 
-// Ok(rec)
-// }
+Ok(rec)
+}
 
+#[tauri::command]
+pub async fn remove_game_models(payload: String , token: String, state: State<'_ , MessierClient>) -> Result<String , ()> {
+let req_url = BASE_URL.to_string() + GAME_API_ROUTE + "/remove_game_models";
+let res = state.client.post(req_url).body(payload).header("Authorization" , token).header("Content-Type", "application/json").send().await.unwrap();
+let rec = res.text().await.unwrap();
+
+Ok(rec)
+}
 
 #[tauri::command]
 pub async fn send_game_invite_event(payload: String ,token: String, state: State<'_ , MessierClient>) -> Result<String , ()> {

@@ -7,7 +7,7 @@ import { IconCheck, IconX } from "@tabler/icons-react";
 import { GameInviteUserModel, MQTTPayload } from "../../types/models";
 import { GAME_INVITE_EVENT } from "../../utils/mqtt_event_names";
 import { useUserStore } from "../../state/UserAndGameState";
-import { join_lobby_call } from "../../helper_functions/apiCall";
+import { join_lobby_call, verify_game_status_call } from "../../helper_functions/apiCall";
 import { getUserTokenFromStore } from "../../persistent_storage/save_user_details";
 import { useNavigate } from "react-router-dom";
 
@@ -69,12 +69,20 @@ export const GameInvitesScroll = ({setIsAlert , setAlertMessage , setAlertType}:
       } else {
         document.getElementById('joining_lobby_modal')!.close()
         document.getElementById("redirecting_to_lobby_modal")!.showModal()
+        let verify_call_payload = JSON.stringify({game_id: game_id , game_name: game_name, host_user_id: val.game_host_id, user_id: user_details.id})
+        let verify_rsp = await verify_game_status_call( verify_call_payload,user_token)
 
-        // Add Game subscription
-        setTimeout(() => {
+        if (!verify_rsp.status) {
           document.getElementById("redirecting_to_lobby_modal")!.close()
-          navigate("/lobby/" + game_id + "/" + game_type + "/" + val.game_host_id)
-        }, 2000)
+          navigate("/invalid_lobby/"  + game_id + "/" + game_name + "/" + val.game_host_id)
+        }
+        // Add Game subscription
+        else {
+          setTimeout(() => {
+            document.getElementById("redirecting_to_lobby_modal")!.close()
+            navigate("/lobby/" + game_id + "/" + game_type + "/" + val.game_host_id)
+          }, 1000)
+        }
       }
 
 

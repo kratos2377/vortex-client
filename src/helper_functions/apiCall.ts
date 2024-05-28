@@ -234,6 +234,39 @@ export const join_lobby_call = async (payload: string , token: string) => {
   return val
 }
 
+export const verify_game_status_call = async (payload: string, token: string) => {
+  let val = await invoke('verify_game_status', {payload: payload, token: getBearerToken(token)}).then((message) => {
+    let recv_msg = JSON.parse(message)
+
+    logMessage("verify_game_status", recv_msg)
+
+    if(!recv_msg.result.success) {
+      return { "error_message": recv_msg.error_message, "status": false  }
+    } else {
+      return {"status": true}
+    }
+  });
+
+  return val
+}
+
+
+export const remove_game_models_call = async (payload: string, token: string) => {
+  let val = await invoke('remove_game_models', {payload: payload, token: getBearerToken(token)}).then((message) => {
+    let recv_msg = JSON.parse(message)
+
+    logMessage("remove_game_models", recv_msg)
+
+    if(!recv_msg.result.success) {
+      return { "error_message": recv_msg.error_message, "status": false  }
+    } else {
+      return {"status": true}
+    }
+  });
+
+  return val
+}
+
 
 //Helper fns
 const getBearerToken = ( token: string) => {

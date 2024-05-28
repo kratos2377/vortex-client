@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import  ChessLogo  from "../assets/chess.svg";
 import  ScribbleLogo from "../assets/scribble.svg";
-import lobbyUsers from '../data/lobby_users.json'
 import { useParams } from 'react-router-dom';
 import { useUserStore } from '../state/UserAndGameState';
 import OnlineFriendInviteModal from '../components/screens/OnlineFriendInviteModal';
@@ -16,7 +15,7 @@ const LobbyScreen = () => {
   let {user_details} = useUserStore()
 
   const [readyState, setReadyState] = useState(false)
-  let [roomUsers , setLobbyUsers] = useState([...lobbyUsers])
+  let [roomUsers , setLobbyUsers] = useState([])
 
   const startTheGame = async () => {
 

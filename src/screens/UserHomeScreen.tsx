@@ -87,7 +87,7 @@ const UserHomeScreen = () => {
             </p>
 
             <div >
-            <GameInvitesScroll />
+            <GameInvitesScroll setIsAlert={setIsAlert} setAlertMessage={setAlertMessage} setAlertType={setAlertType}/>
             </div>
            </div>
   
