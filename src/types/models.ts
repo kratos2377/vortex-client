@@ -10,6 +10,13 @@ export type UserModel = {
     verified: boolean,
 }
 
+export type UserGameRelation = {
+     user_id: string,
+     username: string,
+     game_id: string,
+     player_type: string,
+     player_status: string,
+}
 
 export type GameModel = {
     game_id: string,

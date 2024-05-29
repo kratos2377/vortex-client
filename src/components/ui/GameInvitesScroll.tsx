@@ -6,7 +6,7 @@ import { listen } from "@tauri-apps/api/event";
 import { IconCheck, IconX } from "@tabler/icons-react";
 import { GameInviteUserModel, MQTTPayload } from "../../types/models";
 import { GAME_INVITE_EVENT } from "../../utils/mqtt_event_names";
-import { useUserStore } from "../../state/UserAndGameState";
+import { useGameStore, useUserStore } from "../../state/UserAndGameState";
 import { join_lobby_call, verify_game_status_call } from "../../helper_functions/apiCall";
 import { getUserTokenFromStore } from "../../persistent_storage/save_user_details";
 import { useNavigate } from "react-router-dom";
@@ -31,7 +31,7 @@ export const GameInvitesScroll = ({setIsAlert , setAlertMessage , setAlertType}:
     const translateFirst = useTransform(scrollYProgress, [0, 1], [0, -200]);
     const {user_details} = useUserStore()
     const [sortedUsers, setSortedUsers] = useState<GameInviteUserModel[]>([...game_invites]);
-    
+    const {updateGameId, updateGameName, updateGameType} = useGameStore()
 
     const startGameInviteListener = async () => {
       await listen<MQTTPayload>(GAME_INVITE_EVENT, (event) => {
@@ -55,7 +55,7 @@ export const GameInvitesScroll = ({setIsAlert , setAlertMessage , setAlertType}:
       setRequestSent(true)
       document.getElementById("joining_lobby_modal")!.showModal()
       let user_token = await getUserTokenFromStore()
-      let payload = JSON.stringify({user_id: user_details.id, game_id: game_id, game_name: game_name})
+      let payload = JSON.stringify({user_id: user_details.id, game_id: game_id, game_name: game_name, username: user_details.username})
       let val = await join_lobby_call( payload,user_token)
 
       if (!val.status) {
@@ -78,6 +78,9 @@ export const GameInvitesScroll = ({setIsAlert , setAlertMessage , setAlertType}:
         }
         // Add Game subscription
         else {
+          updateGameId(game_id)
+          updateGameName(game_name)
+          updateGameType(game_type)
           setTimeout(() => {
             document.getElementById("redirecting_to_lobby_modal")!.close()
             navigate("/lobby/" + game_id + "/" + game_type + "/" + val.game_host_id)

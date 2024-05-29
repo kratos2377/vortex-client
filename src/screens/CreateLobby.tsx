@@ -59,7 +59,7 @@ const CreateLobby = ( { setCurrentScreen } : { setCurrentScreen:  React.Dispatch
     }
 
     setRequestSent(true)
-    let payload = JSON.stringify({ user_id: user_details.id , game_type: selectedType , game_name: selectedGame })
+    let payload = JSON.stringify({ user_id: user_details.id , game_type: selectedType , game_name: selectedGame, username: user_details.username })
     let token = await getUserTokenFromStore()
 
     let val = await create_lobby_call(payload , token)

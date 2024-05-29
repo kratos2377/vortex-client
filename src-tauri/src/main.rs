@@ -48,6 +48,7 @@ async fn main() {
             api::game::get_current_state_of_game,
             api::game::stake_in_game,
             api::game::remove_game_models,
+            api::game::update_player_status,
 
             //MQTT User events
             events::mqtt_events::subscribe_to_user_topic,

@@ -267,6 +267,22 @@ export const remove_game_models_call = async (payload: string, token: string) =>
   return val
 }
 
+export const update_player_status = async (payload: string, token: string) => {
+  let val = await invoke('update_player_status', {payload: payload, token: getBearerToken(token)}).then((message) => {
+    let recv_msg = JSON.parse(message)
+
+    logMessage("update_player_status", recv_msg)
+
+    if(!recv_msg.result.success) {
+      return { "error_message": recv_msg.error_message, "status": false  }
+    } else {
+      return {"status": true}
+    }
+  });
+
+  return val
+}
+
 
 //Helper fns
 const getBearerToken = ( token: string) => {
