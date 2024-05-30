@@ -42,6 +42,7 @@ async fn main() {
             api::game::verify_game_status,
             api::game::send_game_invite_event,
             api::game::join_lobby,
+            api::game::leave_lobby,
             api::game::remove_user_lobby,
             api::game::destroy_lobby_and_game,
             api::game::get_ongoing_games_for_user,
@@ -49,6 +50,7 @@ async fn main() {
             api::game::stake_in_game,
             api::game::remove_game_models,
             api::game::update_player_status,
+            api::game::get_lobby_players,
 
             //MQTT User events
             events::mqtt_events::subscribe_to_user_topic,

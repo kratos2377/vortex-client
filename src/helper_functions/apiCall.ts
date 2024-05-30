@@ -234,6 +234,22 @@ export const join_lobby_call = async (payload: string , token: string) => {
   return val
 }
 
+export const leave_lobby_call = async (payload: string , token: string) => {
+  let val = await invoke('leave_lobby', {payload: payload, token: getBearerToken(token)}).then((message) => {
+    let recv_msg = JSON.parse(message)
+
+    logMessage("leave_lobby_call", recv_msg)
+
+    if(!recv_msg.result.success) {
+      return { "error_message": recv_msg.error_message, "status": false  }
+    } else {
+      return {"status": true}
+    }
+  });
+
+  return val
+}
+
 export const verify_game_status_call = async (payload: string, token: string) => {
   let val = await invoke('verify_game_status', {payload: payload, token: getBearerToken(token)}).then((message) => {
     let recv_msg = JSON.parse(message)
@@ -282,6 +298,23 @@ export const update_player_status = async (payload: string, token: string) => {
 
   return val
 }
+
+export const get_lobby_players = async (payload: string, token: string) => {
+  let val = await invoke('get_lobby_players', {payload: payload, token: getBearerToken(token)}).then((message) => {
+    let recv_msg = JSON.parse(message)
+
+    logMessage("get_lobby_players", recv_msg)
+
+    if(!recv_msg.result.success) {
+      return { "error_message": recv_msg.error_message, "status": false  }
+    } else {
+      return {"status": true, "lobby_users": recv_msg.lobby_users}
+    }
+  });
+
+  return val
+}
+
 
 
 //Helper fns
