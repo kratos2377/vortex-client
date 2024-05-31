@@ -107,7 +107,7 @@ export const GameInvitesScroll = ({setIsAlert , setAlertMessage , setAlertType}:
         sortedUsers.length === 0 ? <div className="h-[calc(100vh-20rem)] flex flex-col items-center justify-center text-white text-xl">Add Friends From Profile Section
         {/* <button className="btn btn-outline btn-success mt-2">Go to Profile Section</button> */}
         </div> :   <div
-        className={cn("h-[calc(100vh-10rem)] items-start overflow-y-auto w-9/10", className)}
+        className={cn("h-[calc(100vh-10rem)] items-start overflow-y-auto w-9/10")}
         ref={gridRef}
       >
         <div
