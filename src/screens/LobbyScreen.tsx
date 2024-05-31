@@ -123,7 +123,7 @@ setTimeout(() => {
       setLobbyUsers([...update_users])
      })
 
-     socket.on("new-user-joined", (msg) => {
+     socket.on("", (msg) => {
       let parsed_payload = JSON.parse(msg)
       let new_user: UserGameRelation = {
         user_id: parsed_payload.user_id,
@@ -143,6 +143,12 @@ setTimeout(() => {
       }
     )
      })
+
+     return () => {
+      socket.off("user-left-room")
+      socket.off("new-user-joined")
+      socket.off("user-status-update")
+     }
 
   } , [])
 
