@@ -24,7 +24,7 @@ const LobbyScreen = () => {
   let [roomUsers , setLobbyUsers] = useState<UserGameRelation[]>([])
   const [updateStatusRequestSent, setUpdateRequestSent] = useState(false)
   const [lobbyRequestSent , setLobbyRequestSent] = useState(false)
-
+  const [disableButton ,setDisableButton] = useState(false)
   //General purpose states
   const [generalPurposeMessage, setGeneralPurposeMessage] = useState("")
   const [generalPurposeTitle, setGeneralPurposeTitle] = useState("")
@@ -94,11 +94,11 @@ setTimeout(() => {
   setIsAlert(false)
 }, 3000)
     } else {
-
+      let isHost = user_details.id === host_user_id
       updateGameId("")
       updateGameName("")
       updateGameType("")
-      socket.emit("leaved-room", JSON.stringify({game_id: game_id, user_id: user_details.id , username: user_details.username, player_type: user_details.id === host_user_id ? "host" : "player"}))
+      socket.emit("leaved-room", JSON.stringify({game_id: game_id, user_id: user_details.id , username: user_details.username, player_type: isHost ? "host" : "player"}))
   
       setTimeout(() => {
         document.getElementById("general_purpose_modal")!.close()
@@ -123,7 +123,7 @@ setTimeout(() => {
       setLobbyUsers([...update_users])
      })
 
-     socket.on("", (msg) => {
+     socket.on("new-user-joined", (msg) => {
       let parsed_payload = JSON.parse(msg)
       let new_user: UserGameRelation = {
         user_id: parsed_payload.user_id,
@@ -144,10 +144,23 @@ setTimeout(() => {
     )
      })
 
+     socket.on("remove-all-users" , (msg) => {
+      setGeneralPurposeMessage("Host Left the Lobby")
+      setGeneralPurposeTitle("Host Left the Lobby. Redirecting to HomeScreen")
+      document.getElementById("general_purpose_modal")!.showModal()
+
+      setTimeout(() => {
+        
+      document.getElementById("general_purpose_modal")!.close()
+        navigate("/home")
+    } , 2000)
+     })
+
      return () => {
       socket.off("user-left-room")
       socket.off("new-user-joined")
       socket.off("user-status-update")
+      socket.off("remove-all-users")
      }
 
   } , [])
@@ -185,11 +198,11 @@ setTimeout(() => {
       }
 
       <div className='mt-3 self-center'>
-     {user_details.id === host_user_id ?  <button className="btn btn-outline btn-success mr-1">Start the Game</button> : <div></div>}
+     {user_details.id === host_user_id ?  <button className="btn btn-outline btn-success mr-1" disabled={disableButton}>Start the Game</button> : <div></div>}
     { updateStatusRequestSent ?  <span className="loading loading-spinner loading-md mr-1 ml-1"></span> :
-         !readyState ?        <button className="btn btn-outline btn-success mr-1 ml-1" onClick={() => updatePlayerStatus("ready")}>Ready!</button> :        <button className="btn btn-outline btn-error mr-1 ml-1" onClick={() => updatePlayerStatus("not-ready")}>Not Ready</button> }
-     <button className="btn btn-outline btn-info mr-1 ml-1" onClick={() => document.getElementById("online_friend_invite_modal")!.showModal()}>Invite Friends</button>
-      <button className="btn btn-outline btn-error ml-1" onClick={leaveLobby}>Leave Lobby</button>
+         !readyState ?        <button className="btn btn-outline btn-success mr-1 ml-1" onClick={() => updatePlayerStatus("ready")} disabled={disableButton}>Ready!</button> :        <button className="btn btn-outline btn-error mr-1 ml-1" onClick={() => updatePlayerStatus("not-ready")} disabled={disableButton}>Not Ready</button> }
+     <button className="btn btn-outline btn-info mr-1 ml-1" onClick={() => document.getElementById("online_friend_invite_modal")!.showModal()} disabled={disableButton}>Invite Friends</button>
+      <button className="btn btn-outline btn-error ml-1" onClick={leaveLobby} disabled={disableButton}>Leave Lobby</button>
       </div>
   </div>
     }
