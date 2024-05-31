@@ -315,7 +315,21 @@ export const get_lobby_players = async (payload: string, token: string) => {
   return val
 }
 
+export const destroy_lobby_and_game = async (payload: string, token: string) => {
+  let val = await invoke('destroy_lobby_and_game', {payload: payload, token: getBearerToken(token)}).then((message) => {
+    let recv_msg = JSON.parse(message)
 
+    logMessage("destroy_lobby_and_game", recv_msg)
+
+    if(!recv_msg.result.success) {
+      return { "error_message": recv_msg.error_message, "status": false  }
+    } else {
+      return {"status": true}
+    }
+  });
+
+  return val
+}
 
 //Helper fns
 const getBearerToken = ( token: string) => {

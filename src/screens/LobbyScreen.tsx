@@ -6,7 +6,7 @@ import { useGameStore, useUserStore } from '../state/UserAndGameState';
 import OnlineFriendInviteModal from '../components/screens/OnlineFriendInviteModal';
 import { ErrorAlert, SuccessAlert } from '../components/ui/AlertMessage';
 import { getUserTokenFromStore } from '../persistent_storage/save_user_details';
-import { get_lobby_players, leave_lobby_call, update_player_status } from '../helper_functions/apiCall';
+import { destroy_lobby_and_game, get_lobby_players, leave_lobby_call, update_player_status } from '../helper_functions/apiCall';
 import { UserGameRelation } from '../types/models';
 import { socket } from '../socket/socket';
 import GeneralPurposeModal from '../components/screens/GeneralPurposeModal';
@@ -99,7 +99,8 @@ setTimeout(() => {
       updateGameName("")
       updateGameType("")
       socket.emit("leaved-room", JSON.stringify({game_id: game_id, user_id: user_details.id , username: user_details.username, player_type: isHost ? "host" : "player"}))
-  
+      let delete_payload = JSON.stringify({game_id: game_id})
+      let delete_room_resp = await destroy_lobby_and_game(delete_payload ,user_token)
       setTimeout(() => {
         document.getElementById("general_purpose_modal")!.close()
         navigate("/home")
