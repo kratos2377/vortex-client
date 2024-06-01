@@ -13,6 +13,7 @@ import { LabelInputContainer } from '../components/ui/LabelInputContainer'
 
 const VerifyUserScreen = () => {
     const navigate = useNavigate()
+    const [initialCall , setInitialCall] = useState(false)
     const [userKey , setUserKey] = useState("")
     const [isAlert , setIsAlert] = useState(false)
     const [alertType, setAlertType] = useState<"success" | "error">("success")
@@ -92,6 +93,9 @@ const VerifyUserScreen = () => {
     }
 
     const sendEmailAgain = async () => {
+      if(!initialCall) {
+        setInitialCall(true)
+      }
       setSendingEmail(true)
       let json_string = JSON.stringify({id: user_details.id, to_email: user_details.email})
       let rsp = await send_email_call(json_string);
@@ -118,12 +122,6 @@ const VerifyUserScreen = () => {
       }
     }
 
-    useEffect( () => {
-
-      sendEmailAgain()
-
-    } , [])
-  
     return (
       <AuroraBackground>
       <motion.div
@@ -148,36 +146,52 @@ const VerifyUserScreen = () => {
 
       {isAlert ? alertType === "success" ? <SuccessAlert message={alertMessage} /> : <ErrorAlert message={alertMessage} /> : <div></div>}
 
-      {
-        sendingEmail || verifying ? <span className="loading loading-dots loading-lg"></span> :   
-        <form className="my-3 text-base" onSubmit={handleUserLogin}>
-          <LabelInputContainer className="mb-4">
-            <Label htmlFor="userkeyvalue" className="text-left" >Code: </Label>
-            <Input id="userkeyvalue" placeholder="Enter User Key You Recieved On Your Registered Email" type="text" onChange={handleValueChanges}/>
-          </LabelInputContainer>
-    
-          <button
-            className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
-            type="submit"
-          >
-            Verify Key &rarr;
-            <BottomGradient />
-          </button>
-    
-          <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-8 h-[1px] w-full" />
-    
-        </form>
-      }
+        {
+          !initialCall ? <div> </div> :       
+            sendingEmail || verifying ? <span className="loading loading-dots loading-lg"></span> :   
+            <form className="my-3 text-base" onSubmit={handleUserLogin}>
+              <LabelInputContainer className="mb-4">
+                <Label htmlFor="userkeyvalue" className="text-left" >Code: </Label>
+                <Input id="userkeyvalue" placeholder="Enter User Key You Recieved On Your Registered Email" type="text" onChange={handleValueChanges}/>
+              </LabelInputContainer>
+        
+              <button
+                className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
+                type="submit"
+              >
+                Verify Key &rarr;
+                <BottomGradient />
+              </button>
+        
+              <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-8 h-[1px] w-full" />
+        
+            </form>
+          
+        }
   
       
-        <div className="flex flex-col space-y-4">
-  
+        {
+          !initialCall ?      <div className="flex flex-col space-y-4">
+    
+          <button
+            className=" relative group/btn flex flex-row space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
+            onClick={sendEmailAgain}
+            disabled={sendingEmail || verifying}
+          >
+            <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+            Send Verifying Token
+            </span>
+            
+            <IconMail className="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
+            <BottomGradient />
+          </button>
+          </div>  :      <>
+          <div className="flex flex-col space-y-4">
+    
     <button
-      className=" relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
-      onClick={async () => {
-        await sendEmailAgain()
-      }}
-
+      className=" relative group/btn flex flex-row space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
+      onClick={sendEmailAgain}
+  
       disabled={sendingEmail || verifying}
     >
       <span className="text-neutral-700 dark:text-neutral-300 text-sm">
@@ -188,12 +202,14 @@ const VerifyUserScreen = () => {
       <BottomGradient />
     </button>
     </div>
-
+  
     <div className='mt-2'>
     <button className="btn btn-error" onClick={() => {
         deleteUserDetailsAndGoToAuthScreen()
     }} disabled={sendingEmail || verifying}>Try Login With Different User</button>
     </div>
+        }
+        </>
     </div>
     </motion.div>
   </AuroraBackground>
