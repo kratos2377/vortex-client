@@ -111,6 +111,7 @@ setTimeout(() => {
   useEffect(() => {
     
       getAllLobbyPlayers().then(() => {
+        console.log("SENDING SOCKET EVENT JOINED ROOM")
         socket.emit("joined-room", JSON.stringify({game_id: game_id, user_id: user_details.id , username: user_details.username}))
       })
   } , [])
@@ -189,7 +190,7 @@ setTimeout(() => {
             </figure>
             <div className="card-body items-center text-center">
               <h2 className="card-title">{val.username}</h2>
-              {user_details.id === host_user_id ? <h3 className="">(Host)</h3> : <div></div>}
+              {val.user_id === host_user_id ? <h3 className="">(Host)</h3> : <div></div>}
               {readyState ? <h3 className='text-green'>Ready!</h3> : <h3 className='text-red'>Not Ready</h3>}
             </div>
           </div>
