@@ -122,7 +122,7 @@ setTimeout(() => {
   useEffect(() => {
     
     getAllLobbyPlayers()
-  } , [roomUsers])
+  } , [])
 
   useEffect(() => {
     
