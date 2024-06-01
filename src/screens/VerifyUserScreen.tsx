@@ -208,8 +208,9 @@ const VerifyUserScreen = () => {
         deleteUserDetailsAndGoToAuthScreen()
     }} disabled={sendingEmail || verifying}>Try Login With Different User</button>
     </div>
+    </>
         }
-        </>
+     
     </div>
     </motion.div>
   </AuroraBackground>
