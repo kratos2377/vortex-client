@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import  ChessLogo  from "../assets/chess.svg";
 import  ScribbleLogo from "../assets/scribble.svg";
 import { useNavigate, useParams } from 'react-router-dom';
@@ -119,26 +119,17 @@ setTimeout(() => {
     }
   }
 
-  useEffect(() => {
-    
-    getAllLobbyPlayers()
-  } , [])
-
-  useEffect(() => {
-    
-        socket.emit("joined-room", JSON.stringify({game_id: game_id, user_id: user_details.id , username: user_details.username}))
+  const sendJoinedRoomSocketEvent = useCallback(() => {
+    socket.emit("joined-room", JSON.stringify({game_id: game_id, user_id: user_details.id , username: user_details.username}))
 
 
-        return () => {
-          socket.off("joined-room")
-        }
-   
-  } , [])
+    return () => {
+      socket.off("joined-room")
+    }
+  }, [])
 
-
-  // Having socket calls
-  useEffect(() => {
-     socket.on("user-left-room" , (msg) => {
+  const keepListeningToSocketEvents = useCallback(() => {
+    socket.on("user-left-room" , (msg) => {
       let parsed_payload = JSON.parse(msg)
       let update_users = roomUsers.filter((el) => el.user_id !== parsed_payload.user_id)
       setLobbyUsers([...update_users])
@@ -184,8 +175,25 @@ setTimeout(() => {
       socket.off("user-status-update")
       socket.off("remove-all-users")
      }
+  } , [])
 
-  })
+  useEffect(() => {
+    
+    getAllLobbyPlayers()
+  } , [])
+
+  useEffect(() => {
+    
+      sendJoinedRoomSocketEvent()
+   
+  } , [sendJoinedRoomSocketEvent])
+
+
+  // Having socket calls
+  useEffect(() => {
+
+    keepListeningToSocketEvents()
+  } , [keepListeningToSocketEvents])
 
   return (
     <>
