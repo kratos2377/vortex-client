@@ -17,10 +17,11 @@ struct Payload {
 pub fn subscribe_to_user_topic(payload: String , state: State<'_, MessierClient>) -> Result<String , ()> {
     let invoke_payload: MQTTInvokePayload = serde_json::from_str(&payload).unwrap();
     let sub_res = &state.mqtt_user_client.subscribe(&invoke_payload.topic_name, 0);
-
+    
     if sub_res.is_err() {
         return Ok("error".to_string())
     }
+    println!("SUBSCRIBED TO USER TOPIC");
     Ok("Subscribed to User Topic".to_string())
 }
 
@@ -68,6 +69,7 @@ pub async fn listen_to_user_event(app: AppHandle , state: State<'_,MessierClient
            if let Some(msg) = msg {
             let mqtt_payload_string = String::from_utf8(msg.payload().to_vec()).unwrap();
             let mqtt_event: MQTTEventModel = serde_json::from_str(&mqtt_payload_string).unwrap();
+            println!("EVENT: {:?}, payload: {:?}", mqtt_event.clone() , mqtt_payload_string.clone());
             app.emit_all(&mqtt_event.event_name, Payload {message: mqtt_event.payload}).unwrap();
         }
     }

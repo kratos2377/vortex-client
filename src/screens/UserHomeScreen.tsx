@@ -26,7 +26,8 @@ const UserHomeScreen = () => {
 
   const subscribe_to_mqtt_user_topic = async () => {
     let val = await invoke('subscribe_to_user_topic', {payload: JSON.stringify({topic_name: MQTT_USER_EVENTS + user_details.id}) })
-
+    console.log("NEW EVENT RECEIVED FROM MQTT")
+    console.log(val)
     if(val === "error") {
       return;
     }
