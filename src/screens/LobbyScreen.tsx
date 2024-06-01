@@ -121,7 +121,11 @@ setTimeout(() => {
 
   useEffect(() => {
     
-      getAllLobbyPlayers()
+    getAllLobbyPlayers()
+  } , [roomUsers])
+
+  useEffect(() => {
+    
         socket.emit("joined-room", JSON.stringify({game_id: game_id, user_id: user_details.id , username: user_details.username}))
 
 
