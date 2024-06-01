@@ -68,9 +68,9 @@ const OnlineFriendInviteModal = () => {
     }
 
     useEffect(() => {
-      getUserOnlineFriends().then(() => {
+      getUserOnlineFriends()
         startListeningToUserOnlineUserEvents()
-      })
+      
     }, [])
 
   return (

@@ -69,7 +69,18 @@ setIsAlert(false)
     if (!val.status) {
 
     } else {
-      let parse_models = val.lobby_users.map((el: UserGameRelation) => el)
+      let parse_models = val.lobby_users.map((el: UserGameRelation) => {
+        let model: UserGameRelation ={
+          user_id: el.user_id,
+          username: el.username,
+          game_id: el.game_id,
+          player_type: el.player_type,
+          player_status: el.player_status
+        }
+        return model
+      })
+      console.log("PARSE LOBBY MODELS IS")
+      console.log(parse_models)
       setLobbyUsers([...parse_models])
     }
 
@@ -112,6 +123,11 @@ setTimeout(() => {
     
       getAllLobbyPlayers()
         socket.emit("joined-room", JSON.stringify({game_id: game_id, user_id: user_details.id , username: user_details.username}))
+
+
+        return () => {
+          socket.off("joined-room")
+        }
    
   } , [])
 
@@ -125,9 +141,6 @@ setTimeout(() => {
      })
 
      socket.on("new-user-joined", (msg) => {
-      console.log("NEW EVENT RECEIEVED FOR NEW USER JOINED")
-      console.log("PAYLOAD IS")
-      console.log(msg)
       let parsed_payload = JSON.parse(msg)
       let new_user: UserGameRelation = {
         user_id: parsed_payload.user_id,
@@ -136,16 +149,17 @@ setTimeout(() => {
         player_type: "player",
         player_status: 'not-ready'
       }
-      setLobbyUsers([...roomUsers , new_user])
+      setLobbyUsers( (prevState) => [...prevState , new_user])
      })
 
      socket.on("user-status-update", (msg) => {
       let parse_payload = JSON.parse(msg)
-      setLobbyUsers((prevUsers) => {
-        const updatedUsers = prevUsers.map((user) => user.user_id === parse_payload.user_id ? {...user, type: parse_payload.status} : user)
-        return updatedUsers
-      }
-    )
+      
+      const updatedUsers = roomUsers.map((user) => user.user_id === parse_payload.user_id ? {...user, type: parse_payload.status} : user)
+
+      console.log("UPDATED ARRAY IS")
+      console.log(updatedUsers)
+      setLobbyUsers([...updatedUsers])
      })
 
      socket.on("remove-all-users" , (msg) => {
@@ -167,7 +181,7 @@ setTimeout(() => {
       socket.off("remove-all-users")
      }
 
-  }, [])
+  })
 
   return (
     <>
