@@ -164,7 +164,7 @@ setTimeout(() => {
       socket.off("remove-all-users")
      }
 
-  } , [])
+  })
 
   return (
     <>
