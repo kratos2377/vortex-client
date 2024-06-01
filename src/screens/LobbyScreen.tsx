@@ -212,7 +212,7 @@ setTimeout(() => {
         roomUsers.length === 0 ? <div>No Users Found. Invalid Lobby</div> :     <div className='p-3 grid grid-cols-5 gap-4'>
         {
           roomUsers.map((val , idx) => (
-          <div key={val.user_id} className="card w-50 bg-base-100 shadow-xl">
+          <div key={idx} className="card w-50 bg-base-100 shadow-xl">
             <figure className="self-center avatar w-20 rounded-full ring ring-black ring-offset-base-100 ring-offset-2 mt-5">
             <img src={`https://robohash.org/${val.username}`} alt={`${val.username}`}/>
             </figure>
