@@ -21,7 +21,7 @@ const VerifyUserScreen = () => {
     const { updateUserVerifiedStatus , resetUserModelState} = useUserStore()
     const {user_details} = useUserStore()
 
-    const [sendingEmail, setSendingEmail] = useState(true)
+    const [sendingEmail, setSendingEmail] = useState(false)
     const [verifying , setVerifying] = useState(false)
   
     const handleUserLogin = async (event: React.FormEvent<HTMLFormElement>) => {
