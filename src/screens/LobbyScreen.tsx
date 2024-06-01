@@ -125,6 +125,9 @@ setTimeout(() => {
      })
 
      socket.on("new-user-joined", (msg) => {
+      console.log("NEW EVENT RECEIEVED FOR NEW USER JOINED")
+      console.log("PAYLOAD IS")
+      console.log(msg)
       let parsed_payload = JSON.parse(msg)
       let new_user: UserGameRelation = {
         user_id: parsed_payload.user_id,
@@ -164,7 +167,7 @@ setTimeout(() => {
       socket.off("remove-all-users")
      }
 
-  })
+  }, [])
 
   return (
     <>

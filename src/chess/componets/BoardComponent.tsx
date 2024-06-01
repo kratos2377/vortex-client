@@ -136,7 +136,7 @@ const BoardComponent: FC = () => {
       socket.off("send-user-game-event")
     };
 
-  })
+  } , [])
 
 
   return (
