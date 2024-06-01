@@ -110,10 +110,9 @@ setTimeout(() => {
 
   useEffect(() => {
     
-      getAllLobbyPlayers().then(() => {
-        console.log("SENDING SOCKET EVENT JOINED ROOM")
+      getAllLobbyPlayers()
         socket.emit("joined-room", JSON.stringify({game_id: game_id, user_id: user_details.id , username: user_details.username}))
-      })
+   
   } , [])
 
 

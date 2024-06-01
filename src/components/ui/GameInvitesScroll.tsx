@@ -84,7 +84,7 @@ export const GameInvitesScroll = ({setIsAlert , setAlertMessage , setAlertType}:
           updateGameType(game_type)
           setTimeout(() => {
             document.getElementById("redirecting_to_lobby_modal")!.close()
-            navigate("/lobby/" + game_id + "/" + game_type + "/" + val.game_host_id)
+            navigate("/lobby/" + game_id + "/" + game_name + "/" + val.game_host_id)
           }, 1000)
         }
       }
