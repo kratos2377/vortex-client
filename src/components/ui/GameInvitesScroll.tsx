@@ -59,6 +59,7 @@ export const GameInvitesScroll = ({setIsAlert , setAlertMessage , setAlertType}:
       let val = await join_lobby_call( payload,user_token)
 
       if (!val.status) {
+        document.getElementById('joining_lobby_modal')!.close()
         setAlertMessage(val.error_message)
         setAlertType("error")
         setIsAlert(true)
