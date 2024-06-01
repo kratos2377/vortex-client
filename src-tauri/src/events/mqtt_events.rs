@@ -21,6 +21,7 @@ pub fn subscribe_to_user_topic(payload: String , state: State<'_, MessierClient>
     if sub_res.is_err() {
         return Ok("error".to_string())
     }
+    println!("SUBSCRIBED TO USER TOPIC: {:?}" , invoke_payload.topic_name);
     Ok("Subscribed to User Topic".to_string())
 }
 

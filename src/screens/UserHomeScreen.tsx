@@ -25,7 +25,10 @@ const UserHomeScreen = () => {
   const [alertType, setAlertType] = useState<"success" | "error">("success")
 
   const subscribe_to_mqtt_user_topic = async () => {
-    let val = await invoke('subscribe_to_user_topic', {payload: JSON.stringify({topic_name: MQTT_USER_EVENTS + user_details.id}) })
+    let payload = JSON.stringify({topic_name: MQTT_USER_EVENTS + user_details.id});
+    console.log("SUBSCRIBE PAYLOAD IS")
+    console.log(payload)
+    let val = await invoke('subscribe_to_user_topic', {payload:  payload})
 
     if(val === "error") {
       return;
