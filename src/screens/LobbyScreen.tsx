@@ -149,7 +149,8 @@ setTimeout(() => {
 
      socket.on("user-status-update", (msg) => {
       let parse_payload = JSON.parse(msg)
-      
+      console.log("PARSED PAYLOAD RECEVIEVED IS")
+      console.log(parse_payload)
       const updatedUsers = roomUsers.map((user) => user.user_id === parse_payload.user_id ? {...user, type: parse_payload.status} : user)
 
       console.log("UPDATED ARRAY IS")
@@ -175,7 +176,7 @@ setTimeout(() => {
       socket.off("user-status-update")
       socket.off("remove-all-users")
      }
-  } , [])
+  })
 
   useEffect(() => {
     

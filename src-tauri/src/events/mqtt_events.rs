@@ -21,7 +21,6 @@ pub fn subscribe_to_user_topic(payload: String , state: State<'_, MessierClient>
     if sub_res.is_err() {
         return Ok("error".to_string())
     }
-    println!("SUBSCRIBED TO USER TOPIC: {:?}" , invoke_payload.topic_name);
     Ok("Subscribed to User Topic".to_string())
 }
 
@@ -69,9 +68,6 @@ pub async fn listen_to_user_event(app: AppHandle , state: State<'_,MessierClient
            if let Some(msg) = msg {
             let mqtt_payload_string = String::from_utf8(msg.payload().to_vec()).unwrap();
             let mqtt_event: MQTTEventModel = serde_json::from_str(&mqtt_payload_string).unwrap();
-            println!("NEW MQTT EVENT RECEIVED");
-            println!("EVENT: {:?}", mqtt_event);
-            println!("Payload: {:?}", mqtt_payload_string);
             app.emit_all(&mqtt_event.event_name, Payload {message: mqtt_event.payload}).unwrap();
             
         }
