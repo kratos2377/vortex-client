@@ -54,6 +54,11 @@ setIsAlert(false)
       }, 2000);
     } else {
       socket.emit("update-user-status-in-room", JSON.stringify({user_id: user_details.id , username: user_details.username, game_id: game_id, status: status}))
+      const updatedUsers = roomUsers.map((user) => user.user_id === user_details.id ? {...user, player_type: status} : user)
+
+      console.log("UPDATED ARRAY IS")
+      console.log(updatedUsers)
+      setLobbyUsers([...updatedUsers])
       setReadyState(!readyState)
     }
 
@@ -149,9 +154,7 @@ setTimeout(() => {
 
      socket.on("user-status-update", (msg) => {
       let parse_payload = JSON.parse(msg)
-      console.log("PARSED PAYLOAD RECEVIEVED IS")
-      console.log(parse_payload)
-      const updatedUsers = roomUsers.map((user) => user.user_id === parse_payload.user_id ? {...user, type: parse_payload.status} : user)
+      const updatedUsers = roomUsers.map((user) => user.user_id === parse_payload.user_id ? {...user, player_type: parse_payload.status} : user)
 
       console.log("UPDATED ARRAY IS")
       console.log(updatedUsers)
