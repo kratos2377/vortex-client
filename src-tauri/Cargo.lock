@@ -1732,6 +1732,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "nano-id"
+version = "0.3.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6e9dfd208c32f1769f32839ad268ed13edda7646c1591769641e5fe089febd54"
+dependencies = [
+ "getrandom 0.2.14",
+]
+
+[[package]]
 name = "native-tls"
 version = "0.2.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3702,6 +3711,7 @@ checksum = "49874b5167b65d7193b8aba1567f5c7d93d001cafc34600cee003eda787e483f"
 name = "vortex-client"
 version = "0.0.0"
 dependencies = [
+ "nano-id",
  "paho-mqtt",
  "reqwest",
  "serde",

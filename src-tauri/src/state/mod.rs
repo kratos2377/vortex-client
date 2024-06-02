@@ -10,9 +10,10 @@ pub struct MessierClient {
 
 
 pub fn create_mqtt_client( topic: String) -> mqtt::Client {
+  let new_id = nano_id::base64::<15>();
   let create_opts = mqtt::CreateOptionsBuilder::new()
   .server_uri("tcp://127.0.0.1:1883")
-  .client_id("event_subscriptions_".to_string() +  &topic.to_string())
+  .client_id("event_subscriptions_".to_string() +  &topic.to_string() + "_" + &new_id)
   .delete_oldest_messages(true)
   .finalize();
 
@@ -20,7 +21,7 @@ pub fn create_mqtt_client( topic: String) -> mqtt::Client {
 
 
   let lwt = mqtt::MessageBuilder::new()
-  .topic("test")
+  .topic("connection_test")
   .payload("Consumer lost connection")
   .finalize();
 let conn_opts = mqtt::ConnectOptionsBuilder::new()
