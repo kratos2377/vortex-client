@@ -54,7 +54,7 @@ setIsAlert(false)
       }, 2000);
     } else {
       socket.emit("update-user-status-in-room", JSON.stringify({user_id: user_details.id , username: user_details.username, game_id: game_id, status: status}))
-      const updatedUsers = roomUsers.map((user) => user.user_id === user_details.id ? {...user, player_type: status} : user)
+      const updatedUsers = roomUsers.map((user) => user.user_id === user_details.id ? {...user, player_status: status} : user)
 
       console.log("UPDATED ARRAY IS")
       console.log(updatedUsers)
@@ -133,7 +133,23 @@ setTimeout(() => {
     }
   }, [])
 
-  const keepListeningToSocketEvents = useCallback(() => {
+
+
+  useEffect(() => {
+    
+    getAllLobbyPlayers()
+  } , [])
+
+  useEffect(() => {
+    
+      sendJoinedRoomSocketEvent()
+   
+  } , [sendJoinedRoomSocketEvent])
+
+
+  // Having socket calls
+  useEffect(() => {
+
     socket.on("user-left-room" , (msg) => {
       let parsed_payload = JSON.parse(msg)
       let update_users = roomUsers.filter((el) => el.user_id !== parsed_payload.user_id)
@@ -154,7 +170,7 @@ setTimeout(() => {
 
      socket.on("user-status-update", (msg) => {
       let parse_payload = JSON.parse(msg)
-      const updatedUsers = roomUsers.map((user) => user.user_id === parse_payload.user_id ? {...user, player_type: parse_payload.status} : user)
+      const updatedUsers = roomUsers.map((user) => user.user_id === parse_payload.user_id ? {...user, player_status: parse_payload.status} : user)
 
       console.log("UPDATED ARRAY IS")
       console.log(updatedUsers)
@@ -180,24 +196,6 @@ setTimeout(() => {
       socket.off("remove-all-users")
      }
   })
-
-  useEffect(() => {
-    
-    getAllLobbyPlayers()
-  } , [])
-
-  useEffect(() => {
-    
-      sendJoinedRoomSocketEvent()
-   
-  } , [sendJoinedRoomSocketEvent])
-
-
-  // Having socket calls
-  useEffect(() => {
-
-    keepListeningToSocketEvents()
-  } , [keepListeningToSocketEvents])
 
   return (
     <>
