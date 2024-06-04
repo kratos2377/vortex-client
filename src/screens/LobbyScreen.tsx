@@ -6,7 +6,7 @@ import { useGameStore, useUserStore } from '../state/UserAndGameState';
 import OnlineFriendInviteModal from '../components/screens/OnlineFriendInviteModal';
 import { ErrorAlert, SuccessAlert } from '../components/ui/AlertMessage';
 import { getUserTokenFromStore } from '../persistent_storage/save_user_details';
-import { destroy_lobby_and_game, get_lobby_players, leave_lobby_call, update_player_status } from '../helper_functions/apiCall';
+import { destroy_lobby_and_game, get_lobby_players, leave_lobby_call, start_game, update_player_status } from '../helper_functions/apiCall';
 import { UserGameRelation } from '../types/models';
 import { socket } from '../socket/socket';
 import GeneralPurposeModal from '../components/screens/GeneralPurposeModal';
@@ -35,7 +35,30 @@ const LobbyScreen = () => {
   const [alertMessage, setAlertMessage] = useState("")
 
   const startTheGame = async () => {
+    setGeneralPurposeMessage("")
+    setGeneralPurposeTitle("Verifying and Starting Game")
+    document.getElementById("general_purpose_modal")!.showModal()
+    //Getting tokens and call start_game API
+    let user_token = await getUserTokenFromStore()
+    let verify_socket_payload = JSON.stringify({user_id: host_user_id , game_id: game_id})
+    socket.emit("verifying-game-status" , verify_socket_payload)
 
+    let start_game_payload = JSON.stringify({game_id: game_id , game_name: gameType})
+    let val = await start_game(start_game_payload , user_token)
+
+    if (!val.status) {
+      setAlertMessage(val.error_message)
+      setAlertType("error")
+      setIsAlert(true)
+
+      setTimeout(() => {
+        setIsAlert(false)
+      } , 4000)
+    } else {
+      let start_game_payload = JSON.stringify({admin_id: host_user_id , game_id: game_id, game_name: game_name})
+      socket.emit("start-game-event" , start_game_payload)
+      document.getElementById("general_purpose_modal")!.close()
+    }
   }
 
   const updatePlayerStatus = async (status: string) => {
@@ -56,8 +79,7 @@ setIsAlert(false)
       socket.emit("update-user-status-in-room", JSON.stringify({user_id: user_details.id , username: user_details.username, game_id: game_id, status: status}))
       const updatedUsers = roomUsers.map((user) => user.user_id === user_details.id ? {...user, player_status: status} : user)
 
-      console.log("UPDATED ARRAY IS")
-      console.log(updatedUsers)
+   
       setLobbyUsers([...updatedUsers])
       setReadyState(!readyState)
     }
@@ -84,8 +106,6 @@ setIsAlert(false)
         }
         return model
       })
-      console.log("PARSE LOBBY MODELS IS")
-      console.log(parse_models)
       setLobbyUsers([...parse_models])
     }
 
@@ -116,7 +136,7 @@ setTimeout(() => {
       updateGameType("")
       socket.emit("leaved-room", JSON.stringify({game_id: game_id, user_id: user_details.id , username: user_details.username, player_type: isHost ? "host" : "player"}))
       let delete_payload = JSON.stringify({game_id: game_id})
-      let delete_room_resp = await destroy_lobby_and_game(delete_payload ,user_token)
+      await destroy_lobby_and_game(delete_payload ,user_token)
       setTimeout(() => {
         document.getElementById("general_purpose_modal")!.close()
         navigate("/home")
@@ -172,8 +192,7 @@ setTimeout(() => {
       let parse_payload = JSON.parse(msg)
       const updatedUsers = roomUsers.map((user) => user.user_id === parse_payload.user_id ? {...user, player_status: parse_payload.status} : user)
 
-      console.log("UPDATED ARRAY IS")
-      console.log(updatedUsers)
+
       setLobbyUsers([...updatedUsers])
      })
 
@@ -189,11 +208,25 @@ setTimeout(() => {
     } , 2000)
      })
 
+     socket.on("verifying-game" , (msg) => {
+      setGeneralPurposeMessage("")
+      setGeneralPurposeTitle("Verifying and Starting Game")
+      document.getElementById("general_purpose_modal")!.showModal()
+     })
+
+     socket.on("start-game-for-all" , (msg) => {
+      
+      document.getElementById("general_purpose_modal")!.close()
+      console.log("GAME GENWINLY STARTED")
+     })
+
      return () => {
       socket.off("user-left-room")
       socket.off("new-user-joined")
       socket.off("user-status-update")
       socket.off("remove-all-users")
+      socket.off("verifying-game")
+      socket.off("start-game-for-all")
      }
   })
 
@@ -230,7 +263,7 @@ setTimeout(() => {
       }
 
       <div className='mt-3 self-center'>
-     {user_details.id === host_user_id ?  <button className="btn btn-outline btn-success mr-1" disabled={disableButton}>Start the Game</button> : <div></div>}
+     {user_details.id === host_user_id ?  <button className="btn btn-outline btn-success mr-1" disabled={disableButton} onClick={startTheGame}>Start the Game</button> : <div></div>}
     { updateStatusRequestSent ?  <span className="loading loading-spinner loading-md mr-1 ml-1"></span> :
          !readyState ?        <button className="btn btn-outline btn-success mr-1 ml-1" onClick={() => updatePlayerStatus("ready")} disabled={disableButton}>Ready!</button> :        <button className="btn btn-outline btn-error mr-1 ml-1" onClick={() => updatePlayerStatus("not-ready")} disabled={disableButton}>Not Ready</button> }
      <button className="btn btn-outline btn-info mr-1 ml-1" onClick={() => document.getElementById("online_friend_invite_modal")!.showModal()} disabled={disableButton}>Invite Friends</button>
