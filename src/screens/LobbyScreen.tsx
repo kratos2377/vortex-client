@@ -6,8 +6,8 @@ import { useGameStore, useUserStore } from '../state/UserAndGameState';
 import OnlineFriendInviteModal from '../components/screens/OnlineFriendInviteModal';
 import { ErrorAlert, SuccessAlert } from '../components/ui/AlertMessage';
 import { getUserTokenFromStore } from '../persistent_storage/save_user_details';
-import { destroy_lobby_and_game, get_lobby_players, leave_lobby_call, start_game, update_player_status } from '../helper_functions/apiCall';
-import { UserGameRelation } from '../types/models';
+import { destroy_lobby_and_game, get_lobby_players, get_user_turn_mappings, leave_lobby_call, start_game, update_player_status } from '../helper_functions/apiCall';
+import { PlayerTurnMappingModel, UserGameRelation } from '../types/models';
 import { socket } from '../socket/socket';
 import GeneralPurposeModal from '../components/screens/GeneralPurposeModal';
 
@@ -19,7 +19,7 @@ const LobbyScreen = () => {
   const navigate = useNavigate()
   let {game_id , gameType , host_user_id} = useParams()
   let {user_details} = useUserStore()
-  let {game_name , updateGameId , updateGameName , updateGameType} = useGameStore()
+  let {game_name , updateGameId , updateGameName , updateGameType, updatePlayerTurnModel} = useGameStore()
   const [readyState, setReadyState] = useState(false)
   let [roomUsers , setLobbyUsers] = useState<UserGameRelation[]>([])
   const [updateStatusRequestSent, setUpdateRequestSent] = useState(false)
@@ -47,6 +47,8 @@ const LobbyScreen = () => {
     let val = await start_game(start_game_payload , user_token)
 
     if (!val.status) {
+      let error_payload = JSON.stringify({game_id: game_id , error_message: val.error_message})
+      socket.emit("error-event", error_payload )
       setAlertMessage(val.error_message)
       setAlertType("error")
       setIsAlert(true)
@@ -55,9 +57,31 @@ const LobbyScreen = () => {
         setIsAlert(false)
       } , 4000)
     } else {
-      let start_game_payload = JSON.stringify({admin_id: host_user_id , game_id: game_id, game_name: game_name})
-      socket.emit("start-game-event" , start_game_payload)
-      document.getElementById("general_purpose_modal")!.close()
+      socket.emit("get-turn-mappings" , JSON.stringify({game_id: game_id}))
+      let turn_mapping_call = await get_user_turn_mappings( JSON.stringify({game_id: game_id}),user_token) 
+
+      if (!turn_mapping_call.status) {
+        let error_payload = JSON.stringify({game_id: game_id , error_message: val.error_message})
+        socket.emit("error-event", error_payload )
+        setAlertMessage(val.error_message)
+        setAlertType("error")
+        setIsAlert(true)
+  
+        setTimeout(() => {
+          setIsAlert(false)
+        } , 4000)
+      } else {
+        let new_player_turn: PlayerTurnMappingModel ={
+          game_id: game_id!,
+          turn_mappings: JSON.parse(turn_mapping_call.user_turns)
+        }
+        updatePlayerTurnModel(new_player_turn)
+        let start_game_payload = JSON.stringify({admin_id: host_user_id , game_id: game_id, game_name: game_name})
+        socket.emit("start-game-event" , start_game_payload)
+        document.getElementById("general_purpose_modal")!.close()
+      }
+
+     
     }
   }
 
@@ -220,6 +244,28 @@ setTimeout(() => {
       console.log("GAME GENWINLY STARTED")
      })
 
+     socket.on("error-event-occured" , (msg) => {
+      let parsed_payload = JSON.parse(msg as string)
+      setAlertMessage(parsed_payload.error_message)
+setAlertType("error")
+setIsAlert(true)
+
+setTimeout(() => {
+  setIsAlert(false)
+}, 3000)
+     })
+
+
+     socket.on("fetch-user-turn-mappings", async (msg) => {
+      let user_token = await getUserTokenFromStore()
+      let turn_mapping_call = await get_user_turn_mappings( JSON.stringify({game_id: game_id}),user_token) 
+      let new_player_turn: PlayerTurnMappingModel ={
+        game_id: game_id!,
+        turn_mappings: JSON.parse(turn_mapping_call.user_turns)
+      }
+      updatePlayerTurnModel(new_player_turn)
+     })
+
      return () => {
       socket.off("user-left-room")
       socket.off("new-user-joined")
@@ -227,6 +273,8 @@ setTimeout(() => {
       socket.off("remove-all-users")
       socket.off("verifying-game")
       socket.off("start-game-for-all")
+      socket.off("error-event-occured")
+      socket.off("fetch-user-turn-mappings")
      }
   })
 
