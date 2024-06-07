@@ -79,6 +79,7 @@ const LobbyScreen = () => {
         let start_game_payload = JSON.stringify({admin_id: host_user_id , game_id: game_id, game_name: game_name})
         socket.emit("start-game-event" , start_game_payload)
         document.getElementById("general_purpose_modal")!.close()
+        navigate("/" + game_name + "/" + game_id  + "/" + host_user_id)
       }
 
      
@@ -241,7 +242,7 @@ setTimeout(() => {
      socket.on("start-game-for-all" , (msg) => {
       
       document.getElementById("general_purpose_modal")!.close()
-      console.log("GAME GENWINLY STARTED")
+      navigate("/" + game_name + "/" + game_id  + "/" + host_user_id)
      })
 
      socket.on("error-event-occured" , (msg) => {
