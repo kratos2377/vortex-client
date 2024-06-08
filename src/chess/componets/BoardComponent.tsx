@@ -205,7 +205,7 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
 
       resetPassantCells();
 
-          } else {
+          } else if (game_event.event_type === "promotion") {
             let game_move = JSON.parse(game_event.game_event) as ChessPromotionEvent
             let init_pos = JSON.parse(game_move.initial_cell) 
             let target_pos = JSON.parse(game_move.target_cell) 
@@ -230,6 +230,8 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
       setPawnTransformUtils(initialState);
 
       resetPassantCells();
+            
+          } else {
             
           }
     
