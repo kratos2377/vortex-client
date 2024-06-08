@@ -87,6 +87,7 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
       setMovesHistory( {  cellString: convertChessCell(cell), moveType: "normal" })
 
       if (!pawnTransformUtils.visible) {
+        console.log("SENDING GAME EVENT TO USER")
         let normal_chess_event: ChessNormalEvent = {
           initial_cell: JSON.stringify(selectedCell!),
           target_cell: JSON.stringify(cell!)
@@ -146,6 +147,7 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
   useEffect(() => {
 
     socket.on("send-user-game-event" , (data) => {
+      console.log("NEW GAME EVENT RECEIVED")
           let game_event = convertStringToGameEvent(data) as GameEventPayload
 
 
