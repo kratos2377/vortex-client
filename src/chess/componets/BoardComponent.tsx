@@ -202,9 +202,11 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
 
           } else {
             let game_move = JSON.parse(game_event.game_event) as ChessPromotionEvent
+            console.log("CHESS PROMOTED EVENT IS")
+            console.log(game_move)
             let init_pos = JSON.parse(game_move.initial_cell) 
             let target_pos = JSON.parse(game_move.target_cell) 
-            let piece_name = JSON.parse(game_move.promoted_to)
+            let piece_name = game_move.promoted_to
    
 
             let init_cell = board.getCell(parseInt(init_pos.x) , parseInt(init_pos.y))
