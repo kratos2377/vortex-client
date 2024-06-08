@@ -8,7 +8,7 @@ import usePlayerStore from "../../state/chess_store/player";
 import { King } from "../models/Piece/King";
 import PawnTransform from "./PawnTransform";
 import { IPawnTransformUtils } from "./types";
-import { useChessMainStore } from "../../state/UserAndGameState";
+import { useChessMainStore, useGameStore } from "../../state/UserAndGameState";
 import { initialCastlingState } from "../../state/chess_store/initial_states/castlingUtils";
 import { rankCoordinates } from "../../state/chess_store/initial_states/rankCoordinates";
 import { Color } from "../../types/chess_types/constants";
@@ -16,11 +16,18 @@ import { convertChessCell } from "../../helper_functions/convertChessCell";
 import { socket } from "../../socket/socket";
 import { GameEventPayload } from "../../types/ws_and_game_events";
 import { convertStringToGameEvent } from "../../helper_functions/convertGameEvents";
+import { ChessNormalEvent } from "../../types/game_event_model";
 
-const BoardComponent: FC = () => {
+
+interface BoardComponentProps {
+  game_id: string,
+  user_id: string
+}
+
+const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
   const initialState: IPawnTransformUtils = { visible: false, targetCell: null };
   const { update, board, selectedCell, setSelectedCell } = useBoardStore();
-  const { currentPlayer, passTurn , startingPlayerColor} = usePlayerStore();
+  const { currentPlayer, passTurn , startingPlayerColor , player_color} = usePlayerStore();
   const {
     pawnPassant,
     setCastlingUtils,
@@ -34,12 +41,18 @@ const BoardComponent: FC = () => {
     colorInCheckMate,
   } = useChessGameStore();
   const { currentTurn , setGameCondition, setTakenPieces, setCastlingBtn, setCurrentTurn , setMovesHistory } = useChessMainStore();
-
+  const {isSpectator} = useGameStore()
   const [pawnTransformUtils, setPawnTransformUtils] = useState<IPawnTransformUtils>(initialState);
   const [passantAvailable, setPassantAvailable] = useState<boolean>(false);
   const [firstRender, setFirstRender] = useState<boolean>(true);
 
   const clickHandler = (cell: Cell): void => {
+    if (isSpectator) 
+        return;
+
+    if (player_color !== currentPlayer)
+        return;
+
     if (colorInCheckMate || colorInStaleMate) return;
  
     if (currentPlayer === cell?.piece?.color) {
@@ -73,12 +86,19 @@ const BoardComponent: FC = () => {
 
       setMovesHistory( {  cellString: convertChessCell(cell), moveType: "normal" })
 
-      let gameEvent: GameEventPayload = {
-        user_id: "user_id",
-        game_event: JSON.stringify( convertChessCell(selectedCell!) + "-" + convertChessCell(cell) ),
-        game_id: "game_id"
+      if (!pawnTransformUtils.visible) {
+        let normal_chess_event: ChessNormalEvent = {
+          initial_cell: JSON.stringify(selectedCell!),
+          target_cell: JSON.stringify(cell!)
+        }
+        let gameEvent: GameEventPayload = {
+          user_id: user_id,
+          game_event: JSON.stringify( normal_chess_event ),
+          event_type: "normal",
+          game_id: game_id
+        }
+        socket.emit("game-event" , JSON.stringify(gameEvent))
       }
-      socket.emit("game-event" , JSON.stringify(gameEvent))
       
     }
   };
@@ -126,17 +146,43 @@ const BoardComponent: FC = () => {
   useEffect(() => {
 
     socket.on("send-user-game-event" , (data) => {
-          let game_event = convertStringToGameEvent(data)
+          let game_event = convertStringToGameEvent(data) as GameEventPayload
 
-          console.log("GAME EVENT RECIEVED IS")
-          console.log(game_event)
+
+          if (game_event.event_type === "normal") {
+            let game_move = JSON.parse(game_event.game_event) as ChessNormalEvent
+            let init_cell = JSON.parse(game_move.initial_cell) as Cell
+            let target_cell = JSON.parse(game_move.target_cell) as Cell
+
+            
+      if (target_cell.piece instanceof King) return;
+
+      if (target_cell.availableToPassant) {
+        const pieceGetByPassant = pawnPassant.getPawnByPassant(target_cell, init_cell!, board);
+        setTakenPieces(pieceGetByPassant!);
+      }
+
+      if (!colorInCheck && pawnUtils.isPawnOnLastLine(currentPlayer, init_cell!, target_cell))
+        setPawnTransformUtils({ ...pawnTransformUtils, visible: true, targetCell: target_cell });
+
+      else {
+        isCheck(target_cell);
+      }
+
+      resetPassantCells();
+
+          } else {
+              console.log("PROMOTION EVENT RECEIEVED");
+          }
+    
+
     })
 
     return () => {
       socket.off("send-user-game-event")
     };
 
-  } , [])
+  })
 
 
   return (
@@ -175,8 +221,7 @@ const BoardComponent: FC = () => {
       <PawnTransform
         pawntransformUtils={pawnTransformUtils}
         initialState={initialState}
-        setPawnTransformUtils={setPawnTransformUtils}
-      ></PawnTransform>
+        setPawnTransformUtils={setPawnTransformUtils} user_id={user_id} game_id={game_id}      ></PawnTransform>
     </>
   );
 };

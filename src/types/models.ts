@@ -52,8 +52,8 @@ export type PlayerModel = {
 }
 
 export type PlayerTurnMappingModel = {
-    user_game_count_id: string,
-    user_id: string,
+    game_id: string,
+    turn_mappings: TurnModel[]
 }
 
 export type OnlineUserFriendModel = {
@@ -63,6 +63,13 @@ export type OnlineUserFriendModel = {
     last_name: string;
     is_user_online: boolean;
 }
+
+type TurnModel = {
+     count_id: number,
+     user_id: string,
+     username: string,
+}
+
 
 export type MQTTPayload = {
     message: string;

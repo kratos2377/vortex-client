@@ -26,4 +26,6 @@ export interface PawnTransformProps {
   pawntransformUtils: IPawnTransformUtils;
   initialState: IPawnTransformUtils;
   setPawnTransformUtils: Dispatch<SetStateAction<IPawnTransformUtils>>;
+  user_id: string,
+  game_id: string,
 }

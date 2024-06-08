@@ -9,6 +9,7 @@ export type GameEvent = {
 export type GameEventPayload = {
      user_id: string;
      game_event: string;
+     event_type: string; // Can be normal, promotion, checkmate in case of chess, just normal undo, erase or draw in case of scribble. Will have to add it in backend as well from proper use
      game_id: string;
 }
 

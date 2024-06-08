@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { Color, PieceIcons, PieceNames } from "../models/Piece/types";
 import { PawnTransformProps } from "./types";
 import useBoardStore from "../../state/chess_store/board";
@@ -6,11 +6,17 @@ import useChessGameStore from "../../state/chess_store/game";
 import { pieces } from "../../state/chess_store/initial_states/pieceForTransform";
 import usePlayerStore from "../../state/chess_store/player";
 import { useChessMainStore } from "../../state/UserAndGameState";
+import { ChessPromotionEvent } from "../../types/game_event_model";
+import { convertChessCell } from "../../helper_functions/convertChessCell";
+import { GameEventPayload } from "../../types/ws_and_game_events";
+import { socket } from "../../socket/socket";
 
 const PawnTransform: FC<PawnTransformProps> = ({
   pawntransformUtils,
   setPawnTransformUtils,
   initialState,
+  user_id,
+  game_id
 }) => {
   const { currentPlayer, passTurn } = usePlayerStore();
   const { pawnUtils, validateCheck } = useChessGameStore();
@@ -24,7 +30,23 @@ const PawnTransform: FC<PawnTransformProps> = ({
     validateCheck();
     passTurn();
     setPawnTransformUtils(initialState);
+
+    let pawn_promotion_event: ChessPromotionEvent ={
+      initial_cell: JSON.stringify(selectedCell!),
+      target_cell: JSON.stringify(pawntransformUtils.targetCell!),
+      promoted_to: piece.name
+    }
+
+    let gameEvent: GameEventPayload = {
+      user_id: user_id,
+      game_event: JSON.stringify( pawn_promotion_event ),
+      event_type: "promotion",
+      game_id: game_id
+    }
+    socket.emit("game-event" , JSON.stringify(gameEvent))
   };
+
+
 
   if (!pawntransformUtils.visible) return null;
 

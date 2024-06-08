@@ -8,6 +8,8 @@ import LobbyScreen from "./screens/LobbyScreen";
 import UserHomeScreen from "./screens/UserHomeScreen";
 import VerifyUserScreen from "./screens/VerifyUserScreen";
 import InvalidLobbyScreen from "./screens/InvalidLobbyScreen";
+import ChessGame from "./chess";
+import ScribbleGame from "./scribble";
 
 
 
@@ -35,6 +37,14 @@ let router = createBrowserRouter([
   {
     path: "/lobby/:game_id/:gameType/:host_user_id",
     element: <LobbyScreen />
+  },
+  {
+    path: "/chess/:game_id/:host_user_id",
+    element: <ChessGame/>
+  },
+  {
+    path: "/scribble/:game_id/:host_user_id",
+    element: <ScribbleGame/>
   }
 ])
 

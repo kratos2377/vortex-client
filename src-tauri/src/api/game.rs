@@ -87,6 +87,18 @@ let rec = res.text().await.unwrap();
 Ok(rec)
 }
 
+
+#[tauri::command]
+pub async fn start_game(payload: String , token: String, state: State<'_ , MessierClient>) -> Result<String , ()> {
+let req_url = BASE_URL.to_string() + GAME_API_ROUTE + "/start_game";
+
+let res = state.client.post(req_url).body(payload).header("Authorization" , token).header("Content-Type", "application/json").send().await.unwrap();
+
+let rec = res.text().await.unwrap();
+
+Ok(rec)
+}
+
 #[tauri::command]
 pub async fn get_ongoing_games_for_user(payload: String , token: String, state: State<'_ , MessierClient>) -> Result<String , ()> {
 let req_url = BASE_URL.to_string() + GAME_API_ROUTE + "/get_ongoing_games_for_user";
@@ -134,6 +146,18 @@ Ok(rec)
 #[tauri::command]
 pub async fn get_lobby_players(payload: String , token: String, state: State<'_ , MessierClient>) -> Result<String , ()> {
 let req_url = BASE_URL.to_string() + GAME_API_ROUTE + "/get_lobby_players";
+
+let res = state.client.post(req_url).body(payload).header("Authorization" , token).header("Content-Type", "application/json").send().await.unwrap();
+
+let rec = res.text().await.unwrap();
+
+Ok(rec)
+}
+
+
+#[tauri::command]
+pub async fn get_user_turn_mappings(payload: String , token: String, state: State<'_ , MessierClient>) -> Result<String , ()> {
+let req_url = BASE_URL.to_string() + GAME_API_ROUTE + "/get_user_turn_mappings";
 
 let res = state.client.post(req_url).body(payload).header("Authorization" , token).header("Content-Type", "application/json").send().await.unwrap();
 

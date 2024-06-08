@@ -7,6 +7,7 @@ import { opposite } from "../../helper_functions/getChessOpponentColor";
 const usePlayerStore = create<PlayerStore>((set) => ({
   startingPlayerColor: Color.WHITE,
   currentPlayer: Color.WHITE,
+  player_color: Color.WHITE,
   setPlayerStartingColor: (color) => set((state) => ({...state , startingPlayerColor: color})),
   setCurrentPlayer: (color) => set((state) => ({ ...state, currentPlayer: color })),
   passTurn: () =>
@@ -14,6 +15,7 @@ const usePlayerStore = create<PlayerStore>((set) => ({
       ...state,
       currentPlayer: opposite(state.currentPlayer!),
     })),
+    setPlayerColor: (color) => set((state) => ({...state , player_color: color}))
 }));
 
 export default usePlayerStore;

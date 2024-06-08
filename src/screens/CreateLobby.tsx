@@ -19,7 +19,7 @@ const CreateLobby = ( { setCurrentScreen } : { setCurrentScreen:  React.Dispatch
   const [requestSent, setRequestSent] = useState(false)
   const [redirecting, setRedirecting] = useState(false)
   const {user_details} = useUserStore()
-  const {updateGameId, updateGameName, updateGameType} = useGameStore()
+  const {updateGameId, updateGameName, updateGameType , updateUserPlayerCountId} = useGameStore()
   const handleGameChange = (event: any) => {
     setSelectedGame(event.target.value);
   };
@@ -79,6 +79,7 @@ const CreateLobby = ( { setCurrentScreen } : { setCurrentScreen:  React.Dispatch
       updateGameId(val.game_id)
       updateGameName(selectedGame)
       updateGameType(selectedType)
+      updateUserPlayerCountId("1")
       setRedirecting(true)
       setAlertMessage("Redirecting to Lobby Screen")
       setAlertType("success")
