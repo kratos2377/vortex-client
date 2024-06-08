@@ -1,20 +1,15 @@
 import React, { useEffect, useState } from 'react'
-import GameInformation from './componets/UI/GameInformation'
 import BoardComponent from './componets/BoardComponent'
-import { useChessMainStore } from '../state/UserAndGameState'
-import WrappedTimer from './componets/UI/Timer'
-import { ChessStates, Color } from '../types/chess_types/constants'
+import { useChessMainStore, useUserStore } from '../state/UserAndGameState'
 import Cockpit from './componets/UI/Cockpit'
-import usePlayerStore from '../state/chess_store/player'
+import { useParams } from 'react-router-dom'
 
 
 const ChessGame = () => {
 
-  const [startGame , setStartGame] = useState(false)
-  const [colorType, setColorType] = useState(Color.WHITE)
   const {restart , setGameCurrentStatus} = useChessMainStore()
-  const {setPlayerStartingColor} = usePlayerStore()
-
+  const {game_id, host_user_id} = useParams()
+  const {user_id} = useUserStore()
   useEffect(() => {
     restart()
   } , [])
@@ -25,7 +20,7 @@ const ChessGame = () => {
       {/* <GameInformation /> */}
 
         <><div className='w-2/3 p-5 flex flex-row justify-center'>
-              <BoardComponent />
+              <BoardComponent game_id={game_id!} user_id={user_id}/>
             </div><div className='flex flex-col w-1/3 mx-10 justify-between'>
                 <Cockpit />
               </div></>

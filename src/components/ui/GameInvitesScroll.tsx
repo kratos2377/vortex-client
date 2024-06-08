@@ -31,7 +31,7 @@ export const GameInvitesScroll = ({setIsAlert , setAlertMessage , setAlertType}:
     const translateFirst = useTransform(scrollYProgress, [0, 1], [0, -200]);
     const {user_details} = useUserStore()
     const [sortedUsers, setSortedUsers] = useState<GameInviteUserModel[]>([...game_invites]);
-    const {updateGameId, updateGameName, updateGameType} = useGameStore()
+    const {updateGameId, updateGameName, updateGameType , updateUserPlayerCountId} = useGameStore()
 
     const startGameInviteListener = async () => {
       await listen<MQTTPayload>(GAME_INVITE_EVENT, (event) => {
@@ -82,6 +82,7 @@ export const GameInvitesScroll = ({setIsAlert , setAlertMessage , setAlertType}:
           updateGameId(game_id)
           updateGameName(game_name)
           updateGameType(game_type)
+          updateUserPlayerCountId(val.user_count_id)
           setTimeout(() => {
             document.getElementById("redirecting_to_lobby_modal")!.close()
             navigate("/lobby/" + game_id + "/" + game_name + "/" + val.game_host_id)
