@@ -16,7 +16,7 @@ import { convertChessCell } from "../../helper_functions/convertChessCell";
 import { socket } from "../../socket/socket";
 import { GameEventPayload } from "../../types/ws_and_game_events";
 import { convertStringToGameEvent } from "../../helper_functions/convertGameEvents";
-import { ChessNormalEvent } from "../../types/game_event_model";
+import { ChessNormalEvent, ChessPromotionEvent } from "../../types/game_event_model";
 import { Piece } from "../models/Piece/Piece";
 
 
@@ -87,8 +87,7 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
 
       setMovesHistory( {  cellString: convertChessCell(cell), moveType: "normal" })
 
-      if (!pawnTransformUtils.visible) {
-        console.log("SENDING GAME EVENT TO USER") 
+      if (!pawnTransformUtils.visible) { 
    
         let normal_chess_event: ChessNormalEvent = {
           initial_cell: JSON.stringify( {x: selectedCell!.x , y: selectedCell!.y}),
@@ -202,7 +201,31 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
       resetPassantCells();
 
           } else {
-              console.log("PROMOTION EVENT RECEIEVED");
+            let game_move = JSON.parse(game_event.game_event) as ChessPromotionEvent
+            let init_pos = JSON.parse(game_move.initial_cell) 
+            let target_pos = JSON.parse(game_move.target_cell) 
+            let piece_name = JSON.parse(game_move.promoted_to)
+   
+
+            let init_cell = board.getCell(parseInt(init_pos.x) , parseInt(init_pos.y))
+            let target_cell = board.getCell(parseInt(target_pos.x) , parseInt(target_pos.y))
+ 
+      if (target_cell.piece instanceof King) return;
+
+      if (target_cell.availableToPassant) {
+        const pieceGetByPassant = pawnPassant.getPawnByPassant(target_cell, init_cell!, board);
+        setTakenPieces(pieceGetByPassant!);
+      }
+
+      setTakenPieces(pawnTransformUtils!.targetCell!.piece!);
+      pawnUtils.transform(selectedCell!, pawnTransformUtils.targetCell!,piece_name , currentPlayer);
+      update();
+      validateCheck();
+      passTurn();
+      setPawnTransformUtils(initialState);
+
+      resetPassantCells();
+            
           }
     
 

@@ -1,6 +1,5 @@
 import * as React from "react";
 import WrappedTimer from "./Timer";
-import MoveHistory from "./MoveHistory";
 import { Color } from "../../models/Piece/types";
 import useEntryAnimate from "../../../helper_functions/useEntryAnimate";
 import { useChessMainStore } from "../../../state/UserAndGameState";
@@ -22,7 +21,6 @@ const Cockpit = () => {
       max-h-full w-1/2 flex flex-col justify-between border border-gray-300 opacity-1  }`}
     >
       <WrappedTimer player={Color.BLACK} />
-      <MoveHistory />
       <WrappedTimer player={Color.WHITE} />
     </div>
   ) : null;

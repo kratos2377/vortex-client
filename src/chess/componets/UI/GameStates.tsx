@@ -1,13 +1,23 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import Message from "./Message";
 import useChessGameStore from "../../../state/chess_store/game";
 import usePlayerStore from "../../../state/chess_store/player";
 import { useChessMainStore } from "../../../state/UserAndGameState";
+import { socket } from "../../../socket/socket";
 
 const GameStates: FC = () => {
   const { colorInCheck, colorInCheckMate, colorInStaleMate } = useChessGameStore();
   const { currentPlayer } = usePlayerStore();
   const { gameCondition } = useChessMainStore();
+
+  // useEffect(() => {
+   
+    
+  //   return () => {
+  //     socket.off()
+  //   }
+  // })
+
   return (
     <>
       {!colorInCheckMate && (

@@ -32,8 +32,8 @@ const PawnTransform: FC<PawnTransformProps> = ({
     setPawnTransformUtils(initialState);
 
     let pawn_promotion_event: ChessPromotionEvent ={
-      initial_cell: JSON.stringify(selectedCell!),
-      target_cell: JSON.stringify(pawntransformUtils.targetCell!),
+       initial_cell: JSON.stringify( {x: selectedCell!.x , y: selectedCell!.y}),
+          target_cell: JSON.stringify( {x: pawntransformUtils.targetCell!.x , y: pawntransformUtils.targetCell!.y}),
       promoted_to: piece.name
     }
 
