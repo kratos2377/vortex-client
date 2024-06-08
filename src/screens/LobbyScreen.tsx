@@ -77,11 +77,10 @@ const LobbyScreen = () => {
         let new_player_turn: PlayerTurnMappingModel ={
           game_id: game_id!,
           turn_mappings: turn_mapping_call.user_turns.turn_mappings.map((el: string) => {
-            let parse_el = JSON.parse(el) as TurnModel
             let new_mapping_model: TurnModel = {
-              count_id: parse_el.count_id,
-              user_id: parse_el.user_id,
-              username: parse_el.username
+              count_id: el.count_id,
+              user_id: el.user_id,
+              username: el.username
             }
             return new_mapping_model
           })
