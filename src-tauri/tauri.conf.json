@@ -2,7 +2,7 @@
   "build": {
     "beforeDevCommand": "yarn dev",
     "beforeBuildCommand": "yarn build",
-    "devPath": "http://localhost:1430",
+    "devPath": "http://localhost:1420",
     "distDir": "../dist"
   },
   "package": {
@@ -54,7 +54,7 @@
     "windows": [
       {
         "resizable": true,
-        "title": "vortex-client-copy",
+        "title": "vortex-client",
         "width": 800,
         "height": 600
       }

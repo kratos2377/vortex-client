@@ -249,7 +249,7 @@ setTimeout(() => {
      socket.on("verifying-game" , (msg) => {
       setGeneralPurposeMessage("")
       setGeneralPurposeTitle("Verifying and Starting Game")
-      document.getElementById("general_purpose_modal")!.showModal()
+     // document.getElementById("general_purpose_modal")!.showModal()
      })
 
      socket.on("start-game-for-all" , (msg) => {
