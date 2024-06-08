@@ -222,8 +222,8 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
         setTakenPieces(pieceGetByPassant!);
       }
 
-      setTakenPieces(pawnTransformUtils!.targetCell!.piece!);
-      pawnUtils.transform(init_cell!, pawnTransformUtils.targetCell!,piece_name , currentPlayer);
+      setTakenPieces(target_cell!.piece!);
+      pawnUtils.transform(init_cell!,target_cell,piece_name , currentPlayer);
       update();
       validateCheck();
       passTurn();
