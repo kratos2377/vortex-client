@@ -274,7 +274,14 @@ setTimeout(() => {
       let turn_mapping_call = await get_user_turn_mappings( JSON.stringify({game_id: game_id}),user_token) 
       let new_player_turn: PlayerTurnMappingModel ={
         game_id: game_id!,
-        turn_mappings: JSON.parse(turn_mapping_call.user_turns)
+        turn_mappings: turn_mapping_call.user_turns.turn_mappings.map((el: string) => {
+          let new_mapping_model: TurnModel = {
+            count_id: el.count_id,
+            user_id: el.user_id,
+            username: el.username
+          }
+          return new_mapping_model
+        })
       }
       updatePlayerTurnModel(new_player_turn)
      })
