@@ -76,19 +76,15 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
         setTakenPieces(pieceGetByPassant!);
       }
 
-      if (!colorInCheck && pawnUtils.isPawnOnLastLine(currentPlayer, selectedCell!, cell))
+      if (!colorInCheck && pawnUtils.isPawnOnLastLine(currentPlayer, selectedCell!, cell)){
         setPawnTransformUtils({ ...pawnTransformUtils, visible: true, targetCell: cell });
+      }
+       
 
       else {
         isCheck(cell);
-      }
 
-      resetPassantCells();
 
-      setMovesHistory( {  cellString: convertChessCell(cell), moveType: "normal" })
-
-      if (!pawnTransformUtils.visible) { 
-   
         let normal_chess_event: ChessNormalEvent = {
           initial_cell: JSON.stringify( {x: selectedCell!.x , y: selectedCell!.y}),
           target_cell: JSON.stringify( {x: cell!.x , y: cell!.y}),
@@ -101,6 +97,15 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
         }
         socket.emit("game-event" , JSON.stringify(gameEvent))
       }
+
+      resetPassantCells();
+
+    //  setMovesHistory( {  cellString: convertChessCell(cell), moveType: "normal" })
+
+      // if (!pawnTransformUtils.visible) { 
+   
+       
+      // }
       
     }
   };
@@ -202,8 +207,6 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
 
           } else {
             let game_move = JSON.parse(game_event.game_event) as ChessPromotionEvent
-            console.log("CHESS PROMOTED EVENT IS")
-            console.log(game_move)
             let init_pos = JSON.parse(game_move.initial_cell) 
             let target_pos = JSON.parse(game_move.target_cell) 
             let piece_name = game_move.promoted_to
