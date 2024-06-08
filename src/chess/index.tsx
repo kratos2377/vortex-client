@@ -13,6 +13,7 @@ const ChessGame = () => {
   const {user_details} = useUserStore()
   useEffect(() => {
     restart()
+    setGameCurrentStatus("READY")
   } , [])
     
   return (
