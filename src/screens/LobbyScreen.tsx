@@ -7,7 +7,7 @@ import OnlineFriendInviteModal from '../components/screens/OnlineFriendInviteMod
 import { ErrorAlert, SuccessAlert } from '../components/ui/AlertMessage';
 import { getUserTokenFromStore } from '../persistent_storage/save_user_details';
 import { destroy_lobby_and_game, get_lobby_players, get_user_turn_mappings, leave_lobby_call, start_game, update_player_status } from '../helper_functions/apiCall';
-import { PlayerTurnMappingModel, UserGameRelation } from '../types/models';
+import { PlayerTurnMappingModel, TurnModel, UserGameRelation } from '../types/models';
 import { socket } from '../socket/socket';
 import GeneralPurposeModal from '../components/screens/GeneralPurposeModal';
 import usePlayerStore from '../state/chess_store/player';
@@ -76,7 +76,15 @@ const LobbyScreen = () => {
       } else {
         let new_player_turn: PlayerTurnMappingModel ={
           game_id: game_id!,
-          turn_mappings: JSON.parse(turn_mapping_call.user_turns)
+          turn_mappings: turn_mapping_call.user_turns.turn_mappings.map((el: string) => {
+            let parse_el = JSON.parse(el) as TurnModel
+            let new_mapping_model: TurnModel = {
+              count_id: parse_el.count_id,
+              user_id: parse_el.user_id,
+              username: parse_el.username
+            }
+            return new_mapping_model
+          })
         }
         updatePlayerTurnModel(new_player_turn)
         let start_game_payload = JSON.stringify({admin_id: host_user_id , game_id: game_id, game_name: game_name})

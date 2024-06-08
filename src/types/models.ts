@@ -64,7 +64,7 @@ export type OnlineUserFriendModel = {
     is_user_online: boolean;
 }
 
-type TurnModel = {
+export type TurnModel = {
      count_id: number,
      user_id: string,
      username: string,
