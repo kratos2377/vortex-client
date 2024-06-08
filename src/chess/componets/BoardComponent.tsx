@@ -126,6 +126,29 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
       setSelectedCell(null);
     }
   };
+
+  const isCheckFromSocketMove = (init_cell: Cell, target_cell: Cell): void => {
+    const isCheckOnClone = check.isCheckOnClone(
+      init_cell as Cell,
+      board,
+      target_cell,
+      currentPlayer,
+      opposite(currentPlayer)
+    );
+    if (isCheckOnClone) {
+      const message = colorInCheck ? "Protect your king" : "Invalid move, king must be protected";
+      setGameCondition(message);
+      setTimeout(() => setGameCondition(""), 3000);
+    } else {
+      if (target_cell.piece) setTakenPieces(target_cell.piece);
+      init_cell?.movePiece(target_cell);
+      validateCheck();
+      setCurrentTurn(currentTurn === Color.WHITE ? Color.BLACK : Color.WHITE)
+      passTurn();
+      setSelectedCell(null);
+    }
+  };
+
   const resetPassantCells = (): void => {
     if (passantAvailable) pawnPassant.resetPassantCells(board);
   };
@@ -149,7 +172,6 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
   useEffect(() => {
 
     socket.on("send-user-game-event" , (data) => {
-      console.log("NEW GAME EVENT RECEIVED")
           let game_event = convertStringToGameEvent(data) as GameEventPayload
 
 
@@ -158,15 +180,11 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
             let init_pos = JSON.parse(game_move.initial_cell) 
             let target_pos = JSON.parse(game_move.target_cell) 
 
-            console.log("EVENT RECV IS")
-            console.log(init_pos)
-            console.log(target_pos)
+   
 
             let init_cell = board.getCell(parseInt(init_pos.x) , parseInt(init_pos.y))
             let target_cell = board.getCell(parseInt(target_pos.x) , parseInt(target_pos.y))
-            console.log("INIT_CELL_IS")
-            console.log(init_cell)
-            setSelectedCell(init_cell)
+ 
       if (target_cell.piece instanceof King) return;
 
       if (target_cell.availableToPassant) {
@@ -178,7 +196,7 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
         setPawnTransformUtils({ ...pawnTransformUtils, visible: true, targetCell: target_cell });
 
       else {
-        isCheck(target_cell);
+        isCheckFromSocketMove(init_cell , target_cell);
       }
 
       resetPassantCells();
