@@ -55,7 +55,7 @@ const LobbyScreen = () => {
       setAlertMessage(val.error_message)
       setAlertType("error")
       setIsAlert(true)
-
+      document.getElementById("general_purpose_modal")!.close()
       setTimeout(() => {
         setIsAlert(false)
       } , 4000)
@@ -69,7 +69,7 @@ const LobbyScreen = () => {
         setAlertMessage(val.error_message)
         setAlertType("error")
         setIsAlert(true)
-  
+        document.getElementById("general_purpose_modal")!.close()
         setTimeout(() => {
           setIsAlert(false)
         } , 4000)
