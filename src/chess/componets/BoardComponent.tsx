@@ -17,6 +17,7 @@ import { socket } from "../../socket/socket";
 import { GameEventPayload } from "../../types/ws_and_game_events";
 import { convertStringToGameEvent } from "../../helper_functions/convertGameEvents";
 import { ChessNormalEvent } from "../../types/game_event_model";
+import { Piece } from "../models/Piece/Piece";
 
 
 interface BoardComponentProps {
@@ -87,10 +88,11 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
       setMovesHistory( {  cellString: convertChessCell(cell), moveType: "normal" })
 
       if (!pawnTransformUtils.visible) {
-        console.log("SENDING GAME EVENT TO USER")
+        console.log("SENDING GAME EVENT TO USER") 
+   
         let normal_chess_event: ChessNormalEvent = {
-          initial_cell: JSON.stringify(selectedCell!),
-          target_cell: JSON.stringify(cell!)
+          initial_cell: JSON.stringify( {x: selectedCell!.x , y: selectedCell!.y}),
+          target_cell: JSON.stringify( {x: cell!.x , y: cell!.y}),
         }
         let gameEvent: GameEventPayload = {
           user_id: user_id,
@@ -153,9 +155,11 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
 
           if (game_event.event_type === "normal") {
             let game_move = JSON.parse(game_event.game_event) as ChessNormalEvent
-            let init_cell = JSON.parse(game_move.initial_cell) as Cell
-            let target_cell = JSON.parse(game_move.target_cell) as Cell
+            let init_pos = JSON.parse(game_move.initial_cell) 
+            let target_pos = JSON.parse(game_move.target_cell) 
 
+            let init_cell = board.getCell(parseInt(init_pos.x) , parseInt(init_pos.y))
+            let target_cell = board.getCell(parseInt(target_pos.x) , parseInt(target_pos.y))
             
       if (target_cell.piece instanceof King) return;
 
