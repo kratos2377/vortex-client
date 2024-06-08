@@ -160,7 +160,8 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
 
             let init_cell = board.getCell(parseInt(init_pos.x) , parseInt(init_pos.y))
             let target_cell = board.getCell(parseInt(target_pos.x) , parseInt(target_pos.y))
-            
+
+            setSelectedCell(init_cell)
       if (target_cell.piece instanceof King) return;
 
       if (target_cell.availableToPassant) {
