@@ -10,6 +10,8 @@ import { destroy_lobby_and_game, get_lobby_players, get_user_turn_mappings, leav
 import { PlayerTurnMappingModel, UserGameRelation } from '../types/models';
 import { socket } from '../socket/socket';
 import GeneralPurposeModal from '../components/screens/GeneralPurposeModal';
+import usePlayerStore from '../state/chess_store/player';
+import { Color } from '../types/chess_types/constants';
 
 
 
@@ -19,7 +21,8 @@ const LobbyScreen = () => {
   const navigate = useNavigate()
   let {game_id , gameType , host_user_id} = useParams()
   let {user_details} = useUserStore()
-  let {game_name , updateGameId , updateGameName , updateGameType, updatePlayerTurnModel} = useGameStore()
+  let {game_name , updateGameId , updateGameName , updateGameType, updatePlayerTurnModel , user_player_count_id} = useGameStore()
+  const {setPlayerColor} = usePlayerStore()
   const [readyState, setReadyState] = useState(false)
   let [roomUsers , setLobbyUsers] = useState<UserGameRelation[]>([])
   const [updateStatusRequestSent, setUpdateRequestSent] = useState(false)
@@ -181,7 +184,9 @@ setTimeout(() => {
 
 
   useEffect(() => {
-    
+    if (gameType==="chess" && user_player_count_id !== "1") {
+      setPlayerColor(Color.BLACK)
+    }
     getAllLobbyPlayers()
   } , [])
 

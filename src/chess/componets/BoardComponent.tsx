@@ -8,7 +8,7 @@ import usePlayerStore from "../../state/chess_store/player";
 import { King } from "../models/Piece/King";
 import PawnTransform from "./PawnTransform";
 import { IPawnTransformUtils } from "./types";
-import { useChessMainStore } from "../../state/UserAndGameState";
+import { useChessMainStore, useGameStore } from "../../state/UserAndGameState";
 import { initialCastlingState } from "../../state/chess_store/initial_states/castlingUtils";
 import { rankCoordinates } from "../../state/chess_store/initial_states/rankCoordinates";
 import { Color } from "../../types/chess_types/constants";
@@ -27,7 +27,7 @@ interface BoardComponentProps {
 const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
   const initialState: IPawnTransformUtils = { visible: false, targetCell: null };
   const { update, board, selectedCell, setSelectedCell } = useBoardStore();
-  const { currentPlayer, passTurn , startingPlayerColor} = usePlayerStore();
+  const { currentPlayer, passTurn , startingPlayerColor , player_color} = usePlayerStore();
   const {
     pawnPassant,
     setCastlingUtils,
@@ -41,12 +41,18 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
     colorInCheckMate,
   } = useChessGameStore();
   const { currentTurn , setGameCondition, setTakenPieces, setCastlingBtn, setCurrentTurn , setMovesHistory } = useChessMainStore();
-
+  const {isSpectator} = useGameStore()
   const [pawnTransformUtils, setPawnTransformUtils] = useState<IPawnTransformUtils>(initialState);
   const [passantAvailable, setPassantAvailable] = useState<boolean>(false);
   const [firstRender, setFirstRender] = useState<boolean>(true);
 
   const clickHandler = (cell: Cell): void => {
+    if (isSpectator) 
+        return;
+
+    if (player_color !== currentPlayer)
+        return;
+
     if (colorInCheckMate || colorInStaleMate) return;
  
     if (currentPlayer === cell?.piece?.color) {

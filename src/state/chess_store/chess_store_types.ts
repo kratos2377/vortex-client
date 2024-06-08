@@ -15,9 +15,11 @@ import { Color } from "../../types/chess_types/constants";
 export interface PlayerStore {
   currentPlayer: Color;
   startingPlayerColor: Color,
+  player_color: Color,
   setPlayerStartingColor: (color: Color) => void;
   setCurrentPlayer: (color: Color) => void;
   passTurn: () => void;
+  setPlayerColor: (color: Color) => void
 }
 export interface ChessGameState {
   helpers: boolean;
