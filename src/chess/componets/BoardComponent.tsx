@@ -18,6 +18,7 @@ import { GameEventPayload } from "../../types/ws_and_game_events";
 import { convertStringToGameEvent } from "../../helper_functions/convertGameEvents";
 import { ChessNormalEvent, ChessPromotionEvent } from "../../types/game_event_model";
 import { Piece } from "../models/Piece/Piece";
+import { PieceChar, getPieceCharFromPieceName } from "../models/Piece/types";
 
 
 interface BoardComponentProps {
@@ -86,8 +87,9 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
 
 
         let normal_chess_event: ChessNormalEvent = {
-          initial_cell: JSON.stringify( {x: selectedCell!.x , y: selectedCell!.y}),
-          target_cell: JSON.stringify( {x: cell!.x , y: cell!.y}),
+          initial_cell: JSON.stringify({ x: selectedCell!.x, y: selectedCell!.y }),
+          target_cell: JSON.stringify({ x: cell!.x, y: cell!.y }),
+          piece: getPieceCharFromPieceName(selectedCell!.piece?.name!)
         }
         let gameEvent: GameEventPayload = {
           user_id: user_id,
