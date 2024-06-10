@@ -19,7 +19,7 @@ const CreateLobby = ( { setCurrentScreen } : { setCurrentScreen:  React.Dispatch
   const [requestSent, setRequestSent] = useState(false)
   const [redirecting, setRedirecting] = useState(false)
   const {user_details} = useUserStore()
-  const {updateGameId, updateGameName, updateGameType , updateUserPlayerCountId} = useGameStore()
+  const {updateGameId, updateGameName, updateGameType , updateUserPlayerCountId , updateIsSpectator} = useGameStore()
   const handleGameChange = (event: any) => {
     setSelectedGame(event.target.value);
   };
@@ -76,6 +76,7 @@ const CreateLobby = ( { setCurrentScreen } : { setCurrentScreen:  React.Dispatch
       } , 3000)
 
     } else {
+      updateIsSpectator(false)
       updateGameId(val.game_id)
       updateGameName(selectedGame)
       updateGameType(selectedType)

@@ -10,6 +10,7 @@ import VerifyUserScreen from "./screens/VerifyUserScreen";
 import InvalidLobbyScreen from "./screens/InvalidLobbyScreen";
 import ChessGame from "./chess";
 import ScribbleGame from "./scribble";
+import SpectatorScreen from "./screens/SpectatorScreen";
 
 
 
@@ -37,6 +38,10 @@ let router = createBrowserRouter([
   {
     path: "/lobby/:game_id/:gameType/:host_user_id",
     element: <LobbyScreen />
+  },
+  {
+    path: "/spectate/:game_id/:game_name/:host_user_id",
+    element: <SpectatorScreen/>
   },
   {
     path: "/chess/:game_id/:host_user_id",

@@ -24,6 +24,7 @@ export type GameModel = {
     is_staked: boolean,
     total_money_staked: number | null,
     game_image_url: string | null | undefined
+    usernames_playing: string[] | null | undefined
 }
 
 export type FriendRequestModel = {

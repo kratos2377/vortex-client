@@ -14,10 +14,10 @@ export const OngoingGameCard = ({
     game_image_url: string | null | undefined;
     is_staked: boolean;
     total_money_staked?: number | null;
+    usernames_playing: string[] | null | undefined
   }[];
   className?: string;
 }) => {
-  let [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   const gridRef = useRef<any>(null);
   const { scrollYProgress } = useScroll({
@@ -49,7 +49,8 @@ export const OngoingGameCard = ({
             <img className="w-20 h-20 mr-4 rounded-full self-center" src={`${item.game_image_url}`}/>
         
             <div>
-            <CardDescription className="w-8/10 lg:text-2xl md:text-xl sm:text-md">{item.game_type.toUpperCase()}</CardDescription>
+            <CardDescription className="w-8/10 lg:text-2xl mb-1 md:text-xl sm:text-md">{item.game_type.toUpperCase()}</CardDescription>
+            <CardDescription className="w-8/10 lg:text-2xl md:text-xl sm:text-md">{joinAndTrimUsernames(item.usernames_playing!) + "... " + "are playing"}</CardDescription>
             <div className="flex flex-col mt-1">
 
             <div className="flex flex-row">
@@ -134,3 +135,11 @@ export const CardDescription = ({
     </p>
   );
 };
+
+
+const joinAndTrimUsernames = (usernames: string []) => {
+  if (usernames === null || usernames === undefined || usernames.length === 0) {
+    return ""
+  }
+  return usernames.join(', ').trim().slice(0,10)
+}

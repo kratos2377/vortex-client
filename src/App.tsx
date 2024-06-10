@@ -24,7 +24,7 @@ function App() {
         navigate("/auth")
       } else {
         await invoke('verify_token_request', { payload: JSON.stringify( { token: userToken})  }).then(async (message) => {
-          let recv_msg = JSON.parse(message)
+          let recv_msg = JSON.parse(message as string)
             if(!recv_msg.result.success) {
          
               navigate("/auth")
@@ -54,8 +54,8 @@ function App() {
       }  
     }
    
-    getAndVerifyToken()
-
+   // getAndVerifyToken()
+    navigate("/spectate/1234/chess/4321")
 
   } , [])
 
