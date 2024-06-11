@@ -363,6 +363,22 @@ export const get_user_turn_mappings = async (payload: string, token: string) => 
   return val
 }
 
+export const get_game_details = async (payload: string, token: string) => {
+  let val = await invoke('get_game_details', {payload: payload, token: getBearerToken(token)}).then((message) => {
+    let recv_msg = JSON.parse(message as string)
+
+    logMessage("get_game_details", recv_msg)
+
+    if(!recv_msg.result.success) {
+      return { "error_message": recv_msg.error_message, "status": false  }
+    } else {
+      return {"status": true, "game": recv_msg.game}
+    }
+  });
+
+  return val
+}
+
 //Helper fns
 const getBearerToken = ( token: string) => {
   return "Bearer " + token;

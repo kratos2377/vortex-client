@@ -165,3 +165,14 @@ let rec = res.text().await.unwrap();
 
 Ok(rec)
 }
+
+#[tauri::command]
+pub async fn get_game_details(payload: String , token: String, state: State<'_ , MessierClient>) -> Result<String , ()> {
+let req_url = BASE_URL.to_string() + GAME_API_ROUTE + "/get_game_details";
+
+let res = state.client.post(req_url).body(payload).header("Authorization" , token).header("Content-Type", "application/json").send().await.unwrap();
+
+let rec = res.text().await.unwrap();
+
+Ok(rec)
+}

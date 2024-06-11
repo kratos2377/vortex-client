@@ -3,10 +3,18 @@ import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion"
 import { useRef, useState } from "react";
 import { cn } from "../../utils/cn";
 import { IconCurrencySolana } from "@tabler/icons-react";
+import GeneralPurposeModal from "../screens/GeneralPurposeModal";
+import { useGameStore } from "../../state/UserAndGameState";
+import { get_game_details } from "../../helper_functions/apiCall";
+import { getUserTokenFromStore } from "../../persistent_storage/save_user_details";
+import { useNavigate } from "react-router-dom";
 
 export const OngoingGameCard = ({
   items,
   className,
+  setIsAlert,
+  setAlertType,
+  setAlertMessage
 }: {
   items: {
     game_id: string;
@@ -17,15 +25,53 @@ export const OngoingGameCard = ({
     usernames_playing: string[] | null | undefined
   }[];
   className?: string;
+  setIsAlert: React.Dispatch<React.SetStateAction<boolean>>,
+  setAlertType:  React.Dispatch<React.SetStateAction<"success" | "error">>,
+  setAlertMessage: React.Dispatch<React.SetStateAction<string>>
 }) => {
 
+  const [generalTitle, setGeneralTitle] = useState("")
+  const [generalMessage , setGeneralMessage] = useState("")
   const gridRef = useRef<any>(null);
   const { scrollYProgress } = useScroll({
     container: gridRef, // remove this if your container is not fixed height
     offset: ["start start", "end start"], // remove this if your container is not fixed height
   });
 
+  const {updateIsSpectator} = useGameStore()
   const translateFirst = useTransform(scrollYProgress, [0, 1], [0, -200]);
+  const navigate = useNavigate()
+  const startSpectatingGame = async (game_id: string ) => {
+    setGeneralTitle("Verifying Details")
+    setGeneralMessage("Redirecting To Spectating Screen")
+    updateIsSpectator(true)
+
+    let user_token = await getUserTokenFromStore()
+    let get_game_payload = JSON.stringify({game_id: game_id})
+    let val = await get_game_details(get_game_payload, user_token)
+
+    if (!val.status) {
+      setAlertMessage(val.error_message)
+      setAlertType("error")
+      setIsAlert(true)
+
+      setTimeout(() => {
+        setIsAlert(false)
+      }, 2000)
+
+
+    } else {
+
+      let game_rsp = JSON.parse(val.game) 
+
+      if (game_rsp.description === "LOBBY") {
+        navigate("/lobby/" + game_id + "/" + game_rsp.name + "/" + game_rsp.host_id)
+      } else {
+        navigate("/" + game_rsp.name + "/" + game_id + "/" +  game_rsp.host_id)
+      }
+    }
+    
+  } 
 
   return (
     <>
@@ -67,7 +113,7 @@ export const OngoingGameCard = ({
             </div>
 
             <div className="w-30 h-15 mt-1 items-end">
-               <button className="btn btn-outline btn-error">Spectate game</button>
+               <button className="btn btn-outline btn-error" onClick={() => startSpectatingGame(item.game_id)}>Spectate game</button>
                </div>
 
             </div>
@@ -79,6 +125,7 @@ export const OngoingGameCard = ({
       ))
     }
     </div>
+    <GeneralPurposeModal message={generalMessage} title={generalTitle} />
    </div> }
    </>
   );

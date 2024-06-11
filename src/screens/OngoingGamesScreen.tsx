@@ -5,6 +5,7 @@ import { get_ongoing_games_for_user } from '../helper_functions/apiCall'
 import { useUserStore } from '../state/UserAndGameState'
 import { getUserTokenFromStore } from '../persistent_storage/save_user_details'
 import { GameModel, getGameImageUrl } from '../types/models'
+import { ErrorAlert, SuccessAlert } from '../components/ui/AlertMessage'
 
 
 const OngoingGamesScreen = () => {
@@ -61,7 +62,10 @@ const OngoingGamesScreen = () => {
 
   return (
     <div className="px-2">
-      {loading ? <ScreenLoading/> :   <OngoingGameCard items={ongoingGamesData} />}
+      {isAlert ? <div className='mb-1'> {
+        alertType === "success" ? <SuccessAlert message={alertMessage}/> : <ErrorAlert message={alertMessage}/>
+        }</div> : <></>}
+      {loading ? <ScreenLoading/> :   <OngoingGameCard items={ongoingGamesData} setIsAlert={setIsAlert} setAlertType={setAlertType} setAlertMessage={setAlertMessage} />}
     </div>
   )
 }
