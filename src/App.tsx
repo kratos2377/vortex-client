@@ -54,8 +54,8 @@ function App() {
       }  
     }
    
-   // getAndVerifyToken()
-    navigate("/spectate/1234/chess/4321")
+    getAndVerifyToken()
+
 
   } , [])
 

@@ -67,7 +67,7 @@ const FriendRequestsScroll = ({setFriendReqCount}: FriendReqModalScrollProps) =>
         addFriendRequestModel(model)
         setTimeout(() => {
           setFriendReqCount(friendRequests.length)
-        }, 2000)
+        }, 500)
     });
     }
 

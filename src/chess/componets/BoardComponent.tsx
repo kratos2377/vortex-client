@@ -19,6 +19,9 @@ import { convertStringToGameEvent } from "../../helper_functions/convertGameEven
 import { ChessNormalEvent, ChessPromotionEvent } from "../../types/game_event_model";
 import { Piece } from "../models/Piece/Piece";
 import { PieceChar, getPieceCharFromPieceName } from "../models/Piece/types";
+import { MQTTPayload, UserGameEvent } from "../../types/models";
+import { USER_GAME_MOVE } from "../../utils/mqtt_event_names";
+import { listen } from "@tauri-apps/api/event";
 
 
 interface BoardComponentProps {
@@ -112,6 +115,9 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
     }
   };
   const isCheck = (cell: Cell): void => {
+    if (isSpectator)
+      return;
+
     const isCheckOnClone = check.isCheckOnClone(
       selectedCell as Cell,
       board,
@@ -133,7 +139,8 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
     }
   };
 
-  const isCheckFromSocketMove = (init_cell: Cell, target_cell: Cell): void => {
+  const isCheckFromSocketAndMQTTMove = (init_cell: Cell, target_cell: Cell): void => {
+
     const isCheckOnClone = check.isCheckOnClone(
       init_cell as Cell,
       board,
@@ -160,6 +167,9 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
   };
 
   useEffect(() => {
+    if (isSpectator)
+      return;
+
     if (!firstRender) {
       if (colorInCheck) validateCheckMate();
       else validateStaleMate();
@@ -176,6 +186,8 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
   }, [selectedCell]);
 
   useEffect(() => {
+    if (isSpectator)
+      return;
 
     socket.on("send-user-game-event" , (data) => {
           let game_event = convertStringToGameEvent(data) as GameEventPayload
@@ -202,7 +214,7 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
         setPawnTransformUtils({ ...pawnTransformUtils, visible: true, targetCell: target_cell });
 
       else {
-        isCheckFromSocketMove(init_cell , target_cell);
+        isCheckFromSocketAndMQTTMove(init_cell , target_cell);
       }
 
       resetPassantCells();
@@ -234,7 +246,7 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
       resetPassantCells();
             
           } else {
-            
+            console.log("invalid event")
           }
     
 
@@ -246,6 +258,77 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
 
   })
 
+
+  const startListeningToGameEvents = async () => {
+    await  listen<MQTTPayload>(USER_GAME_MOVE, (event) => {
+      let parsed_payload = JSON.parse(event.payload.message) as UserGameEvent
+
+      
+      if (parsed_payload.user_game_move.move_type === "normal") {
+        let game_move = JSON.parse(parsed_payload.user_game_move.user_move) as ChessNormalEvent
+        let init_pos = JSON.parse(game_move.initial_cell) 
+        let target_pos = JSON.parse(game_move.target_cell) 
+
+
+
+        let init_cell = board.getCell(parseInt(init_pos.x) , parseInt(init_pos.y))
+        let target_cell = board.getCell(parseInt(target_pos.x) , parseInt(target_pos.y))
+
+  if (target_cell.piece instanceof King) return;
+
+  if (target_cell.availableToPassant) {
+    const pieceGetByPassant = pawnPassant.getPawnByPassant(target_cell, init_cell!, board);
+    setTakenPieces(pieceGetByPassant!);
+  }
+
+  if (!colorInCheck && pawnUtils.isPawnOnLastLine(currentPlayer, init_cell!, target_cell))
+    setPawnTransformUtils({ ...pawnTransformUtils, visible: true, targetCell: target_cell });
+
+  else {
+    isCheckFromSocketAndMQTTMove(init_cell , target_cell);
+  }
+
+  resetPassantCells();
+
+      } else if (parsed_payload.user_game_move.move_type === "promotion") {
+        let game_move = JSON.parse(parsed_payload.user_game_move.user_move) as ChessPromotionEvent
+        let init_pos = JSON.parse(game_move.initial_cell) 
+        let target_pos = JSON.parse(game_move.target_cell) 
+        let piece_name = game_move.promoted_to
+
+
+        let init_cell = board.getCell(parseInt(init_pos.x) , parseInt(init_pos.y))
+        let target_cell = board.getCell(parseInt(target_pos.x) , parseInt(target_pos.y))
+
+  if (target_cell.piece instanceof King) return;
+
+  if (target_cell.availableToPassant) {
+    const pieceGetByPassant = pawnPassant.getPawnByPassant(target_cell, init_cell!, board);
+    setTakenPieces(pieceGetByPassant!);
+  }
+
+  setTakenPieces(target_cell!.piece!);
+  pawnUtils.transform(init_cell!,target_cell,piece_name , currentPlayer);
+  update();
+  validateCheck();
+  passTurn();
+  setPawnTransformUtils(initialState);
+
+  resetPassantCells();
+        
+      } else {
+        console.log("invalid event")
+      }
+
+
+            })
+  }
+
+  useEffect(() => {
+    if(isSpectator) {
+    startListeningToGameEvents()
+    }
+  } ,  [])
 
   return (
     <>

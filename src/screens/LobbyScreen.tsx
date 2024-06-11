@@ -7,11 +7,13 @@ import OnlineFriendInviteModal from '../components/screens/OnlineFriendInviteMod
 import { ErrorAlert, SuccessAlert } from '../components/ui/AlertMessage';
 import { getUserTokenFromStore } from '../persistent_storage/save_user_details';
 import { destroy_lobby_and_game, get_lobby_players, get_user_turn_mappings, leave_lobby_call, start_game, update_player_status } from '../helper_functions/apiCall';
-import { PlayerTurnMappingModel, TurnModel, UserGameRelation } from '../types/models';
+import { MQTTPayload, PlayerTurnMappingModel, TurnModel, UserGameRelation } from '../types/models';
 import { socket } from '../socket/socket';
 import GeneralPurposeModal from '../components/screens/GeneralPurposeModal';
 import usePlayerStore from '../state/chess_store/player';
 import { Color } from '../types/chess_types/constants';
+import { listen } from '@tauri-apps/api/event';
+import { GAME_GENERAL_EVENT, USER_JOINED_ROOM, USER_LEFT_ROOM } from '../utils/mqtt_event_names';
 
 
 
@@ -21,7 +23,7 @@ const LobbyScreen = () => {
   const navigate = useNavigate()
   let {game_id , gameType , host_user_id} = useParams()
   let {user_details} = useUserStore()
-  let {game_name , updateGameId , updateGameName , updateGameType, updatePlayerTurnModel , user_player_count_id} = useGameStore()
+  let {game_name , updateGameId , updateGameName , updateGameType, updatePlayerTurnModel , user_player_count_id , isSpectator} = useGameStore()
   const {setPlayerColor} = usePlayerStore()
   const [readyState, setReadyState] = useState(false)
   let [roomUsers , setLobbyUsers] = useState<UserGameRelation[]>([])
@@ -180,6 +182,9 @@ setTimeout(() => {
   }
 
   const sendJoinedRoomSocketEvent = useCallback(() => {
+    if (isSpectator)
+      return
+
     socket.emit("joined-room", JSON.stringify({game_id: game_id, user_id: user_details.id , username: user_details.username}))
 
 
@@ -206,6 +211,9 @@ setTimeout(() => {
 
   // Having socket calls
   useEffect(() => {
+
+    if (isSpectator)
+      return;
 
     socket.on("user-left-room" , (msg) => {
       let parsed_payload = JSON.parse(msg)
@@ -298,6 +306,36 @@ setTimeout(() => {
      }
   })
 
+
+  // isSpecator Events Listenet
+
+  const startListeningToSpectatorEvents = async () => {
+      await listen<MQTTPayload>(USER_JOINED_ROOM, (event) => {
+        let parsed_payload = JSON.parse(event.payload.message) 
+        let new_user: UserGameRelation = {
+          user_id: parsed_payload.user_id,
+          username: parsed_payload.username,
+          game_id: parsed_payload.game_id,
+          player_type: "player",
+          player_status: 'not-ready'
+        }
+        setLobbyUsers( (prevState) => [...prevState , new_user])
+    });
+
+    await listen<MQTTPayload>(USER_LEFT_ROOM, (event) => {
+      let parsed_payload = JSON.parse(event.payload.message)
+      let update_users = roomUsers.filter((el) => el.user_id !== parsed_payload.user_id)
+      setLobbyUsers([...update_users])
+
+  });
+  }
+
+  useEffect(() => {
+    if (isSpectator) {
+    startListeningToSpectatorEvents()
+    }
+  } , [])
+
   return (
     <>
 
@@ -330,13 +368,15 @@ setTimeout(() => {
       </div>
       }
 
-      <div className='mt-3 self-center'>
-     {user_details.id === host_user_id ?  <button className="btn btn-outline btn-success mr-1" disabled={disableButton} onClick={startTheGame}>Start the Game</button> : <div></div>}
-    { updateStatusRequestSent ?  <span className="loading loading-spinner loading-md mr-1 ml-1"></span> :
-         !readyState ?        <button className="btn btn-outline btn-success mr-1 ml-1" onClick={() => updatePlayerStatus("ready")} disabled={disableButton}>Ready!</button> :        <button className="btn btn-outline btn-error mr-1 ml-1" onClick={() => updatePlayerStatus("not-ready")} disabled={disableButton}>Not Ready</button> }
-     <button className="btn btn-outline btn-info mr-1 ml-1" onClick={() => document.getElementById("online_friend_invite_modal")!.showModal()} disabled={disableButton}>Invite Friends</button>
-      <button className="btn btn-outline btn-error ml-1" onClick={leaveLobby} disabled={disableButton}>Leave Lobby</button>
-      </div>
+  {
+    isSpectator ? <></> :      <div className='mt-3 self-center'>
+    {user_details.id === host_user_id ?  <button className="btn btn-outline btn-success mr-1" disabled={disableButton} onClick={startTheGame}>Start the Game</button> : <div></div>}
+   { updateStatusRequestSent ?  <span className="loading loading-spinner loading-md mr-1 ml-1"></span> :
+        !readyState ?        <button className="btn btn-outline btn-success mr-1 ml-1" onClick={() => updatePlayerStatus("ready")} disabled={disableButton}>Ready!</button> :        <button className="btn btn-outline btn-error mr-1 ml-1" onClick={() => updatePlayerStatus("not-ready")} disabled={disableButton}>Not Ready</button> }
+    <button className="btn btn-outline btn-info mr-1 ml-1" onClick={() => document.getElementById("online_friend_invite_modal")!.showModal()} disabled={disableButton}>Invite Friends</button>
+     <button className="btn btn-outline btn-error ml-1" onClick={leaveLobby} disabled={disableButton}>Leave Lobby</button>
+     </div>
+  }
   </div>
     }
 

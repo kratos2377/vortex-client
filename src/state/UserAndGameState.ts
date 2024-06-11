@@ -28,6 +28,9 @@ type GameState = {
     current_player_turn: string,
     total_players: number,
     index_turn: number,
+
+    // Game States
+    chess_state: string,
 }
 
 // type SpectatorState = {
@@ -70,6 +73,9 @@ type UserAction = {
     updateIndexTurn: (index_turn: number) => void
     removeGamePlayer: (player: PlayerModel) => void
     updateIsSpectator: (spectator_status: boolean) => void
+    
+    //Game states function
+    updateChessState: (state: string) => void
   }
 
 
@@ -136,6 +142,7 @@ export const useGameStore = create<GameState & GameAction> ((set) => ({
     isSpectator: false,
     total_players: 0,
     index_turn: 0,
+    chess_state: '',
     updateGameId: (game_id) => set((state) => ({...state, game_id: game_id})),
     updateGameType: (type) => set((state) => ({...state, game_type: type})),
     updateGameName: (name) => set((state) => ({...state, game_name: name})),
@@ -146,8 +153,9 @@ export const useGameStore = create<GameState & GameAction> ((set) => ({
     updateTotalPlayers: (total_player) => set((state) => ({...state, total_players: total_player})),
     updateIndexTurn: (index_turn) => set((state) => ({...state, index_turn: (index_turn+ 1)%(state.total_players)})),
     updateIsSpectator: (specator_status) => set((state) => ({...state, isSpectator: specator_status})),
-    removeGamePlayer: (player) => set((state) => ({...state,  player_turns_order:  { game_id: state.player_turns_order!.game_id , turn_mappings: state.player_turns_order!.turn_mappings.filter((el) => el.user_id !== player.player_user_id)} }))
-}))
+    removeGamePlayer: (player) => set((state) => ({...state,  player_turns_order:  { game_id: state.player_turns_order!.game_id , turn_mappings: state.player_turns_order!.turn_mappings.filter((el) => el.user_id !== player.player_user_id)} })),
+    updateChessState: (chess_state) => set((state) => ({...state, chess_state: chess_state }))
+  }))
 
 
 // export const useSpectatorStore = create<SpectatorState & SpectatorAction> ((set) => ({

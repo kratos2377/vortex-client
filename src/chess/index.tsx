@@ -1,20 +1,29 @@
 import React, { useEffect, useState } from 'react'
 import BoardComponent from './componets/BoardComponent'
-import { useChessMainStore, useUserStore } from '../state/UserAndGameState'
+import { useChessMainStore, useGameStore, useUserStore } from '../state/UserAndGameState'
 import Cockpit from './componets/UI/Cockpit'
 import { useParams } from 'react-router-dom'
 import GameInformation from './componets/UI/GameInformation'
+import useBoardStore from '../state/chess_store/board'
 
 
 const ChessGame = () => {
 
   const {restart , setGameCurrentStatus} = useChessMainStore()
+  const { startGameFromFen } = useBoardStore();
+  const {isSpectator , chess_state} = useGameStore()
   const {game_id, host_user_id} = useParams()
   const {user_details} = useUserStore()
   useEffect(() => {
     restart()
     setGameCurrentStatus("IN PROGRESS")
   } , [])
+
+  useEffect(() => {
+    if(isSpectator) {
+      startGameFromFen(chess_state)
+    }
+  }, [])
     
   return (
     <>

@@ -71,6 +71,26 @@ export type TurnModel = {
      username: string,
 }
 
+export type UserGameEvent = {
+     id: string,
+     version: number, 
+     name: string,
+     description: string,
+     user_game_move: UserGameMove,
+}
+
+
+export type UserGameMove  = {
+     id: string,
+     user_id: string,
+     game_id: string,
+     version: number,
+     move_type: string,
+     user_move: string,
+     socket_id: string,
+}
+
+
 
 export type MQTTPayload = {
     message: string;
