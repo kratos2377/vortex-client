@@ -20,7 +20,8 @@ const StakeMoneyModal = () => {
 {
   requestSent ? <span className="loading loading-dots loading-lg"></span> :     
   <div className="modal-action">
-   <form className='w-full' onSubmit={() => {}}>
+      Under Development
+   {/* <form className='w-full' onSubmit={() => {}}>
    <LabelInputContainer className="mb-1">
      <Label htmlFor="moneystaked" className="text-left" >New Username</Label>
      <Input id="moneystaked" placeholder="Enter Amout of Sols You want to Stake" type="text" className='text-white' onChange={() => {}} />
@@ -34,7 +35,8 @@ const StakeMoneyModal = () => {
      <button type="submit" className="btn btn-outline btn-success" >Stake Money</button>
     <button type="button" className="ml-2 btn btn-outline btn-error" onClick={() => document.getElementById('stake_money_modal')!.close()}>Close</button>
     </div>
-   </form>
+   </form> */}
+   <button type="button" className="ml-2 btn btn-outline btn-error" onClick={() => document.getElementById('stake_money_modal')!.close()}>Close</button>
  </div>
 }
 </div>
