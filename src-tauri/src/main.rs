@@ -53,7 +53,7 @@ async fn main() {
             api::game::update_player_status,
             api::game::get_lobby_players,
             api::game::get_user_turn_mappings,
-            api::game::get_game_details
+            api::game::get_game_details,
 
             //MQTT User events
             events::mqtt_events::subscribe_to_user_topic,

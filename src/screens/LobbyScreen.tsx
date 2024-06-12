@@ -182,9 +182,11 @@ setTimeout(() => {
   }
 
   const sendJoinedRoomSocketEvent = useCallback(() => {
-    if (isSpectator)
+    if(isSpectator)
       return
 
+
+    console.log(`Publishing joined room event value is: ${isSpectator}`)
     socket.emit("joined-room", JSON.stringify({game_id: game_id, user_id: user_details.id , username: user_details.username}))
 
 
@@ -203,10 +205,12 @@ setTimeout(() => {
   } , [])
 
   useEffect(() => {
-    
+    if(!isSpectator) {
+      
       sendJoinedRoomSocketEvent()
+    } 
    
-  } , [sendJoinedRoomSocketEvent])
+  } , [])
 
 
   // Having socket calls
@@ -215,6 +219,7 @@ setTimeout(() => {
     if (isSpectator)
       return;
 
+      console.log(`listening to socket events value is, isSpectator: ${isSpectator}`)
     socket.on("user-left-room" , (msg) => {
       let parsed_payload = JSON.parse(msg)
       let update_users = roomUsers.filter((el) => el.user_id !== parsed_payload.user_id)
