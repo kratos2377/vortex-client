@@ -46,13 +46,12 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
     colorInCheckMate,
   } = useChessGameStore();
   const { currentTurn , setGameCondition, setTakenPieces, setCastlingBtn, setCurrentTurn , setMovesHistory } = useChessMainStore();
-  const {isSpectator} = useGameStore()
   const [pawnTransformUtils, setPawnTransformUtils] = useState<IPawnTransformUtils>(initialState);
   const [passantAvailable, setPassantAvailable] = useState<boolean>(false);
   const [firstRender, setFirstRender] = useState<boolean>(true);
 
   const clickHandler = (cell: Cell): void => {
-    if (isSpectator) 
+    if (useGameStore.getState().isSpectator) 
         return;
 
     console.log("SPECTATOR NOT ALLOWED HERE")
@@ -116,7 +115,7 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
     }
   };
   const isCheck = (cell: Cell): void => {
-    if (isSpectator)
+    if (useGameStore.getState().isSpectator)
       return;
 
     const isCheckOnClone = check.isCheckOnClone(
@@ -168,7 +167,7 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
   };
 
   useEffect(() => {
-    if (isSpectator)
+    if (useGameStore.getState().isSpectator)
       return;
 
     if (!firstRender) {
@@ -187,10 +186,9 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
   }, [selectedCell]);
 
   useEffect(() => {
-    if (isSpectator)
+    if (useGameStore.getState().isSpectator)
       return;
-
-    console.log("LISTENING TO CHESS GAME EVENTS")
+    
     socket.on("send-user-game-event" , (data) => {
           let game_event = convertStringToGameEvent(data) as GameEventPayload
 
@@ -327,9 +325,8 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
   }
 
   useEffect(() => {
-    if(isSpectator) {
+    if(useGameStore.getState().isSpectator) {
 
-      console.log("Listening to GAME EVENTS ONLY")
     startListeningToGameEvents()
     }
   } ,  [])

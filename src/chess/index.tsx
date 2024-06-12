@@ -11,7 +11,7 @@ const ChessGame = () => {
 
   const {restart , setGameCurrentStatus} = useChessMainStore()
   const { startGameFromFen } = useBoardStore();
-  const {isSpectator , chess_state} = useGameStore()
+  const {chess_state} = useGameStore()
   const {game_id, host_user_id} = useParams()
   const {user_details} = useUserStore()
   useEffect(() => {
@@ -20,9 +20,8 @@ const ChessGame = () => {
   } , [])
 
   useEffect(() => {
-    if(isSpectator) {
-      console.log("SPECTATOR CHESS FN EXECUTED")
-      startGameFromFen(chess_state)
+    if(useGameStore.getState().isSpectator) {
+      startGameFromFen(useGameStore.getState().chess_state)
     }
   }, [])
     

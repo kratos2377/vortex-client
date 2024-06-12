@@ -182,7 +182,7 @@ setTimeout(() => {
   }
 
   const sendJoinedRoomSocketEvent = useCallback(() => {
-    if(isSpectator)
+    if(useGameStore.getState().isSpectator)
       return
 
 
@@ -205,7 +205,7 @@ setTimeout(() => {
   } , [])
 
   useEffect(() => {
-    if(!isSpectator) {
+    if(!useGameStore.getState().isSpectator) {
       
       sendJoinedRoomSocketEvent()
     } 
@@ -216,7 +216,7 @@ setTimeout(() => {
   // Having socket calls
   useEffect(() => {
 
-    if (isSpectator)
+    if (useGameStore.getState().isSpectator)
       return;
 
       console.log(`listening to socket events value is, isSpectator: ${isSpectator}`)
@@ -336,7 +336,7 @@ setTimeout(() => {
   }
 
   useEffect(() => {
-    if (isSpectator) {
+    if (useGameStore.getState().isSpectator) {
     startListeningToSpectatorEvents()
     }
   } , [])
@@ -374,7 +374,7 @@ setTimeout(() => {
       }
 
   {
-    isSpectator ? <></> :      <div className='mt-3 self-center'>
+    useGameStore.getState().isSpectator ? <></> :      <div className='mt-3 self-center'>
     {user_details.id === host_user_id ?  <button className="btn btn-outline btn-success mr-1" disabled={disableButton} onClick={startTheGame}>Start the Game</button> : <div></div>}
    { updateStatusRequestSent ?  <span className="loading loading-spinner loading-md mr-1 ml-1"></span> :
         !readyState ?        <button className="btn btn-outline btn-success mr-1 ml-1" onClick={() => updatePlayerStatus("ready")} disabled={disableButton}>Ready!</button> :        <button className="btn btn-outline btn-error mr-1 ml-1" onClick={() => updatePlayerStatus("not-ready")} disabled={disableButton}>Not Ready</button> }

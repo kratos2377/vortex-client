@@ -69,7 +69,7 @@ const SpectatorScreen = () => {
   }
 
   useEffect(() => {
-    if(isSpectator) {
+    if(useGameStore.getState().isSpectator) {
       subToGameTopic()
       startListeningToGameEvents()
     }

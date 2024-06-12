@@ -43,10 +43,52 @@ export const OngoingGameCard = ({
   const {updateIsSpectator} = useGameStore()
   const translateFirst = useTransform(scrollYProgress, [0, 1], [0, -200]);
   const navigate = useNavigate()
+ 
+  const [subscribeError , setSubscribeError] = useState(false)
+
+  const subscribeInTheGame = async (game_id: string) => {
+    let payload = JSON.stringify({topic_name: MQTT_GAME_EVENTS + game_id});
+    let game_sub_rsp = await invoke('subscribe_to_game_topic', {payload:  payload})
+      if (game_sub_rsp === "error") {
+        setSubscribeError(true)
+        setAlertMessage("Error While subscribing to game")
+        setAlertType("error")
+        setIsAlert(true)
+  
+        document.getElementById("general_purpose_modal")!.close()
+  
+        setTimeout(() => {
+          setIsAlert(false)
+        }, 2000)
+
+        return
+  
+      }
+  }
+
+  const startListeningToGameGeneralEvents = async () => {
+    let event_sub = await invoke('listen_to_game_event');
+    if (event_sub === "error") {
+      setSubscribeError(true)
+      setAlertMessage("Error While subscribing to game")
+      setAlertType("error")
+      setIsAlert(true)
+
+      document.getElementById("general_purpose_modal")!.close()
+
+      setTimeout(() => {
+        setIsAlert(false)
+      }, 2000)
+
+      return
+    }
+  }
+
   const startSpectatingGame = async (game_id: string ) => {
+    setSubscribeError(false)
     setGeneralTitle("Verifying Details")
     setGeneralMessage("Redirecting To Spectating Screen")
-    updateIsSpectator(true)
+
     document.getElementById("general_purpose_modal")!.showModal()
     let user_token = await getUserTokenFromStore()
     let get_game_payload = JSON.stringify({game_id: game_id})
@@ -65,49 +107,19 @@ export const OngoingGameCard = ({
 
 
     } else {
+   subscribeInTheGame(game_id)
+    startListeningToGameGeneralEvents()
 
-      let payload = JSON.stringify({topic_name: MQTT_GAME_EVENTS + game_id});
-      let game_sub_rsp = await invoke('subscribe_to_game_topic', {payload:  payload})
-
-      if (game_sub_rsp === "error") {
-        setAlertMessage("Error While subscribing to game")
-        setAlertType("error")
-        setIsAlert(true)
-  
-        document.getElementById("general_purpose_modal")!.close()
-  
-        setTimeout(() => {
-          setIsAlert(false)
-        }, 2000)
-
-        return
-  
-      }
-      let event_sub = await invoke('listen_to_game_event')
-
-      if (event_sub === "error") {
-        setAlertMessage("Error While subscribing to game")
-        setAlertType("error")
-        setIsAlert(true)
-  
-        document.getElementById("general_purpose_modal")!.close()
-  
-        setTimeout(() => {
-          setIsAlert(false)
-        }, 2000)
-
-        return
-      }
-
-      let game_rsp = JSON.parse(val.game) 
-      
+    if(subscribeError) {
+      return;
+    }
+    updateIsSpectator(true)
       document.getElementById("general_purpose_modal")!.close()
-        navigate("/spectate/" + game_id + "/" + game_rsp.name + "/" + game_rsp.host_id, {state: { game_model: game_rsp  }})
+        navigate("/spectate/" + game_id + "/" + val.game.name + "/" + val.game.host_id, {state: { game_model: val.game  }})
 
     }
     
   } 
-
   return (
     <>
     { items.length === 0 ? <div className="h-[calc(100vh-10rem)] text-white text-2xl flex flex-col justify-center items-center self-center"> No Ongoing Games. You can add more friends or start your own Game! </div> :
