@@ -55,6 +55,7 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
     if (isSpectator) 
         return;
 
+    console.log("SPECTATOR NOT ALLOWED HERE")
     if (player_color !== currentPlayer)
         return;
 
@@ -189,6 +190,7 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
     if (isSpectator)
       return;
 
+    console.log("LISTENING TO CHESS GAME EVENTS")
     socket.on("send-user-game-event" , (data) => {
           let game_event = convertStringToGameEvent(data) as GameEventPayload
 
@@ -326,6 +328,8 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
 
   useEffect(() => {
     if(isSpectator) {
+
+      console.log("Listening to GAME EVENTS ONLY")
     startListeningToGameEvents()
     }
   } ,  [])

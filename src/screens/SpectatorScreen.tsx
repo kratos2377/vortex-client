@@ -17,13 +17,14 @@ const SpectatorScreen = () => {
   const {game_model} = state
   const navigate = useNavigate()
   const [loading , setLoading] = useState(true)
-  const [iframe_url, setIframeUrl] = useState(base_url + game_name + "/" + game_id + "/" + host_user_id)
+  const [iframe_url, setIframeUrl] = useState(base_url + "lobby/" + game_id + "/" +  game_name + "/" + host_user_id)
   const [generalTitle , setGeneralTitle] = useState("")
   const [generalMessage , setGeneralMessage] = useState("")
-  const {updateChessState} = useGameStore()
+  const {updateChessState , isSpectator} = useGameStore()
 
 
   const startListeningToGameEvents = async () => {
+    console.log("STARTED LISTENING TO GAME GENERAL EVENTS")
     await  listen<MQTTPayload>(GAME_GENERAL_EVENT, async (event) => {
       let parsed_payload = JSON.parse(event.payload.message)
       if (parsed_payload.message === "start-game") {
@@ -60,9 +61,18 @@ const SpectatorScreen = () => {
     setLoading(false)
   }, [])
 
+  const subToGameTopic = async () => {
+    let payload = JSON.stringify({topic_name: MQTT_GAME_EVENTS + game_id});
+    await invoke('subscribe_to_game_topic', {payload:  payload})
+    console.log("SUBSCRIBED TO GAME TOPIC FROM SPECTATOR GAME")
+
+  }
 
   useEffect(() => {
+    if(isSpectator) {
+      subToGameTopic()
       startListeningToGameEvents()
+    }
   }, [])
 
   return (

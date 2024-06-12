@@ -21,6 +21,7 @@ const ChessGame = () => {
 
   useEffect(() => {
     if(isSpectator) {
+      console.log("SPECTATOR CHESS FN EXECUTED")
       startGameFromFen(chess_state)
     }
   }, [])
