@@ -46,7 +46,9 @@ const LobbyScreen = () => {
 
   const startListeningToGameEvents = async () => {
     await  listen<MQTTPayload>(GAME_GENERAL_EVENT, async (event) => {
+      console.log(`EVENT IS: ${GAME_GENERAL_EVENT}`)
       let parsed_payload = JSON.parse(event.payload.message)
+      console.log(parsed_payload)
       if (parsed_payload.message === "start-game") {
      
         navigate("/" + gameType + "/" + game_id + "/" + host_user_id)
