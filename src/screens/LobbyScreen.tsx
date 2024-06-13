@@ -23,7 +23,7 @@ const LobbyScreen = () => {
   const navigate = useNavigate()
   let {game_id , gameType , host_user_id} = useParams()
   let {user_details} = useUserStore()
-  let {game_name , updateGameId , updateGameName , updateGameType, updatePlayerTurnModel , user_player_count_id , isSpectator} = useGameStore()
+  let gameStore = useGameStore()
   const {setPlayerColor} = usePlayerStore()
   const [readyState, setReadyState] = useState(false)
   let [roomUsers , setLobbyUsers] = useState<UserGameRelation[]>([])
@@ -87,11 +87,11 @@ const LobbyScreen = () => {
             return new_mapping_model
           })
         }
-        updatePlayerTurnModel(new_player_turn)
+        gameStore.updatePlayerTurnModel(new_player_turn)
         let start_game_payload = JSON.stringify({admin_id: host_user_id , game_id: game_id, game_name: game_name})
         socket.emit("start-game-event" , start_game_payload)
         document.getElementById("general_purpose_modal")!.close()
-        navigate("/" + game_name + "/" + game_id  + "/" + host_user_id)
+        navigate("/" + gameStore.game_name + "/" + game_id  + "/" + host_user_id)
       }
 
      
@@ -168,9 +168,9 @@ setTimeout(() => {
 }, 3000)
     } else {
       let isHost = user_details.id === host_user_id
-      updateGameId("")
-      updateGameName("")
-      updateGameType("")
+      gameStore.updateGameId("")
+      gameStore.updateGameName("")
+      gameStore.updateGameType("")
       socket.emit("leaved-room", JSON.stringify({game_id: game_id, user_id: user_details.id , username: user_details.username, player_type: isHost ? "host" : "player"}))
       let delete_payload = JSON.stringify({game_id: game_id})
       await destroy_lobby_and_game(delete_payload ,user_token)
@@ -182,7 +182,7 @@ setTimeout(() => {
   }
 
   const sendJoinedRoomSocketEvent = useCallback(() => {
-    if(useGameStore.getState().isSpectator)
+    if(gameStore.isSpectator)
       return
 
 
@@ -198,14 +198,14 @@ setTimeout(() => {
 
 
   useEffect(() => {
-    if (gameType==="chess" && user_player_count_id !== "1") {
+    if (gameType==="chess" && gameStore.user_player_count_id !== "1") {
       setPlayerColor(Color.BLACK)
     }
     getAllLobbyPlayers()
   } , [])
 
   useEffect(() => {
-    if(!useGameStore.getState().isSpectator) {
+    if(!gameStore.isSpectator) {
       
       sendJoinedRoomSocketEvent()
     } 
@@ -216,10 +216,10 @@ setTimeout(() => {
   // Having socket calls
   useEffect(() => {
 
-    if (useGameStore.getState().isSpectator)
+    if (gameStore.isSpectator)
       return;
 
-      console.log(`listening to socket events value is, isSpectator: ${isSpectator}`)
+      console.log(`listening to socket events value is, isSpectator: ${gameStore.isSpectator}`)
     socket.on("user-left-room" , (msg) => {
       let parsed_payload = JSON.parse(msg)
       let update_users = roomUsers.filter((el) => el.user_id !== parsed_payload.user_id)
@@ -267,7 +267,7 @@ setTimeout(() => {
      socket.on("start-game-for-all" , (msg) => {
       
       document.getElementById("general_purpose_modal")!.close()
-      navigate("/" + game_name + "/" + game_id  + "/" + host_user_id)
+      navigate("/" + gameStore.game_name + "/" + game_id  + "/" + host_user_id)
      })
 
      socket.on("error-event-occured" , (msg) => {
@@ -296,7 +296,7 @@ setTimeout(() => {
           return new_mapping_model
         })
       }
-      updatePlayerTurnModel(new_player_turn)
+      gameStore.updatePlayerTurnModel(new_player_turn)
      })
 
      return () => {
@@ -336,7 +336,7 @@ setTimeout(() => {
   }
 
   useEffect(() => {
-    if (useGameStore.getState().isSpectator) {
+    if (gameStore.isSpectator) {
     startListeningToSpectatorEvents()
     }
   } , [])
@@ -374,7 +374,7 @@ setTimeout(() => {
       }
 
   {
-    useGameStore.getState().isSpectator ? <></> :      <div className='mt-3 self-center'>
+    gameStore.isSpectator ? <></> :      <div className='mt-3 self-center'>
     {user_details.id === host_user_id ?  <button className="btn btn-outline btn-success mr-1" disabled={disableButton} onClick={startTheGame}>Start the Game</button> : <div></div>}
    { updateStatusRequestSent ?  <span className="loading loading-spinner loading-md mr-1 ml-1"></span> :
         !readyState ?        <button className="btn btn-outline btn-success mr-1 ml-1" onClick={() => updatePlayerStatus("ready")} disabled={disableButton}>Ready!</button> :        <button className="btn btn-outline btn-error mr-1 ml-1" onClick={() => updatePlayerStatus("not-ready")} disabled={disableButton}>Not Ready</button> }

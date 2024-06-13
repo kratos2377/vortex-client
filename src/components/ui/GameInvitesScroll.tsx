@@ -87,7 +87,7 @@ export const GameInvitesScroll = ({setIsAlert , setAlertMessage , setAlertType}:
           setTimeout(() => {
             document.getElementById("redirecting_to_lobby_modal")!.close()
             navigate("/lobby/" + game_id + "/" + game_name + "/" + val.game_host_id)
-          }, 1000)
+          }, 100)
         }
       }
 
@@ -136,11 +136,11 @@ export const GameInvitesScroll = ({setIsAlert , setAlertMessage , setAlertType}:
   <div className="card-actions justify-end flex flex-row self-center mr-1">
      {
       requestSent ? <span className="loading loading-spinner loading-md text-white"></span> :  <div>
-         <button className="btn btn-success text-white" onClick={() => [
-          acceptAndJoinLobby(el.game_id, el.game_name, el.game_type).then(() => {
+         <button className="btn btn-success text-white" onClick={() => {
+          acceptAndJoinLobby(el.game_id, el.game_name, el.game_type)
             removeGameInvite(el.game_id)
-          })
-      ]}><IconCheck/></button>
+   
+         }}><IconCheck/></button>
       <button className="btn btn-error text-white" onClick={() => removeGameInvite(el.game_id)}><IconX/></button>
          </div>
      }

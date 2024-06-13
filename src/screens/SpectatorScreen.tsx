@@ -4,7 +4,7 @@ import Iframe from 'react-iframe'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import StakeMoneyModal from '../components/screens/StakeMoneyModal'
 import LeaveSpectateRoomModal from '../components/screens/LeaveSpectateRoomModal'
-import { useGameStore } from '../state/UserAndGameState'
+import { useGameStore, useUserStore } from '../state/UserAndGameState'
 import { GAME_GENERAL_EVENT, MQTT_GAME_EVENTS } from '../utils/mqtt_event_names'
 import { listen } from '@tauri-apps/api/event'
 import { MQTTPayload } from '../types/models'
@@ -20,7 +20,7 @@ const SpectatorScreen = () => {
   const [iframe_url, setIframeUrl] = useState(base_url + "lobby/" + game_id + "/" +  game_name + "/" + host_user_id)
   const [generalTitle , setGeneralTitle] = useState("")
   const [generalMessage , setGeneralMessage] = useState("")
-  const {updateChessState , isSpectator} = useGameStore()
+  const gameStore = useGameStore()
 
 
   const startListeningToGameEvents = async () => {
@@ -49,7 +49,7 @@ const SpectatorScreen = () => {
   useEffect(() => {
 
     if(game_model.name === "chess") {
-      updateChessState(game_model.current_state)
+      gameStore.updateChessState(game_model.current_state)
     }
 
     if (game_model.description === "LOBBY") {
@@ -69,7 +69,7 @@ const SpectatorScreen = () => {
   }
 
   useEffect(() => {
-    if(useGameStore.getState().isSpectator) {
+    if(gameStore.isSpectator) {
       subToGameTopic()
       startListeningToGameEvents()
     }

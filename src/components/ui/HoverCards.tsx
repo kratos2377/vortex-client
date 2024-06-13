@@ -110,9 +110,6 @@ export const OngoingGameCard = ({
    subscribeInTheGame(game_id)
     startListeningToGameGeneralEvents()
 
-    if(subscribeError) {
-      return;
-    }
     updateIsSpectator(true)
       document.getElementById("general_purpose_modal")!.close()
         navigate("/spectate/" + game_id + "/" + val.game.name + "/" + val.game.host_id, {state: { game_model: val.game  }})
