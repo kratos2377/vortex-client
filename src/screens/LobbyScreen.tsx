@@ -342,7 +342,10 @@ setTimeout(() => {
 
   const startListeningToUserJoinEvents = async () => {
       await listen<MQTTPayload>(USER_JOINED_ROOM, (event) => {
+        console.log(`EVENT IS: ${USER_JOINED_ROOM}`)
         let parsed_payload = JSON.parse(event.payload.message) 
+        
+      console.log(parsed_payload)
         let new_user: UserGameRelation = {
           user_id: parsed_payload.user_id,
           username: parsed_payload.username,
@@ -358,7 +361,9 @@ setTimeout(() => {
 
   const startListeningToUserLeftEvents = async () => {
     await listen<MQTTPayload>(USER_LEFT_ROOM, (event) => {
+      console.log(`EVENT IS: ${USER_LEFT_ROOM}`)
       let parsed_payload = JSON.parse(event.payload.message)
+      console.log(parsed_payload)
       let update_users = roomUsers.filter((el) => el.user_id !== parsed_payload.user_id)
       setLobbyUsers([...update_users])
 
@@ -367,7 +372,9 @@ setTimeout(() => {
 
   const startListeningToUserStatusEvent = async () => {
     await listen<MQTTPayload>(USER_STATUS_EVENT, (event) => {
+      console.log(`EVENT IS: ${USER_STATUS_EVENT}`)
       let parsed_payload = JSON.parse(event.payload.message)
+      console.log(parsed_payload)
       const updatedUsers = roomUsers.map((user) => user.user_id === parsed_payload.user_id ? {...user, player_status: parsed_payload.status} : user)
       setLobbyUsers([...updatedUsers])
   });
