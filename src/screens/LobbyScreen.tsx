@@ -44,7 +44,7 @@ const LobbyScreen = () => {
   const [alertMessage, setAlertMessage] = useState("")
 
 
-  const startListeningToGameEvents = async () => {
+  const startListeningToGameGeneralEvents = async () => {
     await  listen<MQTTPayload>(GAME_GENERAL_EVENT, async (event) => {
       console.log(`EVENT IS: ${GAME_GENERAL_EVENT}`)
       let parsed_payload = JSON.parse(event.payload.message)
@@ -388,7 +388,7 @@ setTimeout(() => {
     startListeningToUserJoinEvents()
     startListeningToUserLeftEvents()
     startListeningToUserStatusEvent()
-      startListeningToGameEvents()
+      startListeningToGameGeneralEvents()
    
     }
   } , [])

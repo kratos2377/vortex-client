@@ -20,8 +20,11 @@ import { ChessNormalEvent, ChessPromotionEvent } from "../../types/game_event_mo
 import { Piece } from "../models/Piece/Piece";
 import { PieceChar, getPieceCharFromPieceName } from "../models/Piece/types";
 import { MQTTPayload, UserGameEvent } from "../../types/models";
-import { USER_GAME_MOVE } from "../../utils/mqtt_event_names";
+import { GAME_GENERAL_EVENT, MQTT_GAME_EVENTS, USER_GAME_MOVE } from "../../utils/mqtt_event_names";
 import { listen } from "@tauri-apps/api/event";
+import { useNavigate } from "react-router-dom";
+import GeneralPurposeModal from "../../components/screens/GeneralPurposeModal";
+import { invoke } from "lodash";
 
 
 interface BoardComponentProps {
@@ -30,6 +33,7 @@ interface BoardComponentProps {
 }
 
 const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
+
   const initialState: IPawnTransformUtils = { visible: false, targetCell: null };
   const { update, board, selectedCell, setSelectedCell } = useBoardStore();
   const { currentPlayer, passTurn , startingPlayerColor , player_color} = usePlayerStore();
@@ -49,7 +53,7 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
   const [pawnTransformUtils, setPawnTransformUtils] = useState<IPawnTransformUtils>(initialState);
   const [passantAvailable, setPassantAvailable] = useState<boolean>(false);
   const [firstRender, setFirstRender] = useState<boolean>(true);
-
+  const navigate = useNavigate()
   const clickHandler = (cell: Cell): void => {
     if (useGameStore.getState().isSpectator) 
         return;
@@ -324,6 +328,9 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
             })
   }
 
+
+
+
   useEffect(() => {
     if(useGameStore.getState().isSpectator) {
 
@@ -368,6 +375,8 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
         pawntransformUtils={pawnTransformUtils}
         initialState={initialState}
         setPawnTransformUtils={setPawnTransformUtils} user_id={user_id} game_id={game_id}      ></PawnTransform>
+
+
     </>
   );
 };
