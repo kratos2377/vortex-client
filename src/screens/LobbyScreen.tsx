@@ -13,10 +13,11 @@ import GeneralPurposeModal from '../components/screens/GeneralPurposeModal';
 import usePlayerStore from '../state/chess_store/player';
 import { Color } from '../types/chess_types/constants';
 import { listen } from '@tauri-apps/api/event';
-import { GAME_GENERAL_EVENT, USER_JOINED_ROOM, USER_LEFT_ROOM } from '../utils/mqtt_event_names';
+import { GAME_GENERAL_EVENT, MQTT_GAME_EVENTS, USER_JOINED_ROOM, USER_LEFT_ROOM, USER_STATUS_EVENT } from '../utils/mqtt_event_names';
 import { IconPokerChip, IconLogout } from '@tabler/icons-react';
 import LeaveSpectateRoomModal from '../components/screens/LeaveSpectateRoomModal';
 import StakeMoneyModal from '../components/screens/StakeMoneyModal';
+import { invoke } from '@tauri-apps/api/tauri';
 
 
 
@@ -47,12 +48,11 @@ const LobbyScreen = () => {
     await  listen<MQTTPayload>(GAME_GENERAL_EVENT, async (event) => {
       let parsed_payload = JSON.parse(event.payload.message)
       if (parsed_payload.message === "start-game") {
-        setLoading(true)
-        setIframeUrl(base_url + game_name + "/" + game_id + "/" + host_user_id)
-        setLoading(false)
+     
+        navigate("/" + gameType + "/" + game_id + "/" + host_user_id)
       } else if (parsed_payload.message === "host-left") {
-        setGeneralMessage("Host Left. Redirecting to home screen")
-        setGeneralTitle("Redirecting")
+        setGeneralPurposeMessage("Host Left. Redirecting to home screen")
+        setGeneralPurposeTitle("Redirecting")
         document.getElementById("general_purpose_modal")!.showModal()
       let payload = JSON.stringify({topic_name: MQTT_GAME_EVENTS + game_id});
        await invoke('unsubscribe_to_game_topic', {payload:  payload})
@@ -340,7 +340,7 @@ setTimeout(() => {
 
   // isSpecator Events Listenet
 
-  const startListeningToSpectatorEvents = async () => {
+  const startListeningToUserJoinEvents = async () => {
       await listen<MQTTPayload>(USER_JOINED_ROOM, (event) => {
         let parsed_payload = JSON.parse(event.payload.message) 
         let new_user: UserGameRelation = {
@@ -353,6 +353,10 @@ setTimeout(() => {
         setLobbyUsers( (prevState) => [...prevState , new_user])
     });
 
+
+  }
+
+  const startListeningToUserLeftEvents = async () => {
     await listen<MQTTPayload>(USER_LEFT_ROOM, (event) => {
       let parsed_payload = JSON.parse(event.payload.message)
       let update_users = roomUsers.filter((el) => el.user_id !== parsed_payload.user_id)
@@ -361,9 +365,20 @@ setTimeout(() => {
   });
   }
 
+  const startListeningToUserStatusEvent = async () => {
+    await listen<MQTTPayload>(USER_STATUS_EVENT, (event) => {
+      let parsed_payload = JSON.parse(event.payload.message)
+      const updatedUsers = roomUsers.map((user) => user.user_id === parsed_payload.user_id ? {...user, player_status: parsed_payload.status} : user)
+      setLobbyUsers([...updatedUsers])
+  });
+  }
+
+
   useEffect(() => {
     if (gameStore.isSpectator) {
-    startListeningToSpectatorEvents()
+    startListeningToUserJoinEvents()
+    startListeningToUserLeftEvents()
+    startListeningToUserStatusEvent()
       startListeningToGameEvents()
    
     }
