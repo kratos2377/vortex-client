@@ -46,6 +46,7 @@ export const OngoingGameCard = ({
  
   const [subscribeError , setSubscribeError] = useState(false)
 
+
   const subscribeInTheGame = async (game_id: string) => {
     let payload = JSON.stringify({topic_name: MQTT_GAME_EVENTS + game_id});
     let game_sub_rsp = await invoke('subscribe_to_game_topic', {payload:  payload})
@@ -111,8 +112,18 @@ export const OngoingGameCard = ({
     startListeningToGameGeneralEvents()
 
     gameStore.updateIsSpectator(true)
+
+      if(val.game.description === "LOBBY") {
+        
       document.getElementById("general_purpose_modal")!.close()
-        navigate("/spectate/" + game_id + "/" + val.game.name + "/" + val.game.host_id, {state: { game_model: val.game  }})
+        navigate("/lobby/" + game_id + "/" +  val.game.name + "/" + val.game.host_id)
+      } else{
+        //For now  its right but we will change it in future accoring to the chess state
+        gameStore.updateChessState(val.game.current_state)
+        
+      document.getElementById("general_purpose_modal")!.close()
+      navigate("/" + val.game.name + "/" + game_id + "/" + val.game.host_id)
+      }
 
     }
     

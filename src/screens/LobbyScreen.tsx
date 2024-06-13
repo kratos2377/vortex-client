@@ -14,6 +14,9 @@ import usePlayerStore from '../state/chess_store/player';
 import { Color } from '../types/chess_types/constants';
 import { listen } from '@tauri-apps/api/event';
 import { GAME_GENERAL_EVENT, USER_JOINED_ROOM, USER_LEFT_ROOM } from '../utils/mqtt_event_names';
+import { IconPokerChip, IconLogout } from '@tabler/icons-react';
+import LeaveSpectateRoomModal from '../components/screens/LeaveSpectateRoomModal';
+import StakeMoneyModal from '../components/screens/StakeMoneyModal';
 
 
 
@@ -38,6 +41,29 @@ const LobbyScreen = () => {
   const [isAlert , setIsAlert] = useState(false)
   const [alertType,setAlertType] = useState<"success" | "error">("success")
   const [alertMessage, setAlertMessage] = useState("")
+
+
+  const startListeningToGameEvents = async () => {
+    await  listen<MQTTPayload>(GAME_GENERAL_EVENT, async (event) => {
+      let parsed_payload = JSON.parse(event.payload.message)
+      if (parsed_payload.message === "start-game") {
+        setLoading(true)
+        setIframeUrl(base_url + game_name + "/" + game_id + "/" + host_user_id)
+        setLoading(false)
+      } else if (parsed_payload.message === "host-left") {
+        setGeneralMessage("Host Left. Redirecting to home screen")
+        setGeneralTitle("Redirecting")
+        document.getElementById("general_purpose_modal")!.showModal()
+      let payload = JSON.stringify({topic_name: MQTT_GAME_EVENTS + game_id});
+       await invoke('unsubscribe_to_game_topic', {payload:  payload})
+     setTimeout(() => {
+      
+      document.getElementById("general_purpose_modal")!.close()
+      navigate("/home")
+     }, 1000)
+      }
+            })
+  }
 
   const startTheGame = async () => {
     setGeneralPurposeMessage("")
@@ -338,6 +364,8 @@ setTimeout(() => {
   useEffect(() => {
     if (gameStore.isSpectator) {
     startListeningToSpectatorEvents()
+      startListeningToGameEvents()
+   
     }
   } , [])
 
@@ -345,7 +373,16 @@ setTimeout(() => {
     <>
 
     {
-      lobbyRequestSent ? <div className='h-full w-full flex flex-col justify-center self-center'> <span className="loading loading-ring loading-lg"></span></div>: <div className='h-full w-full flex flex-col'>
+      lobbyRequestSent ? <div className='h-full w-full flex flex-col justify-center self-center'> <span className="loading loading-ring loading-lg"></span></div>: <div className='h-screen w-screen flex flex-col fixed'>
+
+        {
+          gameStore.isSpectator ?    <div className='top-4 left-4 z-500 self-center absolute flex flex-row'>
+          <button onClick={() => document.getElementById("stake_money_modal")!.showModal()} >  <IconPokerChip /> </button>
+          <button className='ml-2' onClick={() => document.getElementById("leave_spectate_modal")!.showModal()}  >  <IconLogout /> </button>
+    
+         </div> : <></>
+        }
+
       <div className='h-1/5 w-2/12 p-5 self-center'>
         {gameType === "chess" ? <img src={ChessLogo} alt="chess" />: <img src={ScribbleLogo} alt="scribble" />}
       </div>
@@ -386,6 +423,8 @@ setTimeout(() => {
     }
 
     <OnlineFriendInviteModal/>
+    <StakeMoneyModal/>
+<LeaveSpectateRoomModal game_id={game_id!}/>
     <GeneralPurposeModal message={generalPurposeMessage} title={generalPurposeTitle} />
     </>
   )
