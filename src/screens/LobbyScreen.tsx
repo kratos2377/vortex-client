@@ -88,7 +88,7 @@ const LobbyScreen = () => {
           })
         }
         gameStore.updatePlayerTurnModel(new_player_turn)
-        let start_game_payload = JSON.stringify({admin_id: host_user_id , game_id: game_id, game_name: game_name})
+        let start_game_payload = JSON.stringify({admin_id: host_user_id , game_id: game_id, game_name: gameStore.game_name})
         socket.emit("start-game-event" , start_game_payload)
         document.getElementById("general_purpose_modal")!.close()
         navigate("/" + gameStore.game_name + "/" + game_id  + "/" + host_user_id)
@@ -101,7 +101,7 @@ const LobbyScreen = () => {
   const updatePlayerStatus = async (status: string) => {
     setUpdateRequestSent(true)
     let user_token = await getUserTokenFromStore()
-    let payload = JSON.stringify({game_id: game_id, user_id: user_details.id, game_name: game_name, status: status   })
+    let payload = JSON.stringify({game_id: game_id, user_id: user_details.id, game_name: gameStore.game_name, status: status   })
     let val = await update_player_status(payload , user_token)
 
     if (!val.status) {
@@ -155,7 +155,7 @@ setIsAlert(false)
     setGeneralPurposeTitle("Leaving Lobby")
     document.getElementById("general_purpose_modal")!.showModal()
     let user_token = await getUserTokenFromStore()
-    let payload = JSON.stringify({ user_id: user_details.id, username: user_details.username, game_id: game_id, game_name: game_name })
+    let payload = JSON.stringify({ user_id: user_details.id, username: user_details.username, game_id: game_id, game_name: gameStore.game_name })
     let val = await leave_lobby_call( payload, user_token)
     if(!val.status) {
 setAlertMessage(val.error_message)
@@ -186,7 +186,7 @@ setTimeout(() => {
       return
 
 
-    console.log(`Publishing joined room event value is: ${isSpectator}`)
+    console.log(`Publishing joined room event value is: ${gameStore.isSpectator}`)
     socket.emit("joined-room", JSON.stringify({game_id: game_id, user_id: user_details.id , username: user_details.username}))
 
 

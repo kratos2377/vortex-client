@@ -40,7 +40,7 @@ export const OngoingGameCard = ({
     offset: ["start start", "end start"], // remove this if your container is not fixed height
   });
 
-  const {updateIsSpectator} = useGameStore()
+  const gameStore = useGameStore()
   const translateFirst = useTransform(scrollYProgress, [0, 1], [0, -200]);
   const navigate = useNavigate()
  
@@ -110,7 +110,7 @@ export const OngoingGameCard = ({
    subscribeInTheGame(game_id)
     startListeningToGameGeneralEvents()
 
-    updateIsSpectator(true)
+    gameStore.updateIsSpectator(true)
       document.getElementById("general_purpose_modal")!.close()
         navigate("/spectate/" + game_id + "/" + val.game.name + "/" + val.game.host_id, {state: { game_model: val.game  }})
 
