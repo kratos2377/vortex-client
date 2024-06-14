@@ -202,7 +202,8 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
             let init_pos = JSON.parse(game_move.initial_cell) 
             let target_pos = JSON.parse(game_move.target_cell) 
 
-   
+            console.log("BOARD IS")
+            console.log(board)
 
             let init_cell = board.getCell(parseInt(init_pos.x) , parseInt(init_pos.y))
             let target_cell = board.getCell(parseInt(target_pos.x) , parseInt(target_pos.y))
@@ -274,7 +275,7 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
         let target_pos = JSON.parse(game_move.target_cell) 
 
 
-
+    
         let init_cell = board.getCell(parseInt(init_pos.x) , parseInt(init_pos.y))
         let target_cell = board.getCell(parseInt(target_pos.x) , parseInt(target_pos.y))
 
