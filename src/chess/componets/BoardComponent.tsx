@@ -341,7 +341,6 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
 
   useEffect(() => {
     if(gameStore.isSpectator) {
-
     startListeningToGameEvents()
     }
   } ,  [])

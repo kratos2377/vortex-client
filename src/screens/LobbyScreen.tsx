@@ -218,7 +218,6 @@ setTimeout(() => {
       return
 
 
-    console.log(`Publishing joined room event value is: ${gameStore.isSpectator}`)
     socket.emit("joined-room", JSON.stringify({game_id: game_id, user_id: user_details.id , username: user_details.username}))
 
 
@@ -361,11 +360,12 @@ setTimeout(() => {
         }
         setLobbyUsers( (prevState) => {
           let new_ar = [...prevState]
-          console.log("INITIAL LOBBY ARRAY IS")
-          console.log(new_ar)
-          new_ar.push(new_user)
-          console.log("FINAL LOBBY IS")
-          console.log(new_ar)
+          const isExist = new_ar.filter( (el) => el.user_id === new_user.user_id)
+          console.log("is exist is")
+          console.log(isExist)
+          if (isExist === null || isExist === undefined || isExist.length === 0) {
+            new_ar.push(new_user)
+          }
           return new_ar
         })
     });

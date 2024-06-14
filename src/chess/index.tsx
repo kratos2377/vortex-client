@@ -50,7 +50,7 @@ const ChessGame = () => {
     setGameCurrentStatus("IN PROGRESS")
 
     if(gameStore.isSpectator) {
-      startGameFromFen(gameStore.chess_state)
+     // startGameFromFen(gameStore.chess_state)
       startListeningToGameGeneralEvents()
     }
 
