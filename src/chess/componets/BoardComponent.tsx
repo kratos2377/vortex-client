@@ -266,9 +266,9 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
       let parsed_payload = JSON.parse(event.payload.message) as UserGameEvent
       console.log(parsed_payload)
       
-      if (parsed_payload.user_game_move.move_type === "normal") {
+      if (parsed_payload.userGameMove.moveType === "normal") {
       console.log("Normal move received")
-        let game_move = JSON.parse(parsed_payload.user_game_move.user_move) as ChessNormalEvent
+        let game_move = JSON.parse(parsed_payload.userGameMove.userMove) as ChessNormalEvent
         let init_pos = JSON.parse(game_move.initial_cell) 
         let target_pos = JSON.parse(game_move.target_cell) 
         console.log(`Init POS is`)
@@ -298,8 +298,8 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
 
   resetPassantCells();
 
-      } else if (parsed_payload.user_game_move.move_type === "promotion") {
-        let game_move = JSON.parse(parsed_payload.user_game_move.user_move) as ChessPromotionEvent
+      } else if (parsed_payload.userGameMove.moveType === "promotion") {
+        let game_move = JSON.parse(parsed_payload.userGameMove.userMove) as ChessPromotionEvent
         let init_pos = JSON.parse(game_move.initial_cell) 
         let target_pos = JSON.parse(game_move.target_cell) 
         let piece_name = game_move.promoted_to
