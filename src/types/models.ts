@@ -76,18 +76,18 @@ export type UserGameEvent = {
      version: number, 
      name: string,
      description: string,
-     user_game_move: UserGameMove,
+     userGameMove: UserGameMove,
 }
 
 
 export type UserGameMove  = {
      id: string,
-     user_id: string,
-     game_id: string,
+     userId: string,
+     gameId: string,
      version: number,
-     move_type: string,
-     user_move: string,
-     socket_id: string,
+     moveType: string,
+     userMove: string,
+     socketId: string,
 }
 
 
