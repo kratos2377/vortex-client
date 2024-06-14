@@ -55,7 +55,7 @@ const FriendRequestsScroll = ({setFriendReqCount}: FriendReqModalScrollProps) =>
     }
 
     const startListeningToFriendRequestEvent = async () => {
-      await listen<MQTTPayload>(FRIEND_REQUEST_EVENT, (event) => {
+     const unlisten = listen<MQTTPayload>(FRIEND_REQUEST_EVENT, (event) => {
         let parsed_payload = JSON.parse(event.payload.message) as FriendRequestModel
         let model: FriendRequestModel = {
           friend_request_id: parsed_payload.friend_request_id,
@@ -69,6 +69,10 @@ const FriendRequestsScroll = ({setFriendReqCount}: FriendReqModalScrollProps) =>
           setFriendReqCount(friendRequests.length)
         }, 500)
     });
+
+    return () => {
+      unlisten.then(f => f())
+    }
     }
 
     //Replace this function with some zustand global state fn. This is just temp fix

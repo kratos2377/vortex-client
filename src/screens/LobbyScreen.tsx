@@ -45,7 +45,7 @@ const LobbyScreen = () => {
 
 
   const startListeningToGameGeneralEvents = async () => {
-    await  listen<MQTTPayload>(GAME_GENERAL_EVENT, async (event) => {
+    const unlisten =  listen<MQTTPayload>(GAME_GENERAL_EVENT, async (event) => {
       console.log(`EVENT IS: ${GAME_GENERAL_EVENT}`)
       let parsed_payload = JSON.parse(event.payload.message)
       console.log(parsed_payload)
@@ -65,6 +65,10 @@ const LobbyScreen = () => {
      }, 1000)
       }
             })
+
+            return () => {
+              unlisten.then(f => f())
+            }
   }
 
   const startTheGame = async () => {
@@ -343,7 +347,7 @@ setTimeout(() => {
   // isSpecator Events Listenet
 
   const startListeningToUserJoinEvents = async () => {
-      await listen<MQTTPayload>(USER_JOINED_ROOM, (event) => {
+      const unlisten = listen<MQTTPayload>(USER_JOINED_ROOM, (event) => {
         console.log(`EVENT IS: ${USER_JOINED_ROOM}`)
         let parsed_payload = JSON.parse(event.payload.message) 
         
@@ -358,11 +362,13 @@ setTimeout(() => {
         setLobbyUsers( (prevState) => [...prevState , new_user])
     });
 
-
+    return () => {
+      unlisten.then(f => f())
+    }
   }
 
   const startListeningToUserLeftEvents = async () => {
-    await listen<MQTTPayload>(USER_LEFT_ROOM, (event) => {
+    const unlisten = listen<MQTTPayload>(USER_LEFT_ROOM, (event) => {
       console.log(`EVENT IS: ${USER_LEFT_ROOM}`)
       let parsed_payload = JSON.parse(event.payload.message)
       console.log(parsed_payload)
@@ -370,16 +376,25 @@ setTimeout(() => {
       setLobbyUsers([...update_users])
 
   });
+
+  return () => {
+    unlisten.then(f => f())
+  }
   }
 
   const startListeningToUserStatusEvent = async () => {
-    await listen<MQTTPayload>(USER_STATUS_EVENT, (event) => {
+    const unlisten = listen<MQTTPayload>(USER_STATUS_EVENT, (event) => {
       console.log(`EVENT IS: ${USER_STATUS_EVENT}`)
       let parsed_payload = JSON.parse(event.payload.message)
       console.log(parsed_payload)
       const updatedUsers = roomUsers.map((user) => user.user_id === parsed_payload.user_id ? {...user, player_status: parsed_payload.status} : user)
       setLobbyUsers([...updatedUsers])
   });
+
+
+  return () => {
+    unlisten.then(f => f())
+  }
   }
 
 
@@ -397,7 +412,7 @@ setTimeout(() => {
     <>
 
     {
-      lobbyRequestSent ? <div className='h-full w-full flex flex-col justify-center self-center'> <span className="loading loading-ring loading-lg"></span></div>: <div className='h-screen w-screen flex flex-col fixed'>
+      lobbyRequestSent ? <div className='h-full w-full flex flex-col justify-center self-center'> <span className="loading loading-ring loading-lg"></span></div>: <div className='h-screen w-screen flex flex-col relative'>
 
         {
           gameStore.isSpectator ?    <div className='top-4 left-4 z-500 self-center absolute flex flex-row'>

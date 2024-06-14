@@ -24,7 +24,7 @@ const ChessGame = () => {
   const {user_details} = useUserStore()
 
   const startListeningToGameGeneralEvents = async () => {
-    await  listen<MQTTPayload>(GAME_GENERAL_EVENT, async (event) => {
+    const unlisten =   listen<MQTTPayload>(GAME_GENERAL_EVENT, async (event) => {
       let parsed_payload = JSON.parse(event.payload.message)
     if (parsed_payload.message === "host-left") {
         setGeneralPurposeMessage("Host Left. Redirecting to home screen")
@@ -39,6 +39,10 @@ const ChessGame = () => {
      }, 1000)
       }
             })
+
+            return () => {
+              unlisten.then(f => f())
+            }
   }
 
   useEffect(() => {

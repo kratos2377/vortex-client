@@ -54,7 +54,7 @@ const OnlineFriendInviteModal = () => {
     }
 
     const startListeningToUserOnlineUserEvents = async () => {
-      await  listen<MQTTPayload>(USER_ONLINE_EVENT, (event) => {
+     const unlisten = listen<MQTTPayload>(USER_ONLINE_EVENT, (event) => {
         let parsed_payload = JSON.parse(event.payload.message) as OnlineUserFriendModel
         let model: OnlineUserFriendModel = {
           user_id: parsed_payload.user_id,
@@ -65,6 +65,10 @@ const OnlineFriendInviteModal = () => {
         }
         setFriendsList([model, ...friendsList])
               })
+
+              return () => {
+                unlisten.then(f => f())
+              }
     }
 
     useEffect(() => {

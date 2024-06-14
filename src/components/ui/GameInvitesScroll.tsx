@@ -34,7 +34,7 @@ export const GameInvitesScroll = ({setIsAlert , setAlertMessage , setAlertType}:
     const {updateGameId, updateGameName, updateGameType , updateUserPlayerCountId , updateIsSpectator} = useGameStore()
 
     const startGameInviteListener = async () => {
-      await listen<MQTTPayload>(GAME_INVITE_EVENT, (event) => {
+      const unlisten =  listen<MQTTPayload>(GAME_INVITE_EVENT, (event) => {
           let parsed_payload = JSON.parse(event.payload.message) 
           let model: GameInviteUserModel = {
             game_id: parsed_payload.game_id,
@@ -46,6 +46,10 @@ export const GameInvitesScroll = ({setIsAlert , setAlertMessage , setAlertType}:
           setSortedUsers([model, ...sortedUsers])
           addGameInviteModel(model)
     });
+
+    return () => {
+      unlisten.then(f => f())
+    }
     }
     useEffect(() => {
         startGameInviteListener()

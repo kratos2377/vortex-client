@@ -265,7 +265,7 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
 
 
   const startListeningToGameEvents = async () => {
-    await  listen<MQTTPayload>(USER_GAME_MOVE, (event) => {
+    const unlisten =  listen<MQTTPayload>(USER_GAME_MOVE, (event) => {
       let parsed_payload = JSON.parse(event.payload.message) as UserGameEvent
 
       
@@ -327,6 +327,10 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
 
 
             })
+
+            return () => {
+              unlisten.then(f => f())
+            }
   }
 
 
