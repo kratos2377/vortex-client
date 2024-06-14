@@ -359,7 +359,15 @@ setTimeout(() => {
           player_type: "player",
           player_status: 'not-ready'
         }
-        setLobbyUsers([...roomUsers , new_user])
+        setLobbyUsers( (prevState) => {
+          let new_ar = [...prevState]
+          console.log("INITIAL LOBBY ARRAY IS")
+          console.log(new_ar)
+          new_ar.push(new_user)
+          console.log("FINAL LOBBY IS")
+          console.log(new_ar)
+          return new_ar
+        })
     });
 
     return () => {
