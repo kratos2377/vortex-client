@@ -384,14 +384,14 @@ setTimeout(() => {
 
 
   useEffect(() => {
-    if (gameStore.isSpectator) {
+    if (gameStore.isSpectator && !lobbyRequestSent) {
     startListeningToUserJoinEvents()
     startListeningToUserLeftEvents()
     startListeningToUserStatusEvent()
       startListeningToGameGeneralEvents()
    
     }
-  } , [])
+  } , [lobbyRequestSent])
 
   return (
     <>
