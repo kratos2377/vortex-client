@@ -17,6 +17,7 @@ const ChessGame = () => {
   const [generalPurposeTitle, setGeneralPurposeTitle] = useState("")
   const navigate = useNavigate()
   const {restart , setGameCurrentStatus} = useChessMainStore()
+  const [loading, setLoading] = useState(true)
   const { startGameFromFen } = useBoardStore();
   const gameStore = useGameStore()
   const {game_id, host_user_id} = useParams()
@@ -43,18 +44,23 @@ const ChessGame = () => {
   useEffect(() => {
     restart()
     setGameCurrentStatus("IN PROGRESS")
-  } , [])
 
-  useEffect(() => {
     if(gameStore.isSpectator) {
       startGameFromFen(gameStore.chess_state)
       startListeningToGameGeneralEvents()
     }
-  }, [])
+
+    setLoading(false)
+  } , [])
+
+
     
   return (
     <>
-      <div className="chess_app">
+    {
+      loading ? <div className='h-screen w-screen flex justify-center'>
+        <span className="loading loading-dots loading-lg"></span>
+      </div> :    <div className="chess_app">
       {/* <GameInformation /> */}
 
         <><div className='w-11/12 p-5 flex flex-row justify-center'>
@@ -66,6 +72,7 @@ const ChessGame = () => {
     
               <GeneralPurposeModal message={generalPurposeMessage} title={generalPurposeTitle}/>
     </div>
+    }
     </>
   )
 }
