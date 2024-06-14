@@ -49,11 +49,11 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
     colorInStaleMate,
     colorInCheckMate,
   } = useChessGameStore();
+  const gameStore = useGameStore()
   const { currentTurn , setGameCondition, setTakenPieces, setCastlingBtn, setCurrentTurn , setMovesHistory } = useChessMainStore();
   const [pawnTransformUtils, setPawnTransformUtils] = useState<IPawnTransformUtils>(initialState);
   const [passantAvailable, setPassantAvailable] = useState<boolean>(false);
   const [firstRender, setFirstRender] = useState<boolean>(true);
-  const navigate = useNavigate()
   const clickHandler = (cell: Cell): void => {
     if (useGameStore.getState().isSpectator) 
         return;
@@ -201,10 +201,6 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
             let game_move = JSON.parse(game_event.game_event) as ChessNormalEvent
             let init_pos = JSON.parse(game_move.initial_cell) 
             let target_pos = JSON.parse(game_move.target_cell) 
-
-            console.log("BOARD IS")
-            console.log(board)
-
             let init_cell = board.getCell(parseInt(init_pos.x) , parseInt(init_pos.y))
             let target_cell = board.getCell(parseInt(target_pos.x) , parseInt(target_pos.y))
  
@@ -266,15 +262,22 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
 
   const startListeningToGameEvents = async () => {
     const unlisten =  listen<MQTTPayload>(USER_GAME_MOVE, (event) => {
+      console.log(`EVENT IS: ${USER_GAME_MOVE}`)
       let parsed_payload = JSON.parse(event.payload.message) as UserGameEvent
-
+      console.log(parsed_payload)
       
       if (parsed_payload.user_game_move.move_type === "normal") {
+      console.log("Normal move received")
         let game_move = JSON.parse(parsed_payload.user_game_move.user_move) as ChessNormalEvent
         let init_pos = JSON.parse(game_move.initial_cell) 
         let target_pos = JSON.parse(game_move.target_cell) 
+        console.log(`Init POS is`)
+        console.log(init_pos)
+        console.log("target pos is")
+        console.log(target_pos)
 
-
+        console.log("BOARD IS")
+        console.log(board)
     
         let init_cell = board.getCell(parseInt(init_pos.x) , parseInt(init_pos.y))
         let target_cell = board.getCell(parseInt(target_pos.x) , parseInt(target_pos.y))
@@ -337,7 +340,7 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
 
 
   useEffect(() => {
-    if(useGameStore.getState().isSpectator) {
+    if(gameStore.isSpectator) {
 
     startListeningToGameEvents()
     }

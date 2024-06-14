@@ -359,7 +359,11 @@ setTimeout(() => {
           player_type: "player",
           player_status: 'not-ready'
         }
-        setLobbyUsers( (prevState) => [...prevState , new_user])
+        setLobbyUsers( (prevState) => {
+          let new_ar = [...prevState]
+          new_ar.push(new_user)
+          return new_ar
+        })
     });
 
     return () => {
@@ -372,8 +376,11 @@ setTimeout(() => {
       console.log(`EVENT IS: ${USER_LEFT_ROOM}`)
       let parsed_payload = JSON.parse(event.payload.message)
       console.log(parsed_payload)
-      let update_users = roomUsers.filter((el) => el.user_id !== parsed_payload.user_id)
-      setLobbyUsers([...update_users])
+   
+      setLobbyUsers( (prevState) => {
+        let update_users = prevState.filter((el) => el.user_id !== parsed_payload.user_id)
+        return update_users
+      })
 
   });
 
@@ -387,8 +394,10 @@ setTimeout(() => {
       console.log(`EVENT IS: ${USER_STATUS_EVENT}`)
       let parsed_payload = JSON.parse(event.payload.message)
       console.log(parsed_payload)
-      const updatedUsers = roomUsers.map((user) => user.user_id === parsed_payload.user_id ? {...user, player_status: parsed_payload.status} : user)
-      setLobbyUsers([...updatedUsers])
+      setLobbyUsers( (prevState) => {
+      const updatedUsers = prevState.map((user) => user.user_id === parsed_payload.user_id ? {...user, player_status: parsed_payload.status} : user)
+      return updatedUsers
+      })
   });
 
 
