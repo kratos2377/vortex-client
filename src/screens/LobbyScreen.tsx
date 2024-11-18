@@ -78,14 +78,14 @@ const LobbyScreen = () => {
     //Getting tokens and call start_game API
     let user_token = await getUserTokenFromStore()
     let verify_socket_payload = JSON.stringify({user_id: host_user_id , game_id: game_id})
-    socket.emit("verifying-game-status" , verify_socket_payload)
+    socket.push("verifying-game-status" , verify_socket_payload)
 
     let start_game_payload = JSON.stringify({game_id: game_id , game_name: gameType})
     let val = await start_game(start_game_payload , user_token)
 
     if (!val.status) {
       let error_payload = JSON.stringify({game_id: game_id , error_message: val.error_message})
-      socket.emit("error-event", error_payload )
+      socket.push("error-event", error_payload )
       setAlertMessage(val.error_message)
       setAlertType("error")
       setIsAlert(true)
@@ -94,12 +94,12 @@ const LobbyScreen = () => {
         setIsAlert(false)
       } , 4000)
     } else {
-      socket.emit("get-turn-mappings" , JSON.stringify({game_id: game_id}))
+      socket.push("get-turn-mappings" , JSON.stringify({game_id: game_id}))
       let turn_mapping_call = await get_user_turn_mappings( JSON.stringify({game_id: game_id}),user_token) 
 
       if (!turn_mapping_call.status) {
         let error_payload = JSON.stringify({game_id: game_id , error_message: val.error_message})
-        socket.emit("error-event", error_payload )
+        socket.push("error-event", error_payload )
         setAlertMessage(val.error_message)
         setAlertType("error")
         setIsAlert(true)
@@ -121,7 +121,7 @@ const LobbyScreen = () => {
         }
         gameStore.updatePlayerTurnModel(new_player_turn)
         let start_game_payload = JSON.stringify({admin_id: host_user_id , game_id: game_id, game_name: gameStore.game_name})
-        socket.emit("start-game-event" , start_game_payload)
+        socket.push("start-game-event" , start_game_payload)
         document.getElementById("general_purpose_modal")!.close()
         navigate("/" + gameStore.game_name + "/" + game_id  + "/" + host_user_id)
       }
@@ -145,7 +145,7 @@ const LobbyScreen = () => {
 setIsAlert(false)
       }, 2000);
     } else {
-      socket.emit("update-user-status-in-room", JSON.stringify({user_id: user_details.id , username: user_details.username, game_id: game_id, status: status}))
+      socket.push("update-user-status-in-room", JSON.stringify({user_id: user_details.id , username: user_details.username, game_id: game_id, status: status}))
       const updatedUsers = roomUsers.map((user) => user.user_id === user_details.id ? {...user, player_status: status} : user)
 
    
@@ -203,7 +203,7 @@ setTimeout(() => {
       gameStore.updateGameId("")
       gameStore.updateGameName("")
       gameStore.updateGameType("")
-      socket.emit("leaved-room", JSON.stringify({game_id: game_id, user_id: user_details.id , username: user_details.username, player_type: isHost ? "host" : "player"}))
+      socket.push("leaved-room", JSON.stringify({game_id: game_id, user_id: user_details.id , username: user_details.username, player_type: isHost ? "host" : "player"}))
       let delete_payload = JSON.stringify({game_id: game_id})
       await destroy_lobby_and_game(delete_payload ,user_token)
       setTimeout(() => {
@@ -218,7 +218,7 @@ setTimeout(() => {
       return
 
 
-    socket.emit("joined-room", JSON.stringify({game_id: game_id, user_id: user_details.id , username: user_details.username}))
+    socket.push("joined-room", JSON.stringify({game_id: game_id, user_id: user_details.id , username: user_details.username}))
 
 
     return () => {

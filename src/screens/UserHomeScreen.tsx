@@ -56,9 +56,7 @@ const UserHomeScreen = () => {
    
 
   useEffect(() => {
-      socket.emit("user-connection-event" , JSON.stringify({user_id: user_details.id, username: user_details.username}) )
-
-
+   //   socket.push("user-connection-event" , JSON.stringify({user_id: user_details.id, username: user_details.username}) )
       subscribe_to_mqtt_user_topic()
           start_listening_to_user_events()
 

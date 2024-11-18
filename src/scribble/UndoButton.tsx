@@ -20,7 +20,7 @@ export default function UndoButton({ undo }: UndoButtonProps) {
 
   const undoCanvas = () => {
     setIsLoading(true)
-  //  socket.emit('get-last-undo-point', roomId)
+  //  socket.push('get-last-undo-point', roomId)
   }
 
   useHotkeys(hotKey, undoCanvas)
@@ -29,12 +29,12 @@ export default function UndoButton({ undo }: UndoButtonProps) {
     // This socket does undo function
     // socket.on('last-undo-point-from-server', (lastUndoPoint: string) => {
     //   undo(lastUndoPoint)
-    //   socket.emit('undo', {
+    //   socket.push('undo', {
     //     canvasState: lastUndoPoint,
     //     roomId,
     //   })
 
-    //   socket.emit('delete-last-undo-point', roomId)
+    //   socket.push('delete-last-undo-point', roomId)
     undo("")
       setIsLoading(false)
 

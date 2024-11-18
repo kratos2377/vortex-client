@@ -10,6 +10,8 @@ import VerifyUserScreen from "./screens/VerifyUserScreen";
 import InvalidLobbyScreen from "./screens/InvalidLobbyScreen";
 import ChessGame from "./chess";
 import ScribbleGame from "./scribble";
+import PokerGame from "./poker";
+import { WebSocketProvider } from "./socket/websocket_provider";
 
 
 
@@ -45,10 +47,16 @@ let router = createBrowserRouter([
   {
     path: "/scribble/:game_id/:host_user_id",
     element: <ScribbleGame/>
+  },
+  {
+    path: "/poker/:game_id/:host_user_id",
+    element: <PokerGame/>
   }
 ])
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
 
-    <RouterProvider router={router} />
+   <WebSocketProvider>
+     <RouterProvider router={router} />
+   </WebSocketProvider>
 );

@@ -10,6 +10,7 @@ import { ErrorAlert, SuccessAlert } from '../components/ui/AlertMessage'
 import { motion } from 'framer-motion'
 import { AuroraBackground } from '../components/backgrounds/aurora-background'
 import { LabelInputContainer } from '../components/ui/LabelInputContainer'
+import { socket } from '../socket/socket'
 
 const VerifyUserScreen = () => {
     const navigate = useNavigate()
@@ -57,7 +58,9 @@ const VerifyUserScreen = () => {
         setIsAlert(true)
   
         await updateUserVerifiedStatus(true)
-  
+
+        //send actual token
+        socket.connect({token: "token" , user_id: user_details.id, username: user_details.username})
         setTimeout(() => {
           setIsAlert(false)
           setAlertType("success")

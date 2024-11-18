@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom'
 import { saveUserDetails } from '../persistent_storage/save_user_details'
 import { useUserStore } from '../state/UserAndGameState'
 import { LabelInputContainer } from '../components/ui/LabelInputContainer'
+import { socket } from '../socket/socket'
 
 interface LoginProps {
   setAuthState: React.Dispatch<React.SetStateAction<"login" | "registration">>,
@@ -77,8 +78,8 @@ const Login: React.FC<LoginProps> = ({setAuthState , setIsAlert , setAlertMessag
         setAlertMessage("")
         
         if (res.user?.verified) {
-          
-        navigate("/home")
+          socket.connect({token: res.token , user_id: res.user.id, username: res.user.username})
+            navigate("/home")
         } else {
           navigate("/verify_user")
         }

@@ -44,7 +44,7 @@ const PawnTransform: FC<PawnTransformProps> = ({
       event_type: "promotion",
       game_id: game_id
     }
-    socket.emit("game-event" , JSON.stringify(gameEvent))
+    socket.push("game-event" , JSON.stringify(gameEvent))
   };
 
 

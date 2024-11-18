@@ -1,10 +1,5 @@
-import io from "socket.io-client";
+// import {Socket} from "phoenix"
 
-export const socket = io(
-  "http://localhost:3004",
-  {
-    transports: ["websocket", "polling"],
-    reconnection: true,
-    secure: true,
-  }
-);
+// export const socket = new Socket(
+//   "wss://localhost:4000/socket",
+// );

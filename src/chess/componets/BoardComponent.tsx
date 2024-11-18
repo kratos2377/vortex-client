@@ -12,7 +12,6 @@ import { useChessMainStore, useGameStore } from "../../state/UserAndGameState";
 import { initialCastlingState } from "../../state/chess_store/initial_states/castlingUtils";
 import { rankCoordinates } from "../../state/chess_store/initial_states/rankCoordinates";
 import { Color } from "../../types/chess_types/constants";
-import { convertChessCell } from "../../helper_functions/convertChessCell";
 import { socket } from "../../socket/socket";
 import { GameEventPayload } from "../../types/ws_and_game_events";
 import { convertStringToGameEvent } from "../../helper_functions/convertGameEvents";
@@ -20,11 +19,8 @@ import { ChessNormalEvent, ChessPromotionEvent } from "../../types/game_event_mo
 import { Piece } from "../models/Piece/Piece";
 import { PieceChar, getPieceCharFromPieceName } from "../models/Piece/types";
 import { MQTTPayload, UserGameEvent } from "../../types/models";
-import { GAME_GENERAL_EVENT, MQTT_GAME_EVENTS, USER_GAME_MOVE } from "../../utils/mqtt_event_names";
+import {  USER_GAME_MOVE } from "../../utils/mqtt_event_names";
 import { listen } from "@tauri-apps/api/event";
-import { useNavigate } from "react-router-dom";
-import GeneralPurposeModal from "../../components/screens/GeneralPurposeModal";
-import { invoke } from "lodash";
 
 
 interface BoardComponentProps {
@@ -104,7 +100,7 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
           event_type: "normal",
           game_id: game_id
         }
-        socket.emit("game-event" , JSON.stringify(gameEvent))
+        socket.push("game-event" , JSON.stringify(gameEvent))
       }
 
       resetPassantCells();

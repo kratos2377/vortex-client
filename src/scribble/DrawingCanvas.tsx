@@ -42,7 +42,7 @@ export default function DrawingCanvas() {
         game_id: 'game_id'
       }
 
-      socket.emit('game_event', gameEvent)
+      socket.push('game_event', gameEvent)
      
     },
     
@@ -54,6 +54,7 @@ export default function DrawingCanvas() {
   useEffect(() => {
     const canvasElement = canvasRef.current
     const ctx = canvasElement?.getContext('2d')
+
 
     socket.on('canvas-state-from-server', (canvasState: string) => {
       if (!ctx || !canvasElement) return
@@ -99,7 +100,7 @@ export default function DrawingCanvas() {
 
     if (!canvasElement) return
 
-    // socket.emit('add-undo-point', {
+    // socket.push('add-undo-point', {
     //   roomId,
     //   undoPoint: canvasElement.toDataURL(),
     // })

@@ -1,10 +1,11 @@
-import React , { useEffect, useState } from "react";
+import React , { useContext, useEffect, useState } from "react";
 import Loading from "./screens/Loading";
 import { invoke } from '@tauri-apps/api/tauri'
 import { deleteUserDetailsFromStore, getUserTokenFromStore } from "./persistent_storage/save_user_details"
 import { useNavigate } from "react-router-dom";
 import { useUserStore } from "./state/UserAndGameState";
 import { UserModel } from "./types/models";
+import { WebSocketContext } from "./socket/websocket_provider";
 
 
 
@@ -13,9 +14,11 @@ import { UserModel } from "./types/models";
 function App() {
   const navigate = useNavigate();
   const {updateUserDetails} = useUserStore()
+  const {setConn , conn} = useContext(WebSocketContext)
 
   useEffect(() => {
 
+    setConn(null)
 
     const getAndVerifyToken = async () => {
 
@@ -42,8 +45,9 @@ function App() {
               await updateUserDetails(user_mod)
 
               if(recv_msg.user_data.verified) {
-                
-              navigate("/home")
+             conn?.connect({token: userToken , user_id: user_mod.id, username: user_mod.username})
+            //  setConn(socket)
+                navigate("/home")
               } else {
                 navigate("/verify_user")
               }
