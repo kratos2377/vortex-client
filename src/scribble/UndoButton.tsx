@@ -20,26 +20,26 @@ export default function UndoButton({ undo }: UndoButtonProps) {
 
   const undoCanvas = () => {
     setIsLoading(true)
-  //  socket.push('get-last-undo-point', roomId)
+  //  chann.push('get-last-undo-point', roomId)
   }
 
   useHotkeys(hotKey, undoCanvas)
 
   useEffect(() => {
     // This socket does undo function
-    // socket.on('last-undo-point-from-server', (lastUndoPoint: string) => {
+    // chann?.on('last-undo-point-from-server', (lastUndoPoint: string) => {
     //   undo(lastUndoPoint)
-    //   socket.push('undo', {
+    //   chann.push('undo', {
     //     canvasState: lastUndoPoint,
     //     roomId,
     //   })
 
-    //   socket.push('delete-last-undo-point', roomId)
+    //   chann.push('delete-last-undo-point', roomId)
     undo("")
       setIsLoading(false)
 
       // return () => {
-      //   socket.off('last-undo-point-from-server')
+      //   chann?.off('last-undo-point-from-server')
       // }
     // })
   }, [undo])

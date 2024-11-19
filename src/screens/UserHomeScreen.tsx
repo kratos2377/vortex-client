@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Menu, MenuItem } from '../components/ui/MenuComponents';
 import { cn } from '../utils/cn';
 import { BackgroundGradient } from '../components/backgrounds/background-gradient';
@@ -13,10 +13,11 @@ import { invoke } from '@tauri-apps/api/tauri';
 import { ErrorAlert, SuccessAlert } from '../components/ui/AlertMessage';
 import RedirectingToLobbyModal from '../components/screens/RedirectingToLobbyModal';
 import JoiningLobbyModal from '../components/screens/JoiningLobbyModal';
+import { WebSocketContext } from '../socket/websocket_provider';
 
 const UserHomeScreen = () => {
 
-
+  const {chann , setChannel} = useContext(WebSocketContext)
   const [currentScreen , setCurrentScreen] = useState<string>("ongoing-games")
   const {user_details} = useUserStore()
 
@@ -56,12 +57,22 @@ const UserHomeScreen = () => {
    
 
   useEffect(() => {
-   //   socket.push("user-connection-event" , JSON.stringify({user_id: user_details.id, username: user_details.username}) )
+   //   chann.push("user-connection-event" , JSON.stringify({user_id: user_details.id, username: user_details.username}) )
       subscribe_to_mqtt_user_topic()
           start_listening_to_user_events()
 
             
   } , [])
+
+
+  useEffect(() => {
+    if(chann !== undefined && chann !== null) {
+        chann.leave(1000)
+
+        setChannel(null)
+    }
+
+  }, [])
 
   return (
     <>

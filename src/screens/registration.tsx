@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { cn } from '../utils/cn';
 import { Label } from '@radix-ui/react-label';
 import {  IconLogin } from '@tabler/icons-react';
@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { saveUserDetails } from '../persistent_storage/save_user_details';
 import { useUserStore } from '../state/UserAndGameState';
 import { LabelInputContainer } from '../components/ui/LabelInputContainer';
-import { socket } from '../socket/socket';
+import { WebSocketContext } from '../socket/websocket_provider';
 
 
 interface RegistrationProps {
@@ -19,6 +19,7 @@ interface RegistrationProps {
 }
 
 const Registration:  React.FC<RegistrationProps> = ({setAuthState , setAlertMessage , setIsAlert , setAlertType}) => {
+  const {conn} = useContext(WebSocketContext)
   const navigate = useNavigate()
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   const [firstName, setFirstName] = useState("")
@@ -107,7 +108,7 @@ const Registration:  React.FC<RegistrationProps> = ({setAuthState , setAlertMess
 
         if (res.user?.verified) {
           
-          socket.connect({token: res.token , user_id: res.user.id, username: res.user.username})
+          conn?.connect({token: res.token , user_id: res.user.id, username: res.user.username})
             navigate("/home")
           } else {
             navigate("/verify_user")

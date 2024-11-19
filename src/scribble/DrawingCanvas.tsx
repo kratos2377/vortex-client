@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { draw, drawWithDataURL } from '../helper_functions/drawUtil'
 import useDraw, { DrawProps } from '../helper_functions/useDraw'
 import { useCanvasStore } from '../state/UserAndGameState'
@@ -6,11 +6,14 @@ import { DrawOptions } from '../types/scribble_types'
 import ClearButton from './ClearButton'
 import UndoButton from './UndoButton'
 import { Skeleton } from './ui/Skeleton'
-import { socket } from '../socket/socket'
 import { GameEventPayload } from '../types/ws_and_game_events'
+import { WebSocketContext } from '../socket/websocket_provider'
 
 
 export default function DrawingCanvas() {
+
+
+  const {chann} = useContext(WebSocketContext)
 
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -39,10 +42,11 @@ export default function DrawingCanvas() {
       let gameEvent: GameEventPayload = {
         user_id: 'user_id',
         game_event: JSON.stringify(drawOptions),
-        game_id: 'game_id'
+        game_id: 'game_id',
+        event_type: ''
       }
 
-      socket.push('game_event', gameEvent)
+      chann?.push('game_event', gameEvent)
      
     },
     
@@ -56,28 +60,28 @@ export default function DrawingCanvas() {
     const ctx = canvasElement?.getContext('2d')
 
 
-    socket.on('canvas-state-from-server', (canvasState: string) => {
+    chann?.on('canvas-state-from-server', (canvasState: string) => {
       if (!ctx || !canvasElement) return
 
       drawWithDataURL(canvasState, ctx, canvasElement)
       setIsCanvasLoading(false)
     })
 
-    socket.on('update-canvas-state', (drawOptions: DrawOptions) => {
+    chann?.on('update-canvas-state', (drawOptions: DrawOptions) => {
       if (!ctx) return
       draw({ ...drawOptions, ctx })
     })
 
-    // socket.on('undo-canvas', canvasState => {
+    // chann?.on('undo-canvas', canvasState => {
     //   if (!ctx || !canvasElement) return
 
     //   drawWithDataURL(canvasState, ctx, canvasElement)
     // })
 
     return () => {
-      socket.off('get-canvas-state')
-      socket.off('update-canvas-state')
-      socket.off('undo-canvas')
+      chann?.off('get-canvas-state')
+      chann?.off('update-canvas-state')
+      chann?.off('undo-canvas')
     }
 
   }, [canvasRef])
@@ -100,7 +104,7 @@ export default function DrawingCanvas() {
 
     if (!canvasElement) return
 
-    // socket.push('add-undo-point', {
+    // chann.push('add-undo-point', {
     //   roomId,
     //   undoPoint: canvasElement.toDataURL(),
     // })

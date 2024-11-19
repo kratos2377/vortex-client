@@ -14,7 +14,7 @@ const GameStates: FC = () => {
    
     
   //   return () => {
-  //     socket.off()
+  //     chann?.off()
   //   }
   // })
 

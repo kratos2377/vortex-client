@@ -18,21 +18,21 @@ export default function ClearButton({ canvasRef, clear }: ClearButtonProps) {
     const canvasElement = canvasRef.current
     if (!canvasElement) return
 
-    // socket.push('add-undo-point', {
+    // chann.push('add-undo-point', {
     //   roomId,
     //   undoPoint: canvasElement.toDataURL(),
     // })
      clear()
-    // socket.push('clear-canvas', roomId)
+    // chann.push('clear-canvas', roomId)
   }
 
   useHotkeys('c', clearCanvas)
 
   useEffect(() => {
-    // socket.on('clear-canvas', clear)
+    // chann?.on('clear-canvas', clear)
 
     // return () => {
-    //   socket.off('clear-canvas')
+    //   chann?.off('clear-canvas')
     // }
   }, [clear])
 

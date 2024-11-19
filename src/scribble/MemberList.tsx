@@ -12,11 +12,11 @@ export default function MemberList() {
   // ])
 
   // useEffect(() => {
-  //   socket.on('update-members', members => {
+  //   chann?.on('update-members', members => {
   //     setMembers(members)
   //   })
 
-  //   socket.on('send-notification', ({ title, message }: Notification) => {
+  //   chann?.on('send-notification', ({ title, message }: Notification) => {
   //     toast({
   //       title,
   //       description: message,
@@ -24,8 +24,8 @@ export default function MemberList() {
   //   })
 
   //   return () => {
-  //     socket.off('update-members')
-  //     socket.off('send-notification')
+  //     chann?.off('update-members')
+  //     chann?.off('send-notification')
   //   }
   // }, [toast, setMembers])
 

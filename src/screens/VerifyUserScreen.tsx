@@ -1,6 +1,6 @@
 import { Label } from '@radix-ui/react-label'
 import { IconMail, IconUser } from '@tabler/icons-react'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Input } from '../components/ui/input'
 import { send_email_call, verify_user_request_call } from '../helper_functions/apiCall'
@@ -10,9 +10,10 @@ import { ErrorAlert, SuccessAlert } from '../components/ui/AlertMessage'
 import { motion } from 'framer-motion'
 import { AuroraBackground } from '../components/backgrounds/aurora-background'
 import { LabelInputContainer } from '../components/ui/LabelInputContainer'
-import { socket } from '../socket/socket'
+import { WebSocketContext } from '../socket/websocket_provider'
 
 const VerifyUserScreen = () => {
+  const {conn} = useContext(WebSocketContext)
     const navigate = useNavigate()
     const [initialCall , setInitialCall] = useState(false)
     const [userKey , setUserKey] = useState("")
@@ -60,7 +61,7 @@ const VerifyUserScreen = () => {
         await updateUserVerifiedStatus(true)
 
         //send actual token
-        socket.connect({token: "token" , user_id: user_details.id, username: user_details.username})
+        conn?.connect({token: "token" , user_id: user_details.id, username: user_details.username})
         setTimeout(() => {
           setIsAlert(false)
           setAlertType("success")

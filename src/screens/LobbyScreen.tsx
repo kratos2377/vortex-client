@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import  ChessLogo  from "../assets/chess.svg";
 import  ScribbleLogo from "../assets/scribble.svg";
 import { useNavigate, useParams } from 'react-router-dom';
@@ -8,7 +8,6 @@ import { ErrorAlert, SuccessAlert } from '../components/ui/AlertMessage';
 import { getUserTokenFromStore } from '../persistent_storage/save_user_details';
 import { destroy_lobby_and_game, get_lobby_players, get_user_turn_mappings, leave_lobby_call, start_game, update_player_status } from '../helper_functions/apiCall';
 import { MQTTPayload, PlayerTurnMappingModel, TurnModel, UserGameRelation } from '../types/models';
-import { socket } from '../socket/socket';
 import GeneralPurposeModal from '../components/screens/GeneralPurposeModal';
 import usePlayerStore from '../state/chess_store/player';
 import { Color } from '../types/chess_types/constants';
@@ -18,12 +17,14 @@ import { IconPokerChip, IconLogout } from '@tabler/icons-react';
 import LeaveSpectateRoomModal from '../components/screens/LeaveSpectateRoomModal';
 import StakeMoneyModal from '../components/screens/StakeMoneyModal';
 import { invoke } from '@tauri-apps/api/tauri';
+import { WebSocketContext } from '../socket/websocket_provider';
 
 
 
 const LobbyScreen = () => {
 
   //const {currentLobbyUsers} = use
+  const {setChannel , conn , chann} = useContext(WebSocketContext)
   const navigate = useNavigate()
   let {game_id , gameType , host_user_id} = useParams()
   let {user_details} = useUserStore()
@@ -77,15 +78,13 @@ const LobbyScreen = () => {
     document.getElementById("general_purpose_modal")!.showModal()
     //Getting tokens and call start_game API
     let user_token = await getUserTokenFromStore()
-    let verify_socket_payload = JSON.stringify({user_id: host_user_id , game_id: game_id})
-    socket.push("verifying-game-status" , verify_socket_payload)
+    chann?.push("verifying-game-status" , {user_id: host_user_id , game_id: game_id})
 
     let start_game_payload = JSON.stringify({game_id: game_id , game_name: gameType})
     let val = await start_game(start_game_payload , user_token)
 
     if (!val.status) {
-      let error_payload = JSON.stringify({game_id: game_id , error_message: val.error_message})
-      socket.push("error-event", error_payload )
+      chann?.push("error-event", {game_id: game_id , error_message: val.error_message} )
       setAlertMessage(val.error_message)
       setAlertType("error")
       setIsAlert(true)
@@ -94,12 +93,11 @@ const LobbyScreen = () => {
         setIsAlert(false)
       } , 4000)
     } else {
-      socket.push("get-turn-mappings" , JSON.stringify({game_id: game_id}))
+    //  chann.push("get-turn-mappings" , {game_id: game_id}))
       let turn_mapping_call = await get_user_turn_mappings( JSON.stringify({game_id: game_id}),user_token) 
 
       if (!turn_mapping_call.status) {
-        let error_payload = JSON.stringify({game_id: game_id , error_message: val.error_message})
-        socket.push("error-event", error_payload )
+        chann?.push("error-event", {game_id: game_id , error_message: val.error_message} )
         setAlertMessage(val.error_message)
         setAlertType("error")
         setIsAlert(true)
@@ -120,8 +118,7 @@ const LobbyScreen = () => {
           })
         }
         gameStore.updatePlayerTurnModel(new_player_turn)
-        let start_game_payload = JSON.stringify({admin_id: host_user_id , game_id: game_id, game_name: gameStore.game_name})
-        socket.push("start-game-event" , start_game_payload)
+        chann?.push("start-game-event" , {admin_id: host_user_id , game_id: game_id, game_name: gameStore.game_name})
         document.getElementById("general_purpose_modal")!.close()
         navigate("/" + gameStore.game_name + "/" + game_id  + "/" + host_user_id)
       }
@@ -145,7 +142,7 @@ const LobbyScreen = () => {
 setIsAlert(false)
       }, 2000);
     } else {
-      socket.push("update-user-status-in-room", JSON.stringify({user_id: user_details.id , username: user_details.username, game_id: game_id, status: status}))
+      chann?.push("update-user-status-in-room", {user_id: user_details.id , username: user_details.username, game_id: game_id, status: status})
       const updatedUsers = roomUsers.map((user) => user.user_id === user_details.id ? {...user, player_status: status} : user)
 
    
@@ -203,7 +200,7 @@ setTimeout(() => {
       gameStore.updateGameId("")
       gameStore.updateGameName("")
       gameStore.updateGameType("")
-      socket.push("leaved-room", JSON.stringify({game_id: game_id, user_id: user_details.id , username: user_details.username, player_type: isHost ? "host" : "player"}))
+      chann?.push("leaved-room", {game_id: game_id, user_id: user_details.id , username: user_details.username, player_type: isHost ? "host" : "player"})
       let delete_payload = JSON.stringify({game_id: game_id})
       await destroy_lobby_and_game(delete_payload ,user_token)
       setTimeout(() => {
@@ -217,12 +214,13 @@ setTimeout(() => {
     if(gameStore.isSpectator)
       return
 
-
-    socket.push("joined-room", JSON.stringify({game_id: game_id, user_id: user_details.id , username: user_details.username}))
-
+    let chann_new = conn?.channel("game:" + gameType + ":" + game_id)
+    chann_new?.join()
+    setChannel(chann_new!)
+    chann_new?.push("joined-room", {game_id: game_id, user_id: user_details.id , username: user_details.username})
 
     return () => {
-      socket.off("joined-room")
+      chann_new?.off("joined-room")
     }
   }, [])
 
@@ -244,20 +242,20 @@ setTimeout(() => {
   } , [])
 
 
-  // Having socket calls
+  // Having chann? calls
   useEffect(() => {
 
     if (gameStore.isSpectator)
       return;
 
-      console.log(`listening to socket events value is, isSpectator: ${gameStore.isSpectator}`)
-    socket.on("user-left-room" , (msg) => {
+      console.log(`listening to chann? events value is, isSpectator: ${gameStore.isSpectator}`)
+    chann?.on("user-left-room" , (msg) => {
       let parsed_payload = JSON.parse(msg)
       let update_users = roomUsers.filter((el) => el.user_id !== parsed_payload.user_id)
       setLobbyUsers([...update_users])
      })
 
-     socket.on("new-user-joined", (msg) => {
+     chann?.on("new-user-joined", (msg) => {
       let parsed_payload = JSON.parse(msg)
       let new_user: UserGameRelation = {
         user_id: parsed_payload.user_id,
@@ -269,7 +267,7 @@ setTimeout(() => {
       setLobbyUsers( (prevState) => [...prevState , new_user])
      })
 
-     socket.on("user-status-update", (msg) => {
+     chann?.on("user-status-update", (msg) => {
       let parse_payload = JSON.parse(msg)
       const updatedUsers = roomUsers.map((user) => user.user_id === parse_payload.user_id ? {...user, player_status: parse_payload.status} : user)
 
@@ -277,7 +275,7 @@ setTimeout(() => {
       setLobbyUsers([...updatedUsers])
      })
 
-     socket.on("remove-all-users" , (msg) => {
+     chann?.on("remove-all-users" , (msg) => {
       setGeneralPurposeMessage("Host Left the Lobby")
       setGeneralPurposeTitle("Host Left the Lobby. Redirecting to HomeScreen")
       document.getElementById("general_purpose_modal")!.showModal()
@@ -289,19 +287,19 @@ setTimeout(() => {
     } , 2000)
      })
 
-     socket.on("verifying-game" , (msg) => {
+     chann?.on("verifying-game" , (msg) => {
       setGeneralPurposeMessage("")
       setGeneralPurposeTitle("Verifying and Starting Game")
      // document.getElementById("general_purpose_modal")!.showModal()
      })
 
-     socket.on("start-game-for-all" , (msg) => {
+     chann?.on("start-game-for-all" , (msg) => {
       
       document.getElementById("general_purpose_modal")!.close()
       navigate("/" + gameStore.game_name + "/" + game_id  + "/" + host_user_id)
      })
 
-     socket.on("error-event-occured" , (msg) => {
+     chann?.on("error-event-occured" , (msg) => {
       let parsed_payload = JSON.parse(msg as string)
       setAlertMessage(parsed_payload.error_message)
 setAlertType("error")
@@ -313,7 +311,7 @@ setTimeout(() => {
      })
 
 
-     socket.on("fetch-user-turn-mappings", async (msg) => {
+     chann?.on("fetch-user-turn-mappings", async (msg) => {
       let user_token = await getUserTokenFromStore()
       let turn_mapping_call = await get_user_turn_mappings( JSON.stringify({game_id: game_id}),user_token) 
       let new_player_turn: PlayerTurnMappingModel ={
@@ -331,14 +329,14 @@ setTimeout(() => {
      })
 
      return () => {
-      socket.off("user-left-room")
-      socket.off("new-user-joined")
-      socket.off("user-status-update")
-      socket.off("remove-all-users")
-      socket.off("verifying-game")
-      socket.off("start-game-for-all")
-      socket.off("error-event-occured")
-      socket.off("fetch-user-turn-mappings")
+      chann?.off("user-left-room")
+      chann?.off("new-user-joined")
+      chann?.off("user-status-update")
+      chann?.off("remove-all-users")
+      chann?.off("verifying-game")
+      chann?.off("start-game-for-all")
+      chann?.off("error-event-occured")
+      chann?.off("fetch-user-turn-mappings")
      }
   })
 

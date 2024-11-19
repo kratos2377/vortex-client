@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useContext, useEffect, useState } from "react";
 import { Cell } from "../models/Cell/Cell";
 import CellComponent from "./CellComponent";
 import { opposite } from "../../helper_functions/getChessOpponentColor";
@@ -12,7 +12,6 @@ import { useChessMainStore, useGameStore } from "../../state/UserAndGameState";
 import { initialCastlingState } from "../../state/chess_store/initial_states/castlingUtils";
 import { rankCoordinates } from "../../state/chess_store/initial_states/rankCoordinates";
 import { Color } from "../../types/chess_types/constants";
-import { socket } from "../../socket/socket";
 import { GameEventPayload } from "../../types/ws_and_game_events";
 import { convertStringToGameEvent } from "../../helper_functions/convertGameEvents";
 import { ChessNormalEvent, ChessPromotionEvent } from "../../types/game_event_model";
@@ -21,6 +20,7 @@ import { PieceChar, getPieceCharFromPieceName } from "../models/Piece/types";
 import { MQTTPayload, UserGameEvent } from "../../types/models";
 import {  USER_GAME_MOVE } from "../../utils/mqtt_event_names";
 import { listen } from "@tauri-apps/api/event";
+import { WebSocketContext } from "../../socket/websocket_provider";
 
 
 interface BoardComponentProps {
@@ -29,7 +29,7 @@ interface BoardComponentProps {
 }
 
 const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
-
+  const {chann} = useContext(WebSocketContext)
   const initialState: IPawnTransformUtils = { visible: false, targetCell: null };
   const { update, board, selectedCell, setSelectedCell } = useBoardStore();
   const { currentPlayer, passTurn , startingPlayerColor , player_color} = usePlayerStore();
@@ -100,7 +100,7 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
           event_type: "normal",
           game_id: game_id
         }
-        socket.push("game-event" , JSON.stringify(gameEvent))
+        chann?.push("game-event" , gameEvent)
       }
 
       resetPassantCells();
@@ -189,7 +189,7 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
     if (useGameStore.getState().isSpectator)
       return;
     
-    socket.on("send-user-game-event" , (data) => {
+    chann?.on("send-user-game-event" , (data) => {
           let game_event = convertStringToGameEvent(data) as GameEventPayload
 
 
@@ -250,7 +250,7 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
     })
 
     return () => {
-      socket.off("send-user-game-event")
+      chann?.off("send-user-game-event")
     };
 
   })

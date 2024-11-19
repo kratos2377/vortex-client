@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import { FC, useContext, useEffect } from "react";
 import { Color, PieceIcons, PieceNames, getPieceCharFromPieceName } from "../models/Piece/types";
 import { PawnTransformProps } from "./types";
 import useBoardStore from "../../state/chess_store/board";
@@ -7,9 +7,8 @@ import { pieces } from "../../state/chess_store/initial_states/pieceForTransform
 import usePlayerStore from "../../state/chess_store/player";
 import { useChessMainStore } from "../../state/UserAndGameState";
 import { ChessPromotionEvent } from "../../types/game_event_model";
-import { convertChessCell } from "../../helper_functions/convertChessCell";
 import { GameEventPayload } from "../../types/ws_and_game_events";
-import { socket } from "../../socket/socket";
+import { WebSocketContext } from "../../socket/websocket_provider";
 
 const PawnTransform: FC<PawnTransformProps> = ({
   pawntransformUtils,
@@ -18,6 +17,7 @@ const PawnTransform: FC<PawnTransformProps> = ({
   user_id,
   game_id
 }) => {
+  const {chann} = useContext(WebSocketContext)
   const { currentPlayer, passTurn } = usePlayerStore();
   const { pawnUtils, validateCheck } = useChessGameStore();
   const { selectedCell, update } = useBoardStore();
@@ -44,7 +44,7 @@ const PawnTransform: FC<PawnTransformProps> = ({
       event_type: "promotion",
       game_id: game_id
     }
-    socket.push("game-event" , JSON.stringify(gameEvent))
+    chann?.push("game-event" , gameEvent)
   };
 
 

@@ -1,5 +1,5 @@
 import { Label } from '@radix-ui/react-label'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { cn } from '../utils/cn'
 import { login_call } from '../helper_functions/apiCall'
 import { IconUser } from '@tabler/icons-react'
@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom'
 import { saveUserDetails } from '../persistent_storage/save_user_details'
 import { useUserStore } from '../state/UserAndGameState'
 import { LabelInputContainer } from '../components/ui/LabelInputContainer'
-import { socket } from '../socket/socket'
+import { WebSocketContext } from '../socket/websocket_provider'
 
 interface LoginProps {
   setAuthState: React.Dispatch<React.SetStateAction<"login" | "registration">>,
@@ -18,7 +18,7 @@ interface LoginProps {
 }
 
 const Login: React.FC<LoginProps> = ({setAuthState , setIsAlert , setAlertMessage , setAlertType}) => {
-
+  const {conn} = useContext(WebSocketContext)
   const navigate = useNavigate()
   const [password, setPassword] = useState("")
   const [usernameoremail, setUsernameOrEmail] = useState("")
@@ -78,7 +78,7 @@ const Login: React.FC<LoginProps> = ({setAuthState , setIsAlert , setAlertMessag
         setAlertMessage("")
         
         if (res.user?.verified) {
-          socket.connect({token: res.token , user_id: res.user.id, username: res.user.username})
+          conn?.connect({token: res.token , user_id: res.user.id, username: res.user.username})
             navigate("/home")
         } else {
           navigate("/verify_user")
