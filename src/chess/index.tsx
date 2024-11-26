@@ -10,6 +10,7 @@ import { invoke } from '@tauri-apps/api/tauri'
 import { listen } from '@tauri-apps/api/event'
 import { MQTTPayload } from '../types/models'
 import GeneralPurposeModal from '../components/screens/GeneralPurposeModal'
+import { IconQrcode } from '@tabler/icons-react'
 
 
 const ChessGame = () => {
@@ -75,6 +76,14 @@ const ChessGame = () => {
               </div></>
     
               <GeneralPurposeModal message={generalPurposeMessage} title={generalPurposeTitle}/>
+
+          {
+            gameStore.isSpectator ?               <div className='qr_code'>
+            <button onClick={() => console.log("Generate QR and show it on screen for user to bet")}>
+            <IconQrcode/>
+            </button>
+          </div> : <></>
+          }
     </div>
     }
     </>

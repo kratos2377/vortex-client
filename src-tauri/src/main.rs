@@ -10,6 +10,7 @@ pub mod api;
 pub mod models;
 pub mod constants;
 pub mod state;
+pub mod utils;
 pub mod events;
 extern crate paho_mqtt as mqtt;
 
@@ -64,6 +65,9 @@ async fn main() {
             events::mqtt_events::subscribe_to_game_topic,
             events::mqtt_events::unsubscribe_to_game_topic,
             events::mqtt_events::listen_to_game_event,
+
+            //Util fns
+            utils::qr::generate_qr_for_bet
 
         ]);
 

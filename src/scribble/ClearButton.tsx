@@ -1,10 +1,11 @@
 'use client'
 
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@radix-ui/react-tooltip'
-import { useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { Button } from './ui/Button'
 import { Kbd } from './ui/Kbd'
+import { WebSocketContext } from '../socket/websocket_provider'
 
 
 interface ClearButtonProps {
@@ -14,26 +15,27 @@ interface ClearButtonProps {
 
 export default function ClearButton({ canvasRef, clear }: ClearButtonProps) {
 
+  const {chann} = useContext(WebSocketContext)
+
   const clearCanvas = () => {
     const canvasElement = canvasRef.current
     if (!canvasElement) return
 
-    // chann.push('add-undo-point', {
-    //   roomId,
+    // chann?.push('add-undo-point', {
     //   undoPoint: canvasElement.toDataURL(),
     // })
      clear()
-    // chann.push('clear-canvas', roomId)
+     chann?.push('clear-canvas', {message: 'clear'})
   }
 
   useHotkeys('c', clearCanvas)
 
   useEffect(() => {
-    // chann?.on('clear-canvas', clear)
+    chann?.on('clear-canvas', clear)
 
-    // return () => {
-    //   chann?.off('clear-canvas')
-    // }
+    return () => {
+      chann?.off('clear-canvas')
+    }
   }, [clear])
 
   return (

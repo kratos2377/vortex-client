@@ -138,3 +138,7 @@
     @apply right-[50px];
   }
   
+
+  .qr_code {
+    @apply relative flex justify-end items-start
+  }

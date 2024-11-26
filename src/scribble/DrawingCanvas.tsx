@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { draw, drawWithDataURL } from '../helper_functions/drawUtil'
 import useDraw, { DrawProps } from '../helper_functions/useDraw'
-import { useCanvasStore } from '../state/UserAndGameState'
+import { useCanvasStore, useGameStore } from '../state/UserAndGameState'
 import { DrawOptions } from '../types/scribble_types'
 import ClearButton from './ClearButton'
 import UndoButton from './UndoButton'
@@ -22,12 +22,16 @@ export default function DrawingCanvas() {
   const strokeColor = useCanvasStore(state => state.strokeColor)
   const strokeWidth = useCanvasStore(state => state.strokeWidth)
   const dashGap = useCanvasStore(state => state.dashGap)
-
+  const gameStore = useGameStore()
 
 
 
   const onDraw = useCallback(
     ({ ctx, currentPoint, prevPoint }: DrawProps) => {
+
+      if(gameStore.isSpectator)
+          return;
+
       const drawOptions = {
         ctx,
         currentPoint,
@@ -60,18 +64,20 @@ export default function DrawingCanvas() {
     const ctx = canvasElement?.getContext('2d')
 
 
-    chann?.on('canvas-state-from-server', (canvasState: string) => {
-      if (!ctx || !canvasElement) return
-
-      drawWithDataURL(canvasState, ctx, canvasElement)
-      setIsCanvasLoading(false)
-    })
-
-    chann?.on('update-canvas-state', (drawOptions: DrawOptions) => {
-      if (!ctx) return
-      draw({ ...drawOptions, ctx })
-    })
-
+    if(!gameStore.isSpectator) {
+      chann?.on('canvas-state-from-server', (canvasState: string) => {
+        if (!ctx || !canvasElement) return
+  
+        drawWithDataURL(canvasState, ctx, canvasElement)
+        setIsCanvasLoading(false)
+      })
+  
+      chann?.on('update-canvas-state', (drawOptions: DrawOptions) => {
+        if (!ctx) return
+        draw({ ...drawOptions, ctx })
+      })
+  
+    }
     // chann?.on('undo-canvas', canvasState => {
     //   if (!ctx || !canvasElement) return
 
@@ -79,9 +85,11 @@ export default function DrawingCanvas() {
     // })
 
     return () => {
+     if(!gameStore.isSpectator) {
       chann?.off('get-canvas-state')
       chann?.off('update-canvas-state')
       chann?.off('undo-canvas')
+     }
     }
 
   }, [canvasRef])
@@ -121,7 +129,7 @@ export default function DrawingCanvas() {
           {/* Fix undo state button */}
           {/* <UndoButton undo={undo} /> */}
 
-          <ClearButton canvasRef={canvasRef} clear={clear} />
+          {gameStore.isSpectator ? <></> : <ClearButton canvasRef={canvasRef} clear={clear} />}
         </div>
       )}
 
