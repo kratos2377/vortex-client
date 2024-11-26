@@ -85,7 +85,7 @@ Ok(rec)
 pub async fn change_user_password(payload: String , token: String, state: State<'_ , MessierClient>) -> Result<String , ()> {
 let req_url = BASE_URL.to_string() + USER_LOGIC_API_ROUTE + "/change_user_password";
 
-let res = state.client.get(req_url).body(payload).header("Authorization" , token).header("Content-Type", "application/json").send().await.unwrap();
+let res = state.client.put(req_url).body(payload).header("Authorization" , token).header("Content-Type", "application/json").send().await.unwrap();
 
 let rec = res.text().await.unwrap();
 
@@ -96,7 +96,7 @@ Ok(rec)
 pub async fn change_user_username(payload: String , token: String, state: State<'_ , MessierClient>) -> Result<String , ()> {
 let req_url = BASE_URL.to_string() + USER_LOGIC_API_ROUTE + "/change_user_username";
 
-let res = state.client.get(req_url).body(payload).header("Authorization" , token).header("Content-Type", "application/json").send().await.unwrap();
+let res = state.client.put(req_url).body(payload).header("Authorization" , token).header("Content-Type", "application/json").send().await.unwrap();
 
 let rec = res.text().await.unwrap();
 
