@@ -14,7 +14,7 @@ import { WebSocketContext } from '../socket/websocket_provider'
 import { useTimer } from 'react-timer-hook';
 
 const VerifyUserScreen = () => {
-  const {conn} = useContext(WebSocketContext)
+//  const {conn} = useContext(WebSocketContext)
     const navigate = useNavigate()
     const [initialCall , setInitialCall] = useState(false)
  //   const [userKey , setUserKey] = useState("")
@@ -114,7 +114,7 @@ const VerifyUserScreen = () => {
         await updateUserVerifiedStatus(true)
 
         //send actual token
-        conn?.connect({token: "token" , user_id: user_details.id, username: user_details.username})
+     //   conn?.connect({token: "token" , user_id: user_details.id, username: user_details.username})
         setTimeout(() => {
           setIsAlert(false)
           setAlertType("success")
