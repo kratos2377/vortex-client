@@ -65,7 +65,7 @@ const Login: React.FC<LoginProps> = ({setAuthState , setIsAlert , setAlertMessag
         }, 3000)
     } else {
       setAlertType("success")
-      setAlertMessage("Logged In. Redirecting to HomeScreen")
+      setAlertMessage(`Logged In. Redirecting to ${res.user?.verified ? "HomeScreen": "VerificationScreen"}`)
       setIsAlert(true)
 
       await saveUserDetails(res.user.id, res.token)

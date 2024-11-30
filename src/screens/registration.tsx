@@ -97,7 +97,7 @@ const Registration:  React.FC<RegistrationProps> = ({setAuthState , setAlertMess
         }, 3000)
     } else {
       setAlertType("success")
-      setAlertMessage("User Registered. Redirecting to HomeScreen")
+      setAlertMessage("User Registered. Redirecting to VerificationScreen")
       setIsAlert(true)
       await saveUserDetails(res.user.id, res.token)
       await updateUserDetails(res.user)
