@@ -27,11 +27,14 @@ const Registration:  React.FC<RegistrationProps> = ({setAuthState , setAlertMess
   const [email, setEmail] = useState("")
   const [username, setUserName] = useState("")
   const [password, setPassword] = useState("")
+  const [registerCall , setRegisterCall] = useState(false)
   const [confirmpassword, setConfirmPassword] = useState("")
   const {updateUserDetails} = useUserStore()
 
   const handleUserRegistration = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    setRegisterCall(true)
 
 
     if (password.trim().length < 8 || confirmpassword.trim().length < 8 || confirmpassword !== password) {
@@ -42,6 +45,7 @@ const Registration:  React.FC<RegistrationProps> = ({setAuthState , setAlertMess
       setTimeout(() => {
       setIsAlert(false)
       setAlertType("success")
+      setRegisterCall(false)
       setAlertMessage("")
       }, 4000)
       return;
@@ -54,6 +58,7 @@ const Registration:  React.FC<RegistrationProps> = ({setAuthState , setAlertMess
       setTimeout(() => {
       setIsAlert(false)
       setAlertType("success")
+      setRegisterCall(false)
       setAlertMessage("")
       }, 4000)
       return;
@@ -66,6 +71,7 @@ const Registration:  React.FC<RegistrationProps> = ({setAuthState , setAlertMess
       setTimeout(() => {
       setIsAlert(false)
       setAlertType("success")
+      setRegisterCall(false)
       setAlertMessage("")
       }, 4000)
       return;
@@ -78,6 +84,7 @@ const Registration:  React.FC<RegistrationProps> = ({setAuthState , setAlertMess
       setTimeout(() => {
       setIsAlert(false)
       setAlertType("success")
+      setRegisterCall(false)
       setAlertMessage("")
       }, 4000)
       return;
@@ -85,7 +92,7 @@ const Registration:  React.FC<RegistrationProps> = ({setAuthState , setAlertMess
 
     let payload = JSON.stringify( {first_name: firstName , last_name: lastName , email: email,   username: username, password: password } )
     let res = await registration_call(payload);
-
+    setRegisterCall(false)
     if (!res!.status) {
       setAlertType("error")
       setAlertMessage("Some Error Occured. Try again with different email and username")
@@ -191,13 +198,18 @@ const Registration:  React.FC<RegistrationProps> = ({setAuthState , setAlertMess
         />
       </LabelInputContainer>
 
-      <button
+{
+    registerCall ? <div className='h-screen w-screen flex justify-center text-white'>
+    <span className="loading loading-dots loading-lg"></span>
+  </div> :  <button
         className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
         type="submit"
       >
         Sign up &rarr;
         <BottomGradient />
       </button>
+}
+     
 
       <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-4 h-[1px] w-full" />
 
