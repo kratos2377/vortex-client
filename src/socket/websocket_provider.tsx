@@ -33,7 +33,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
       if (!conn  && !isConnecting.current) {
         isConnecting.current = true;
         let socket =  new Socket(
-            "wss://localhost:4000/socket",
+            "wss://localhost:4001/socket",
           );
           
           setConn(socket)
