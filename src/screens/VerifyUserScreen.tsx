@@ -14,7 +14,9 @@ import { WebSocketContext } from '../socket/websocket_provider'
 import { useTimer } from 'react-timer-hook';
 
 const VerifyUserScreen = () => {
-//  const {conn} = useContext(WebSocketContext)
+  const currentTime = new Date();
+  currentTime.setTime(currentTime.getSeconds() + 60)
+  const {conn} = useContext(WebSocketContext)
     const navigate = useNavigate()
     const [initialCall , setInitialCall] = useState(false)
  //   const [userKey , setUserKey] = useState("")
@@ -24,15 +26,14 @@ const VerifyUserScreen = () => {
     const { updateUserVerifiedStatus , resetUserModelState} = useUserStore()
     const {user_details} = useUserStore()
     const [retries , setRetries] = useState(3)
-    const [time , setTime] = useState(new Date())
+    const [time , setTime] = useState(currentTime)
 
     const [sendingEmail, setSendingEmail] = useState(false)
     const [verifying , setVerifying] = useState(false)
     const [disableSend , setDisableSend] = useState(true)
     const [code, setVerificationCode] = useState(new Array(6).fill(''));
     const inputRefs = useRef([]);
-    time.setSeconds(time.getSeconds() + 60)
-    setTime(time)
+
 
     const {
       totalSeconds,
@@ -114,7 +115,7 @@ const VerifyUserScreen = () => {
         await updateUserVerifiedStatus(true)
 
         //send actual token
-     //   conn?.connect({token: "token" , user_id: user_details.id, username: user_details.username})
+        conn?.connect({token: "token" , user_id: user_details.id, username: user_details.username})
         setTimeout(() => {
           setIsAlert(false)
           setAlertType("success")
@@ -313,8 +314,8 @@ const VerifyUserScreen = () => {
           <div className="flex flex-col space-y-4">
     
           {
-            disableSend ? <div> 
-              <span>  Time before you can get a new Code: <span>{minutes}</span>:<span>{seconds}</span> </span>
+            disableSend ? <div className='text-white'> 
+              <span>  Time before you can get a new Code: { minutes === 0 && seconds < 10 ? <><span>{minutes}</span>:<span>{0}</span><span>{seconds}</span> </> : <> <span>{minutes}</span>:<span>{seconds}</span> </>} </span>
 
             </div>   :     <button
             className=" relative group/btn flex flex-row space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
