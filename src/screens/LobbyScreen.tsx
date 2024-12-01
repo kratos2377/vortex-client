@@ -214,6 +214,8 @@ setTimeout(() => {
     if(gameStore.isSpectator)
       return
 
+    console.log("GAME TYPE IS")
+    console.log(gameType)
     let chann_new = conn?.channel("game:" + gameType + ":" + game_id)
     chann_new?.join()
     setChannel(chann_new!)

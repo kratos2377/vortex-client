@@ -29,20 +29,20 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
     const [chann, setChannel] = useState<S>(null);
     const isConnecting = useRef(false);
   
-    useEffect(() => {
-      if (!conn  && !isConnecting.current) {
-        isConnecting.current = true;
-        let socket =  new Socket(
-            "http://localhost:4001/socket",
-          );
+    // useEffect(() => {
+    //   if (!conn  && !isConnecting.current) {
+    //     isConnecting.current = true;
+    //     let socket =  new Socket(
+    //         "ws://localhost:4001/socket",
+    //       );
           
-          setConn(socket)
+    //       setConn(socket)
 
-        setTimeout(() => {
-                isConnecting.current = false;
-        }, 200)
-      }
-    }, [conn]);
+    //     setTimeout(() => {
+    //             isConnecting.current = false;
+    //     }, 200)
+    //   }
+    // }, [conn]);
   
 
   

@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useUserStore } from "./state/UserAndGameState";
 import { UserModel } from "./types/models";
 import { WebSocketContext } from "./socket/websocket_provider";
+import { Socket } from "phoenix";
 
 
 
@@ -45,8 +46,14 @@ function App() {
               await updateUserDetails(user_mod)
 
               if(recv_msg.user_data.verified) {
-             conn?.connect({token: userToken , user_id: user_mod.id, username: user_mod.username})
-            //  setConn(socket)
+
+                let socket =  new Socket(
+                          "ws://localhost:4001/socket",
+                       {params:    {token: userToken , user_id: user_mod.id, username: user_mod.username}}
+                        );
+
+            //  conn?.connect({token: userToken , user_id: user_mod.id, username: user_mod.username})
+              setConn(socket)
                 navigate("/home")
               } else {
                 navigate("/verify_user")

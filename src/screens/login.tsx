@@ -9,6 +9,7 @@ import { saveUserDetails } from '../persistent_storage/save_user_details'
 import { useUserStore } from '../state/UserAndGameState'
 import { LabelInputContainer } from '../components/ui/LabelInputContainer'
 import { WebSocketContext } from '../socket/websocket_provider'
+import { Socket } from 'phoenix'
 
 interface LoginProps {
   setAuthState: React.Dispatch<React.SetStateAction<"login" | "registration">>,
@@ -18,7 +19,7 @@ interface LoginProps {
 }
 
 const Login: React.FC<LoginProps> = ({setAuthState , setIsAlert , setAlertMessage , setAlertType}) => {
-  const {conn} = useContext(WebSocketContext)
+  const {conn , setConn} = useContext(WebSocketContext)
   const navigate = useNavigate()
   const [password, setPassword] = useState("")
   const [usernameoremail, setUsernameOrEmail] = useState("")
@@ -82,7 +83,16 @@ const Login: React.FC<LoginProps> = ({setAuthState , setIsAlert , setAlertMessag
         setAlertMessage("")
         
         if (res.user?.verified) {
-          conn?.connect({token: res.token , user_id: res.user.id, username: res.user.username})
+          let socket =  new Socket(
+            "ws://localhost:4001/socket",
+         {params:    {token: res.token , user_id: res.user.id, username: res.user.username}}
+          );
+
+          socket.connect()
+
+        //  conn?.connect({token: res.token , user_id: res.user.id, username: res.user.username})
+      setConn(socket)
+        
             navigate("/home")
         } else {
           navigate("/verify_user")
