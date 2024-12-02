@@ -297,13 +297,15 @@ setTimeout(() => {
 
        console.log(`listening to chann? events value is, isSpectator: ${gameStore.isSpectator}`)
     chann?.on("user-left-room" , (msg) => {
-      let parsed_payload = JSON.parse(msg)
+      let parsed_payload = msg
       let update_users = roomUsers.filter((el) => el.user_id !== parsed_payload.user_id)
       setLobbyUsers([...update_users])
      })
 
      chann?.on("new-user-joined", (msg) => {
-      let parsed_payload = JSON.parse(msg)
+      console.log("New uSer Joined Socket Payload is")
+      console.log(msg)
+      let parsed_payload = msg
       let new_user: UserGameRelation = {
         user_id: parsed_payload.user_id,
         username: parsed_payload.username,
@@ -315,7 +317,7 @@ setTimeout(() => {
      })
 
      chann?.on("user-status-update", (msg) => {
-      let parse_payload = JSON.parse(msg)
+      let parse_payload = msg
       const updatedUsers = roomUsers.map((user) => user.user_id === parse_payload.user_id ? {...user, player_status: parse_payload.status} : user)
 
 
@@ -347,7 +349,7 @@ setTimeout(() => {
      })
 
      chann?.on("error-event-occured" , (msg) => {
-      let parsed_payload = JSON.parse(msg as string)
+      let parsed_payload = msg
       setAlertMessage(parsed_payload.error_message)
 setAlertType("error")
 setIsAlert(true)

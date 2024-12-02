@@ -13,7 +13,6 @@ import { initialCastlingState } from "../../state/chess_store/initial_states/cas
 import { rankCoordinates } from "../../state/chess_store/initial_states/rankCoordinates";
 import { Color } from "../../types/chess_types/constants";
 import { GameEventPayload } from "../../types/ws_and_game_events";
-import { convertStringToGameEvent } from "../../helper_functions/convertGameEvents";
 import { ChessNormalEvent, ChessPromotionEvent } from "../../types/game_event_model";
 import { Piece } from "../models/Piece/Piece";
 import { PieceChar, getPieceCharFromPieceName } from "../models/Piece/types";
@@ -190,13 +189,13 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
       return;
     
     chann?.on("send-user-game-event" , (data) => {
-          let game_event = convertStringToGameEvent(data) as GameEventPayload
+          let game_event = data as GameEventPayload
 
 
           if (game_event.event_type === "normal") {
-            let game_move = JSON.parse(game_event.game_event) as ChessNormalEvent
-            let init_pos = JSON.parse(game_move.initial_cell) 
-            let target_pos = JSON.parse(game_move.target_cell) 
+            let game_move = game_event.game_event as ChessNormalEvent
+            let init_pos = game_move.initial_cell 
+            let target_pos = game_move.target_cell 
             let init_cell = board.getCell(parseInt(init_pos.x) , parseInt(init_pos.y))
             let target_cell = board.getCell(parseInt(target_pos.x) , parseInt(target_pos.y))
  
@@ -217,9 +216,9 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
       resetPassantCells();
 
           } else if (game_event.event_type === "promotion") {
-            let game_move = JSON.parse(game_event.game_event) as ChessPromotionEvent
-            let init_pos = JSON.parse(game_move.initial_cell) 
-            let target_pos = JSON.parse(game_move.target_cell) 
+            let game_move = game_event.game_event as ChessPromotionEvent
+            let init_pos = game_move.initial_cell 
+            let target_pos = game_move.target_cell 
             let piece_name = game_move.promoted_to
    
 
