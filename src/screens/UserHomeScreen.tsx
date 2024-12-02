@@ -65,14 +65,14 @@ const UserHomeScreen = () => {
   } , [])
 
 
-  useEffect(() => {
-    if(chann !== undefined && chann !== null) {
-        chann.leave(1000)
+  // useEffect(() => {
+  //   if(chann !== undefined && chann !== null) {
+  //       chann.leave(1000)
 
-        setChannel(null)
-    }
+  //       setChannel(null)
+  //   }
 
-  }, [])
+  // }, [])
 
   return (
     <>

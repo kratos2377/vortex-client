@@ -10,14 +10,12 @@ import { ErrorAlert, SuccessAlert } from '../components/ui/AlertMessage'
 import { motion } from 'framer-motion'
 import { AuroraBackground } from '../components/backgrounds/aurora-background'
 import { LabelInputContainer } from '../components/ui/LabelInputContainer'
-import { WebSocketContext } from '../socket/websocket_provider'
 import { useTimer } from 'react-timer-hook';
 import { Socket } from 'phoenix'
 
 const VerifyUserScreen = () => {
   const currentTime = new Date();
   currentTime.setTime(currentTime.getSeconds() + 60)
-  const {conn , setConn} = useContext(WebSocketContext)
     const navigate = useNavigate()
     const [initialCall , setInitialCall] = useState(false)
  //   const [userKey , setUserKey] = useState("")
@@ -115,16 +113,16 @@ const VerifyUserScreen = () => {
   
         await updateUserVerifiedStatus(true)
 
-        let socket =  new Socket(
-          "ws://localhost:4001/socket",
-       {params:    {token: "token" ,user_id: user_details.id, username: user_details.username,
+      //   let socket =  new Socket(
+      //     "ws://localhost:4001/socket",
+      //  {params:    {token: "token" ,user_id: user_details.id, username: user_details.username,
 
-        heartbeatIntervalMs: 10000
-       }}
-        );
+      //   heartbeatIntervalMs: 10000
+      //  }}
+      //   );
         
       //  conn?.connect({token: res.token , user_id: res.user.id, username: res.user.username})
-      setConn(socket)
+      //setConn(socket)
         //send actual token
       //  conn?.connect({token: "token" , user_id: user_details.id, username: user_details.username})
         setTimeout(() => {

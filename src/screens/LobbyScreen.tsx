@@ -18,13 +18,15 @@ import LeaveSpectateRoomModal from '../components/screens/LeaveSpectateRoomModal
 import StakeMoneyModal from '../components/screens/StakeMoneyModal';
 import { invoke } from '@tauri-apps/api/tauri';
 import { WebSocketContext } from '../socket/websocket_provider';
+import { socket } from '../socket/socket';
+import { Socket } from 'phoenix';
 
 
 
 const LobbyScreen = () => {
 
   //const {currentLobbyUsers} = use
-  const {setChannel , conn , chann} = useContext(WebSocketContext)
+  const {setChannel, chann} = useContext(WebSocketContext)
   const navigate = useNavigate()
   let {game_id , gameType , host_user_id} = useParams()
   let {user_details} = useUserStore()
@@ -201,8 +203,15 @@ setTimeout(() => {
       gameStore.updateGameName("")
       gameStore.updateGameType("")
       chann?.push("leaved-room", {game_id: game_id, user_id: user_details.id , username: user_details.username, player_type: isHost ? "host" : "player"})
-      let delete_payload = JSON.stringify({game_id: game_id})
-      await destroy_lobby_and_game(delete_payload ,user_token)
+     
+      if(isHost) {
+        let delete_payload = JSON.stringify({game_id: game_id , game_name: gameType})
+        await destroy_lobby_and_game(delete_payload ,user_token)
+      }
+
+      chann?.leave()
+      setChannel(null)
+
       setTimeout(() => {
         document.getElementById("general_purpose_modal")!.close()
         navigate("/home")
@@ -216,13 +225,15 @@ setTimeout(() => {
 
     console.log("GAME TYPE IS")
     console.log(gameType)
-    let chann_new = conn?.channel("game:" + gameType + ":" + game_id)
-    chann_new?.join()
-    setChannel(chann_new!)
-    chann_new?.push("joined-room", {game_id: game_id, user_id: user_details.id , username: user_details.username})
+    // if(chann === undefined || chann === null) {
+    //   let chann_new = conn?.channel("game:" + gameType + ":" + game_id)
+    // chann_new?.join()
+    // setChannel(chann_new!)
+    // chann_new?.push("joined-room", {game_id: game_id, user_id: user_details.id , username: user_details.username})
+    // }
 
     return () => {
-      chann_new?.off("joined-room")
+      //chann?.off("joined-room")
     }
   }, [])
 
@@ -235,13 +246,47 @@ setTimeout(() => {
     getAllLobbyPlayers()
   } , [])
 
-  useEffect(() => {
+  useEffect( () => {
     if(!gameStore.isSpectator) {
+
+     
+
+      console.log("Channel join loop. Current status of channel is")
+      console.log(chann)
       
-      sendJoinedRoomSocketEvent()
+      
+     if(chann === null) {
+      console.log("setting chann this time")
+      let chann_new = socket.channel("game:" + gameType + ":" + game_id , {})
+      console.log("new channel is")
+      console.log(chann_new)
+
+      chann_new.join().receive("ok", response => {
+        console.log(`Joined game successfully 😊`)
+      })
+      .receive("error", response => {
+        console.log("Error while joining game")
+        console.log(response)
+      })
+
+      chann_new.onError((response) => {
+        console.log("SOme error occured on the channel")
+        console.log(response)
+      })
+      
+      setChannel(chann_new);
+     }
+       // chann_new?.push("joined-room", {game_id: game_id, user_id: user_details.id , username: user_details.username})
+    
+
+ 
     } 
+
+    return () => {
+      chann?.off("joined-room")
+    }
    
-  } , [])
+  } , [chann] )
 
 
   // Having chann? calls
@@ -250,95 +295,95 @@ setTimeout(() => {
     if (gameStore.isSpectator)
       return;
 
-      console.log(`listening to chann? events value is, isSpectator: ${gameStore.isSpectator}`)
-    chann?.on("user-left-room" , (msg) => {
-      let parsed_payload = JSON.parse(msg)
-      let update_users = roomUsers.filter((el) => el.user_id !== parsed_payload.user_id)
-      setLobbyUsers([...update_users])
-     })
+//       console.log(`listening to chann? events value is, isSpectator: ${gameStore.isSpectator}`)
+//     chann?.on("user-left-room" , (msg) => {
+//       let parsed_payload = JSON.parse(msg)
+//       let update_users = roomUsers.filter((el) => el.user_id !== parsed_payload.user_id)
+//       setLobbyUsers([...update_users])
+//      })
 
-     chann?.on("new-user-joined", (msg) => {
-      let parsed_payload = JSON.parse(msg)
-      let new_user: UserGameRelation = {
-        user_id: parsed_payload.user_id,
-        username: parsed_payload.username,
-        game_id: parsed_payload.game_id,
-        player_type: "player",
-        player_status: 'not-ready'
-      }
-      setLobbyUsers( (prevState) => [...prevState , new_user])
-     })
+//      chann?.on("new-user-joined", (msg) => {
+//       let parsed_payload = JSON.parse(msg)
+//       let new_user: UserGameRelation = {
+//         user_id: parsed_payload.user_id,
+//         username: parsed_payload.username,
+//         game_id: parsed_payload.game_id,
+//         player_type: "player",
+//         player_status: 'not-ready'
+//       }
+//       setLobbyUsers( (prevState) => [...prevState , new_user])
+//      })
 
-     chann?.on("user-status-update", (msg) => {
-      let parse_payload = JSON.parse(msg)
-      const updatedUsers = roomUsers.map((user) => user.user_id === parse_payload.user_id ? {...user, player_status: parse_payload.status} : user)
+//      chann?.on("user-status-update", (msg) => {
+//       let parse_payload = JSON.parse(msg)
+//       const updatedUsers = roomUsers.map((user) => user.user_id === parse_payload.user_id ? {...user, player_status: parse_payload.status} : user)
 
 
-      setLobbyUsers([...updatedUsers])
-     })
+//       setLobbyUsers([...updatedUsers])
+//      })
 
-     chann?.on("remove-all-users" , (msg) => {
-      setGeneralPurposeMessage("Host Left the Lobby")
-      setGeneralPurposeTitle("Host Left the Lobby. Redirecting to HomeScreen")
-      document.getElementById("general_purpose_modal")!.showModal()
+//      chann?.on("remove-all-users" , (msg) => {
+//       setGeneralPurposeMessage("Host Left the Lobby")
+//       setGeneralPurposeTitle("Host Left the Lobby. Redirecting to HomeScreen")
+//       document.getElementById("general_purpose_modal")!.showModal()
 
-      setTimeout(() => {
+//       setTimeout(() => {
         
-      document.getElementById("general_purpose_modal")!.close()
-        navigate("/home")
-    } , 2000)
-     })
+//       document.getElementById("general_purpose_modal")!.close()
+//         navigate("/home")
+//     } , 2000)
+//      })
 
-     chann?.on("verifying-game" , (msg) => {
-      setGeneralPurposeMessage("")
-      setGeneralPurposeTitle("Verifying and Starting Game")
-     // document.getElementById("general_purpose_modal")!.showModal()
-     })
+//      chann?.on("verifying-game" , (msg) => {
+//       setGeneralPurposeMessage("")
+//       setGeneralPurposeTitle("Verifying and Starting Game")
+//      // document.getElementById("general_purpose_modal")!.showModal()
+//      })
 
-     chann?.on("start-game-for-all" , (msg) => {
+//      chann?.on("start-game-for-all" , (msg) => {
       
-      document.getElementById("general_purpose_modal")!.close()
-      navigate("/" + gameStore.game_name + "/" + game_id  + "/" + host_user_id)
-     })
+//       document.getElementById("general_purpose_modal")!.close()
+//       navigate("/" + gameStore.game_name + "/" + game_id  + "/" + host_user_id)
+//      })
 
-     chann?.on("error-event-occured" , (msg) => {
-      let parsed_payload = JSON.parse(msg as string)
-      setAlertMessage(parsed_payload.error_message)
-setAlertType("error")
-setIsAlert(true)
+//      chann?.on("error-event-occured" , (msg) => {
+//       let parsed_payload = JSON.parse(msg as string)
+//       setAlertMessage(parsed_payload.error_message)
+// setAlertType("error")
+// setIsAlert(true)
 
-setTimeout(() => {
-  setIsAlert(false)
-}, 3000)
-     })
+// setTimeout(() => {
+//   setIsAlert(false)
+// }, 3000)
+//      })
 
 
-     chann?.on("fetch-user-turn-mappings", async (msg) => {
-      let user_token = await getUserTokenFromStore()
-      let turn_mapping_call = await get_user_turn_mappings( JSON.stringify({game_id: game_id}),user_token) 
-      let new_player_turn: PlayerTurnMappingModel ={
-        game_id: game_id!,
-        turn_mappings: turn_mapping_call.user_turns.turn_mappings.map((el: string) => {
-          let new_mapping_model: TurnModel = {
-            count_id: el.count_id,
-            user_id: el.user_id,
-            username: el.username
-          }
-          return new_mapping_model
-        })
-      }
-      gameStore.updatePlayerTurnModel(new_player_turn)
-     })
+//      chann?.on("fetch-user-turn-mappings", async (msg) => {
+//       let user_token = await getUserTokenFromStore()
+//       let turn_mapping_call = await get_user_turn_mappings( JSON.stringify({game_id: game_id}),user_token) 
+//       let new_player_turn: PlayerTurnMappingModel ={
+//         game_id: game_id!,
+//         turn_mappings: turn_mapping_call.user_turns.turn_mappings.map((el: string) => {
+//           let new_mapping_model: TurnModel = {
+//             count_id: el.count_id,
+//             user_id: el.user_id,
+//             username: el.username
+//           }
+//           return new_mapping_model
+//         })
+//       }
+//       gameStore.updatePlayerTurnModel(new_player_turn)
+//      })
 
      return () => {
-      chann?.off("user-left-room")
-      chann?.off("new-user-joined")
-      chann?.off("user-status-update")
-      chann?.off("remove-all-users")
-      chann?.off("verifying-game")
-      chann?.off("start-game-for-all")
-      chann?.off("error-event-occured")
-      chann?.off("fetch-user-turn-mappings")
+      // chann?.off("user-left-room")
+      // chann?.off("new-user-joined")
+      // chann?.off("user-status-update")
+      // chann?.off("remove-all-users")
+      // chann?.off("verifying-game")
+      // chann?.off("start-game-for-all")
+      // chann?.off("error-event-occured")
+      // chann?.off("fetch-user-turn-mappings")
      }
   })
 

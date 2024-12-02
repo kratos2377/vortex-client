@@ -8,7 +8,6 @@ import { useNavigate } from 'react-router-dom';
 import { saveUserDetails } from '../persistent_storage/save_user_details';
 import { useUserStore } from '../state/UserAndGameState';
 import { LabelInputContainer } from '../components/ui/LabelInputContainer';
-import { WebSocketContext } from '../socket/websocket_provider';
 import { Socket } from 'phoenix';
 
 
@@ -20,7 +19,6 @@ interface RegistrationProps {
 }
 
 const Registration:  React.FC<RegistrationProps> = ({setAuthState , setAlertMessage , setIsAlert , setAlertType}) => {
-  const {conn , setConn} = useContext(WebSocketContext)
   const navigate = useNavigate()
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   const [firstName, setFirstName] = useState("")
@@ -116,13 +114,13 @@ const Registration:  React.FC<RegistrationProps> = ({setAuthState , setAlertMess
 
         if (res.user?.verified) {
 
-          let socket =  new Socket(
-            "ws://localhost:4001/socket",
-         {params:    {token: res.token , user_id: res.user.id, username: res.user.username}}
-          );
+        //   let socket =  new Socket(
+        //     "ws://localhost:4001/socket",
+        //  {params:    {token: res.token , user_id: res.user.id, username: res.user.username}}
+        //   );
           
         //  conn?.connect({token: res.token , user_id: res.user.id, username: res.user.username})
-        setConn(socket)
+      //  setConn(socket)
             navigate("/home")
           } else {
             navigate("/verify_user")

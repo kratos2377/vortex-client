@@ -5,7 +5,6 @@ import { deleteUserDetailsFromStore, getUserTokenFromStore } from "./persistent_
 import { useNavigate } from "react-router-dom";
 import { useUserStore } from "./state/UserAndGameState";
 import { UserModel } from "./types/models";
-import { WebSocketContext } from "./socket/websocket_provider";
 import { Socket } from "phoenix";
 
 
@@ -15,11 +14,9 @@ import { Socket } from "phoenix";
 function App() {
   const navigate = useNavigate();
   const {updateUserDetails} = useUserStore()
-  const {setConn , conn} = useContext(WebSocketContext)
 
   useEffect(() => {
 
-    setConn(null)
 
     const getAndVerifyToken = async () => {
 
@@ -47,13 +44,9 @@ function App() {
 
               if(recv_msg.user_data.verified) {
 
-                let socket =  new Socket(
-                          "ws://localhost:4001/socket",
-                       {params:    {token: userToken , user_id: user_mod.id, username: user_mod.username}}
-                        );
-
+        
             //  conn?.connect({token: userToken , user_id: user_mod.id, username: user_mod.username})
-              setConn(socket)
+             // setConn(socket)
                 navigate("/home")
               } else {
                 navigate("/verify_user")

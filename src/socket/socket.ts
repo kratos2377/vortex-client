@@ -1,5 +1,5 @@
-// import {Socket} from "phoenix"
+import {Socket} from "phoenix"
 
-// export const socket = new Socket(
-//   "wss://localhost:4000/socket",
-// );
+export const socket = new Socket(
+  "ws://localhost:4001/socket",
+);
