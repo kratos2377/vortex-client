@@ -1,6 +1,10 @@
+use std::fmt::format;
+
 use tauri::State;
 
 use crate::{constants::api_constants::{BASE_URL, USER_LOGIC_API_ROUTE}, state::MessierClient};
+
+use super::api_error::APIError;
 
 
 
@@ -9,8 +13,12 @@ use crate::{constants::api_constants::{BASE_URL, USER_LOGIC_API_ROUTE}, state::M
 #[tauri::command]
 pub async fn send_request(payload: String , token: String, state: State<'_ , MessierClient>) -> Result<String , ()> {
 let req_url = BASE_URL.to_string() + USER_LOGIC_API_ROUTE + "/send_request";
-let res = state.client.post(req_url).body(payload).header("Authorization" , token).header("Content-Type", "application/json").send().await.unwrap();
-let rec = res.text().await.unwrap();
+let res = state.client.post(req_url).body(payload).header("Authorization" , token).header("Content-Type", "application/json").send().await;
+
+if(res.is_err()) {
+    return Ok(format!("{:?}", APIError::default()))
+}
+let rec = res.unwrap().text().await.unwrap();
 
 Ok(rec)
 }
@@ -19,9 +27,12 @@ Ok(rec)
 #[tauri::command]
 pub async fn get_user_friend_requests(payload: String , token: String, state: State<'_ , MessierClient>) -> Result<String , ()> {
 let req_url = BASE_URL.to_string() + USER_LOGIC_API_ROUTE + "/get_user_friend_requests";
-let res = state.client.get(req_url).body(payload).header("Authorization" , token).header("Content-Type", "application/json").send().await.unwrap();
-let rec = res.text().await.unwrap();
+let res = state.client.post(req_url).body(payload).header("Authorization" , token).header("Content-Type", "application/json").send().await;
 
+if(res.is_err()) {
+    return Ok(format!("{:?}", APIError::default()))
+}
+let rec = res.unwrap().text().await.unwrap();
 Ok(rec)
 }
 
@@ -30,9 +41,12 @@ Ok(rec)
 pub async fn accept_or_reject_request(payload: String ,token: String, state: State<'_ , MessierClient>) -> Result<String , ()> {
 let req_url = BASE_URL.to_string() + USER_LOGIC_API_ROUTE + "/accept_or_reject_request";
 
-let res = state.client.put(req_url).body(payload).header("Authorization" , token).header("Content-Type", "application/json").send().await.unwrap();
+let res = state.client.post(req_url).body(payload).header("Authorization" , token).header("Content-Type", "application/json").send().await;
 
-let rec = res.text().await.unwrap();
+if(res.is_err()) {
+    return Ok(format!("{:?}", APIError::default()))
+}
+let rec = res.unwrap().text().await.unwrap();
 
 Ok(rec)
 }
@@ -74,9 +88,12 @@ Ok(rec)
 pub async fn get_user_online_friends(payload: String , token: String, state: State<'_ , MessierClient>) -> Result<String , ()> {
 let req_url = BASE_URL.to_string() + USER_LOGIC_API_ROUTE + "/get_user_online_friends";
 
-let res = state.client.get(req_url).body(payload).header("Authorization" , token).header("Content-Type", "application/json").send().await.unwrap();
+let res = state.client.post(req_url).body(payload).header("Authorization" , token).header("Content-Type", "application/json").send().await;
 
-let rec = res.text().await.unwrap();
+if(res.is_err()) {
+    return Ok(format!("{:?}", APIError::default()))
+}
+let rec = res.unwrap().text().await.unwrap();
 
 Ok(rec)
 }
@@ -85,9 +102,12 @@ Ok(rec)
 pub async fn change_user_password(payload: String , token: String, state: State<'_ , MessierClient>) -> Result<String , ()> {
 let req_url = BASE_URL.to_string() + USER_LOGIC_API_ROUTE + "/change_user_password";
 
-let res = state.client.put(req_url).body(payload).header("Authorization" , token).header("Content-Type", "application/json").send().await.unwrap();
+let res = state.client.post(req_url).body(payload).header("Authorization" , token).header("Content-Type", "application/json").send().await;
 
-let rec = res.text().await.unwrap();
+if(res.is_err()) {
+    return Ok(format!("{:?}", APIError::default()))
+}
+let rec = res.unwrap().text().await.unwrap();
 
 Ok(rec)
 }
@@ -96,9 +116,27 @@ Ok(rec)
 pub async fn change_user_username(payload: String , token: String, state: State<'_ , MessierClient>) -> Result<String , ()> {
 let req_url = BASE_URL.to_string() + USER_LOGIC_API_ROUTE + "/change_user_username";
 
-let res = state.client.put(req_url).body(payload).header("Authorization" , token).header("Content-Type", "application/json").send().await.unwrap();
+let res = state.client.post(req_url).body(payload).header("Authorization" , token).header("Content-Type", "application/json").send().await;
 
-let rec = res.text().await.unwrap();
+if(res.is_err()) {
+    return Ok(format!("{:?}", APIError::default()))
+}
+let rec = res.unwrap().text().await.unwrap();
 
+Ok(rec)
+}
+
+
+#[tauri::command]
+pub async fn get_ongoing_games_for_user(payload: String , token: String, state: State<'_ , MessierClient>) -> Result<String , ()> {
+let req_url = BASE_URL.to_string() + USER_LOGIC_API_ROUTE + "/get_ongoing_games_for_user";
+
+let res = state.client.post(req_url).body(payload).header("Authorization" , token).header("Content-Type", "application/json").send().await;
+
+if(res.is_err()){
+    return Ok(format!("{:?}", APIError::default()))
+}
+
+let rec = res.unwrap().text().await.unwrap();
 Ok(rec)
 }

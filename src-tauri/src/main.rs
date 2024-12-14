@@ -3,7 +3,7 @@
 
 use std::sync::Arc;
 
-use state::{create_mqtt_client, MessierClient};
+use state::{MessierClient};
 
 
 pub mod api;
@@ -12,13 +12,10 @@ pub mod constants;
 pub mod state;
 pub mod utils;
 pub mod events;
-extern crate paho_mqtt as mqtt;
 
 #[tokio::main]
 async fn main() {
-    let client = MessierClient {client:Arc::new(reqwest::Client::new()),mqtt_user_client: Arc::new(create_mqtt_client("users".to_string())),
-     mqtt_game_client:  Arc::new(create_mqtt_client("games".to_string())),
-    };
+    let client = MessierClient {client:Arc::new(reqwest::Client::new())};
    let builder =  tauri::Builder::default()
      .plugin(tauri_plugin_store::Builder::default().build())
         .manage(client)
@@ -37,6 +34,7 @@ async fn main() {
             api::user_logic::get_user_online_friends,
             api::user_logic::change_user_password,
             api::user_logic::change_user_username,
+            api::user_logic::get_ongoing_games_for_user,
 
             // Game api logic
             api::game::create_lobby,
@@ -47,7 +45,6 @@ async fn main() {
             api::game::remove_user_lobby,
             api::game::start_game,
             api::game::destroy_lobby_and_game,
-            api::game::get_ongoing_games_for_user,
             api::game::get_current_state_of_game,
             api::game::stake_in_game,
             api::game::remove_game_models,
@@ -57,14 +54,14 @@ async fn main() {
             api::game::get_game_details,
 
             //MQTT User events
-            events::mqtt_events::subscribe_to_user_topic,
-            events::mqtt_events::unsubscribe_to_user_topic,
-            events::mqtt_events::listen_to_user_event,
+            // events::mqtt_events::subscribe_to_user_topic,
+            // events::mqtt_events::unsubscribe_to_user_topic,
+            // events::mqtt_events::listen_to_user_event,
 
-            //MQTT Game events
-            events::mqtt_events::subscribe_to_game_topic,
-            events::mqtt_events::unsubscribe_to_game_topic,
-            events::mqtt_events::listen_to_game_event,
+            // //MQTT Game events
+            // events::mqtt_events::subscribe_to_game_topic,
+            // events::mqtt_events::unsubscribe_to_game_topic,
+            // events::mqtt_events::listen_to_game_event,
 
             //Util fns
             utils::qr::generate_qr_for_bet

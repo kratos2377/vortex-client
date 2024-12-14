@@ -10,6 +10,7 @@ import { useUserStore } from '../state/UserAndGameState'
 import { LabelInputContainer } from '../components/ui/LabelInputContainer'
 import { Socket } from 'phoenix'
 import { socket } from '../socket/socket'
+import { WebSocketContext, WebSocketProvider } from '../socket/websocket_provider'
 
 interface LoginProps {
   setAuthState: React.Dispatch<React.SetStateAction<"login" | "registration">>,
@@ -19,6 +20,7 @@ interface LoginProps {
 }
 
 const Login: React.FC<LoginProps> = ({setAuthState , setIsAlert , setAlertMessage , setAlertType}) => {
+  const {setUserChannel} = useContext(WebSocketContext)
   const navigate = useNavigate()
   const [password, setPassword] = useState("")
   const [usernameoremail, setUsernameOrEmail] = useState("")
@@ -76,22 +78,21 @@ const Login: React.FC<LoginProps> = ({setAuthState , setIsAlert , setAlertMessag
 
       await updateUserDetails(res.user)
 
+
+      if(res.user?.verified) {
+        socket.connect({token: res.token , user_id: res.user.id, username: res.user.username})
+        if(socket.isConnected()) { 
+        let user_notif_channel = socket.channel("user:notifications:" + res.user.id , {token: res.token})
+        setUserChannel(user_notif_channel)
+        }
+      }
+
       setTimeout(() => {
         setIsAlert(false)
         setAlertType("success")
         setAlertMessage("")
         
-        if (res.user?.verified) {
-        //   let socket =  new Socket(
-        //     "ws://localhost:4001/socket",
-        //  {params:    {token: res.token , user_id: res.user.id, username: res.user.username}}
-        //   );
-
-          socket.connect({token: res.token , user_id: res.user.id, username: res.user.username})
-
-        //  conn?.connect({token: res.token , user_id: res.user.id, username: res.user.username})
-     // setConn(socket)
-        
+        if (res.user?.verified) {        
             navigate("/home")
         } else {
           navigate("/verify_user")
@@ -101,10 +102,6 @@ const Login: React.FC<LoginProps> = ({setAuthState , setIsAlert , setAlertMessag
 
         
     }
-
-
- 
-  
   }
 
 

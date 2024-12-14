@@ -107,26 +107,14 @@ const Registration:  React.FC<RegistrationProps> = ({setAuthState , setAlertMess
       setIsAlert(true)
       await saveUserDetails(res.user.id, res.token)
       await updateUserDetails(res.user)
+
+
       setTimeout(() => {
         setIsAlert(false)
         setAlertType("success")
         setAlertMessage("")
-
-        if (res.user?.verified) {
-
-        //   let socket =  new Socket(
-        //     "ws://localhost:4001/socket",
-        //  {params:    {token: res.token , user_id: res.user.id, username: res.user.username}}
-        //   );
-          
-        //  conn?.connect({token: res.token , user_id: res.user.id, username: res.user.username})
-      //  setConn(socket)
-            navigate("/home")
-          } else {
-            navigate("/verify_user")
-          }
-
-        }, 2000)
+        navigate("/verify_user")
+        }, 1000)
     }
  
 

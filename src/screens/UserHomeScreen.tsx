@@ -25,46 +25,6 @@ const UserHomeScreen = () => {
   const [alertMessage, setAlertMessage] = useState("")
   const [alertType, setAlertType] = useState<"success" | "error">("success")
 
-  const subscribe_to_mqtt_user_topic = async () => {
-    let payload = JSON.stringify({topic_name: MQTT_USER_EVENTS + user_details.id});
-    let val = await invoke('subscribe_to_user_topic', {payload:  payload})
-
-    if(val === "error") {
-      return;
-    }
-
-  }
-
-
-  const start_listening_to_user_events = async () => {
-    let val = await invoke('listen_to_user_event')
-
-    
-    if(val === "error") {
-      setAlertMessage("Error while subscribing to MQTT Broker. You will not get realtime events")
-      setAlertType("error")
-      setIsAlert(true)
-
-      setTimeout(() => {
-        setIsAlert(false)
-      }, 5000)
-      return;
-    }
-
-
-  }
-
-   
-
-  useEffect(() => {
-   //   chann.push("user-connection-event" , JSON.stringify({user_id: user_details.id, username: user_details.username}) )
-      subscribe_to_mqtt_user_topic()
-          start_listening_to_user_events()
-
-            
-  } , [])
-
-
   // useEffect(() => {
   //   if(chann !== undefined && chann !== null) {
   //       chann.leave(1000)

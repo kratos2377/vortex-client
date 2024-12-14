@@ -4,7 +4,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Input } from '../components/ui/input'
 import { send_email_call, verify_user_request_call } from '../helper_functions/apiCall'
-import { deleteUserDetailsFromStore, saveUserDetails } from '../persistent_storage/save_user_details'
+import { deleteUserDetailsFromStore, getUserIdFromStore, getUserTokenFromStore, saveUserDetails } from '../persistent_storage/save_user_details'
 import { useUserStore } from '../state/UserAndGameState'
 import { ErrorAlert, SuccessAlert } from '../components/ui/AlertMessage'
 import { motion } from 'framer-motion'
@@ -12,8 +12,11 @@ import { AuroraBackground } from '../components/backgrounds/aurora-background'
 import { LabelInputContainer } from '../components/ui/LabelInputContainer'
 import { useTimer } from 'react-timer-hook';
 import { Socket } from 'phoenix'
+import { socket } from '../socket/socket'
+import { WebSocketContext } from '../socket/websocket_provider'
 
 const VerifyUserScreen = () => {
+  const {setUserChannel} = useContext(WebSocketContext)
   const currentTime = new Date();
   currentTime.setTime(currentTime.getSeconds() + 60)
     const navigate = useNavigate()
@@ -43,7 +46,7 @@ const VerifyUserScreen = () => {
         setDisableSend(false)
     } });
   
-    const handleUserLogin = async (event: React.FormEvent<HTMLFormElement>) => {
+    const handleUserVerification = async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault()
       if (code.length != 6) {
         setAlertType("error")
@@ -94,6 +97,9 @@ const VerifyUserScreen = () => {
           return 
       }
 
+         const userToken =  await getUserTokenFromStore()
+         const {user_details} = useUserStore()
+
       let payload = JSON.stringify( {user_key: user_key_string, id: user_details.id  } )
       let res = await verify_user_request_call(payload);
       
@@ -113,18 +119,13 @@ const VerifyUserScreen = () => {
   
         await updateUserVerifiedStatus(true)
 
-      //   let socket =  new Socket(
-      //     "ws://localhost:4001/socket",
-      //  {params:    {token: "token" ,user_id: user_details.id, username: user_details.username,
+         socket.connect({token: userToken , user_id: user_details.id, username: user_details.username})
+          if(socket.isConnected()) {
+              let user_notif_channel = socket.channel("user:notifications:" + user_details.id , {token: userToken})
+          setUserChannel(user_notif_channel)
+          }
 
-      //   heartbeatIntervalMs: 10000
-      //  }}
-      //   );
-        
-      //  conn?.connect({token: res.token , user_id: res.user.id, username: res.user.username})
-      //setConn(socket)
-        //send actual token
-      //  conn?.connect({token: "token" , user_id: user_details.id, username: user_details.username})
+
         setTimeout(() => {
           setIsAlert(false)
           setAlertType("success")
@@ -138,15 +139,7 @@ const VerifyUserScreen = () => {
     
     }
     
-    // const handleValueChanges = (event: React.ChangeEvent<HTMLInputElement>) => {
-  
-    //   const {id , value} = event.target
-  
-    //   if ( id === "userkeyvalue") {
-    //     setUserKey(value)
-    //   }
-  
-    // }
+
 
 
     const handleChange = (index, e) => {
@@ -263,7 +256,7 @@ const VerifyUserScreen = () => {
         {
           !initialCall ? <div> </div> :       
             sendingEmail || verifying ? <span className="loading loading-dots loading-lg"></span> :   
-            <form className="my-3 text-base" onSubmit={handleUserLogin}>
+            <form className="my-3 text-base" onSubmit={handleUserVerification}>
               <LabelInputContainer className="mb-4">
                 <Label htmlFor="userkeyvalue" className="text-left" >Code: </Label>
                 <div 

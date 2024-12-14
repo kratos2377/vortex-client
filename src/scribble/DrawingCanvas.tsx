@@ -46,7 +46,7 @@ export default function DrawingCanvas() {
       let gameEvent: GameEventPayload = {
         user_id: 'user_id',
         game_event: JSON.stringify(drawOptions),
-        game_id: 'game_id',
+        game_id: gameStore.game_id,
         event_type: ''
       }
 
@@ -65,28 +65,30 @@ export default function DrawingCanvas() {
 
 
     if(!gameStore.isSpectator) {
-      chann?.on('canvas-state-from-server', (canvasState: string) => {
+      chann?.on('canvas-state-from-server', (canvasState) => {
         if (!ctx || !canvasElement) return
   
         drawWithDataURL(canvasState, ctx, canvasElement)
         setIsCanvasLoading(false)
       })
   
-      chann?.on('update-canvas-state', (drawOptions: DrawOptions) => {
+      chann?.on('update-canvas-state', (draw_event) => {
         if (!ctx) return
+
+        let drawOptions = JSON.parse(draw_event.drawOptions)
         draw({ ...drawOptions, ctx })
       })
   
     }
-    // chann?.on('undo-canvas', canvasState => {
-    //   if (!ctx || !canvasElement) return
+    chann?.on('undo-canvas', canvasState => {
+      if (!ctx || !canvasElement) return
 
-    //   drawWithDataURL(canvasState, ctx, canvasElement)
-    // })
+      drawWithDataURL(canvasState.canvas_state, ctx, canvasElement)
+    })
 
     return () => {
      if(!gameStore.isSpectator) {
-      chann?.off('get-canvas-state')
+    //  chann?.off('get-canvas-state')
       chann?.off('update-canvas-state')
       chann?.off('undo-canvas')
      }
