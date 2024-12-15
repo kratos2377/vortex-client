@@ -43,14 +43,6 @@ let router = createBrowserRouter([
   {
     path: "/chess/:game_id/:host_user_id",
     element: <ChessGame/>
-  },
-  {
-    path: "/scribble/:game_id/:host_user_id",
-    element: <ScribbleGame/>
-  },
-  {
-    path: "/poker/:game_id/:host_user_id",
-    element: <PokerGame/>
   }
 ])
 

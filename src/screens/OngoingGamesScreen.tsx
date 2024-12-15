@@ -25,6 +25,7 @@ const OngoingGamesScreen = () => {
     let val = await get_ongoing_games_for_user(payload , user_token as string)
 
       // setOngoingGamesData([...val.games])
+
     if(!val.status) {
       setAlertMessage(val.error_message)
       setAlertType("error")

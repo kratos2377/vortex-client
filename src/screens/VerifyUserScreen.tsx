@@ -120,10 +120,25 @@ const VerifyUserScreen = () => {
         await updateUserVerifiedStatus(true)
 
          socket.connect({token: userToken , user_id: user_details.id, username: user_details.username})
-          if(socket.isConnected()) {
-              let user_notif_channel = socket.channel("user:notifications:" + user_details.id , {token: userToken})
-          setUserChannel(user_notif_channel)
-          }
+
+
+
+
+         let user_notif_channel = socket.channel("user:notifications:" + user_details.id , {token: userToken , user_id: user_details.id})
+         user_notif_channel.join().receive("ok" , (msg) => {
+           console.log("successfully joined user channel")
+           setUserChannel(user_notif_channel)
+         }).receive("error" , (msg) => {
+           console.log("Error while joining user notifications channel")
+           console.log(msg)
+         })
+ 
+ 
+         user_notif_channel.onError((response) => {
+           console.log("Some error occured on the user notificaations channel")
+           console.log(response)
+         })
+         
 
 
         setTimeout(() => {

@@ -30,7 +30,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "fen-validator": "^2.0.1",
-    "framer-motion": "^11.0.27",
+    "framer-motion": "^11.14.4",
     "lodash": "^4.17.21",
     "lucide-react": "^0.372.0",
     "phoenix": "^1.7.14",

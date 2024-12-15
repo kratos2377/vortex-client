@@ -81,11 +81,24 @@ const Login: React.FC<LoginProps> = ({setAuthState , setIsAlert , setAlertMessag
 
       if(res.user?.verified) {
         socket.connect({token: res.token , user_id: res.user.id, username: res.user.username})
-        if(socket.isConnected()) { 
-        let user_notif_channel = socket.channel("user:notifications:" + res.user.id , {token: res.token})
-        setUserChannel(user_notif_channel)
-        }
-      }
+
+        let user_notif_channel = socket.channel("user:notifications:" + res.user.id , {token: res.token , user_id: res.user.id})
+        user_notif_channel.join().receive("ok" , (msg) => {
+          console.log("successfully joined user channel")
+          setUserChannel(user_notif_channel)
+        }).receive("error" , (msg) => {
+          console.log("Error while joining user notifications channel")
+          console.log(msg)
+        })
+
+
+        user_notif_channel.onError((response) => {
+          console.log("Some error occured on the user notificaations channel")
+          console.log(response)
+        })
+        
+        
+      } 
 
       setTimeout(() => {
         setIsAlert(false)

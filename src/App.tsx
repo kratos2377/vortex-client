@@ -25,9 +25,6 @@ function App() {
         navigate("/auth")
       } else {
         await invoke('verify_token_request', { payload: JSON.stringify( { token: userToken})  }).then(async (message) => {
-
-          console.log("TOKEN MSG IS")
-          console.log(message)
           let recv_msg = JSON.parse(message as string)
             if(!recv_msg.result.success) {
          
