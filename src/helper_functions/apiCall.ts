@@ -382,6 +382,40 @@ export const get_game_details = async (payload: string, token: string) => {
   return val
 }
 
+
+export const create_match_making_ticket = async (payload: string, token: string) => {
+  let val = await invoke('create_match_making_ticket', {payload: payload, token: getBearerToken(token)}).then((message) => {
+    let recv_msg = JSON.parse(message as string)
+
+    logMessage("create_match_making_ticket", recv_msg)
+
+    if(!recv_msg.result.success) {
+      return { "error_message": recv_msg.error_message, "status": false  }
+    } else {
+      return {"status": true}
+    }
+  });
+
+  return val
+}
+
+
+export const delete_match_making_ticket = async (payload: string, token: string) => {
+  let val = await invoke('delete_match_making_ticket', {payload: payload, token: getBearerToken(token)}).then((message) => {
+    let recv_msg = JSON.parse(message as string)
+
+    logMessage("delete_match_making_ticket", recv_msg)
+
+    if(!recv_msg.result.success) {
+      return { "error_message": recv_msg.error_message, "status": false  }
+    } else {
+      return {"status": true}
+    }
+  });
+
+  return val
+}
+
 //Helper fns
 const getBearerToken = ( token: string) => {
   return "Bearer " + token;

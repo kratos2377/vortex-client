@@ -230,3 +230,33 @@ let rec = res.unwrap().text().await.unwrap();
 
 Ok(rec)
 }
+
+#[tauri::command]
+pub async fn create_match_making_ticket(payload: String , token: String, state: State<'_ , MessierClient>) -> Result<String , ()> {
+let req_url = BASE_VORTEX_PUB_SUB_URL.to_string() + GAME_API_ROUTE + "/create_ticket_and_find_match";
+
+let res = state.client.post(req_url).body(payload).header("Authorization" , token).header("Content-Type", "application/json").send().await;
+
+if(res.is_err()){
+    return Ok(format!("{:?}", APIError::default()))
+}
+
+let rec = res.unwrap().text().await.unwrap();
+
+Ok(rec)
+}
+
+#[tauri::command]
+pub async fn delete_match_making_ticket(payload: String , token: String, state: State<'_ , MessierClient>) -> Result<String , ()> {
+let req_url = BASE_VORTEX_PUB_SUB_URL.to_string() + GAME_API_ROUTE + "/delete_user_matchmaking_ticket";
+
+let res = state.client.post(req_url).body(payload).header("Authorization" , token).header("Content-Type", "application/json").send().await;
+
+if(res.is_err()){
+    return Ok(format!("{:?}", APIError::default()))
+}
+
+let rec = res.unwrap().text().await.unwrap();
+
+Ok(rec)
+}

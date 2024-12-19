@@ -24,8 +24,6 @@
     "@solana/web3.js": "^1.91.8",
     "@tabler/icons-react": "^3.2.0",
     "@tauri-apps/api": "^1.5.2",
-    "@types/lodash": "^4.17.0",
-    "@types/phoenix": "^1.6.5",
     "autoprefixer": "^10.4.17",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
@@ -53,15 +51,17 @@
     "uuid": "^9.0.1",
     "vite-plugin-svgr": "^4.2.0",
     "zod": "^3.23.0",
-    "zustand": "^4.5.0"
+    "zustand": "^4.5.0",
+    "daisyui": "^4.6.1"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^1.5.8",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "@types/uuid": "^9.0.8",
+    "@types/lodash": "^4.17.0",
+    "@types/phoenix": "^1.6.5",
     "@vitejs/plugin-react": "^4.2.1",
-    "daisyui": "^4.6.1",
     "typescript": "^5.0.2",
     "vite": "^5.0.0"
   }

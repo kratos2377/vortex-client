@@ -26,7 +26,7 @@ import { Socket } from 'phoenix';
 const LobbyScreen = () => {
 
   //const {currentLobbyUsers} = use
-  const {setChannel, chann} = useContext(WebSocketContext)
+  const {setChannel, chann , spectatorChannel , setSpectatorChannel} = useContext(WebSocketContext)
   const navigate = useNavigate()
   let {game_id , gameType , host_user_id} = useParams()
   let {user_details} = useUserStore()
@@ -46,33 +46,6 @@ const LobbyScreen = () => {
   const [alertType,setAlertType] = useState<"success" | "error">("success")
   const [alertMessage, setAlertMessage] = useState("")
 
-
-  const startListeningToGameGeneralEvents = async () => {
-    const unlisten =  listen<MQTTPayload>(GAME_GENERAL_EVENT, async (event) => {
-      console.log(`EVENT IS: ${GAME_GENERAL_EVENT}`)
-      let parsed_payload = JSON.parse(event.payload.message)
-      console.log(parsed_payload)
-      if (parsed_payload.message === "start-game") {
-     
-        navigate("/" + gameType + "/" + game_id + "/" + host_user_id)
-      } else if (parsed_payload.message === "host-left") {
-        setGeneralPurposeMessage("Host Left. Redirecting to home screen")
-        setGeneralPurposeTitle("Redirecting")
-        document.getElementById("general_purpose_modal")!.showModal()
-      let payload = JSON.stringify({topic_name: MQTT_GAME_EVENTS + game_id});
-       await invoke('unsubscribe_to_game_topic', {payload:  payload})
-     setTimeout(() => {
-      
-      document.getElementById("general_purpose_modal")!.close()
-      navigate("/home")
-     }, 1000)
-      }
-            })
-
-            return () => {
-              unlisten.then(f => f())
-            }
-  }
 
   const startTheGame = async () => {
     setGeneralPurposeMessage("")
@@ -390,83 +363,91 @@ setTimeout(() => {
   })
 
 
-  // isSpecator Events Listenet
+  // isSpecator Events Listen
 
-  const startListeningToUserJoinEvents = async () => {
-      const unlisten = listen<MQTTPayload>(USER_JOINED_ROOM, (event) => {
-        console.log(`EVENT IS: ${USER_JOINED_ROOM}`)
-        let parsed_payload = JSON.parse(event.payload.message) 
-        
-      console.log(parsed_payload)
+
+
+  useEffect(() => {
+    if (gameStore.isSpectator && spectatorChannel !== null) {
+
+      spectatorChannel.on("user-joined-room" , (payload) => {
+
         let new_user: UserGameRelation = {
-          user_id: parsed_payload.user_id,
-          username: parsed_payload.username,
-          game_id: parsed_payload.game_id,
+          user_id: payload.user_id,
+          username: payload.username,
+          game_id: payload.game_id,
           player_type: "player",
           player_status: 'not-ready'
         }
         setLobbyUsers( (prevState) => {
           let new_ar = [...prevState]
           const isExist = new_ar.filter( (el) => el.user_id === new_user.user_id)
-          console.log("is exist is")
-          console.log(isExist)
           if (isExist === null || isExist === undefined || isExist.length === 0) {
             new_ar.push(new_user)
           }
           return new_ar
         })
-    });
 
-    return () => {
-      unlisten.then(f => f())
-    }
-  }
-
-  const startListeningToUserLeftEvents = async () => {
-    const unlisten = listen<MQTTPayload>(USER_LEFT_ROOM, (event) => {
-      console.log(`EVENT IS: ${USER_LEFT_ROOM}`)
-      let parsed_payload = JSON.parse(event.payload.message)
-      console.log(parsed_payload)
-   
-      setLobbyUsers( (prevState) => {
-        let update_users = prevState.filter((el) => el.user_id !== parsed_payload.user_id)
-        return update_users
       })
 
-  });
+      spectatorChannel.on("user-left-room" , (payload) => {
 
-  return () => {
-    unlisten.then(f => f())
-  }
-  }
+        setLobbyUsers( (prevState) => {
+          let update_users = prevState.filter((el) => el.user_id !== payload.user_id)
+          return update_users
+        })
 
-  const startListeningToUserStatusEvent = async () => {
-    const unlisten = listen<MQTTPayload>(USER_STATUS_EVENT, (event) => {
-      console.log(`EVENT IS: ${USER_STATUS_EVENT}`)
-      let parsed_payload = JSON.parse(event.payload.message)
-      console.log(parsed_payload)
-      setLobbyUsers( (prevState) => {
-      const updatedUsers = prevState.map((user) => user.user_id === parsed_payload.user_id ? {...user, player_status: parsed_payload.status} : user)
-      return updatedUsers
       })
-  });
 
 
-  return () => {
-    unlisten.then(f => f())
-  }
-  }
+      spectatorChannel.on("user-status-event" , (payload) => {
+
+        setLobbyUsers( (prevState) => {
+          const updatedUsers = prevState.map((user) => user.user_id === payload.user_id ? {...user, player_status: payload.status} : user)
+          return updatedUsers
+          })
+      
+      })
 
 
-  useEffect(() => {
-    if (gameStore.isSpectator && !lobbyRequestSent) {
-    startListeningToUserJoinEvents()
-    startListeningToUserLeftEvents()
-    startListeningToUserStatusEvent()
-      startListeningToGameGeneralEvents()
+      spectatorChannel.on("game-general-event" , async (payload) => {
+
+        if (payload.message === "start-game") {
+     
+          navigate("/" + gameType + "/" + game_id + "/" + host_user_id)
+        } else if (payload.message === "host-left") {
+          setGeneralPurposeMessage("Host Left. Redirecting to home screen")
+          setGeneralPurposeTitle("Redirecting")
+          document.getElementById("general_purpose_modal")!.showModal()
+       
+          spectatorChannel.leave().receive("ok" , (msg) => {
+            console.log("Successfully left channel")
+          }).receive("error" , (msg) => {
+            console.log(`Error while leaving channel: ${msg}`)
+          })
+
+
+          setSpectatorChannel(null)
+
+
+       setTimeout(() => {
+        
+        document.getElementById("general_purpose_modal")!.close()
+        navigate("/home")
+       }, 1000)
+        }
+      
+      })
+
+      return () => {
+        spectatorChannel.off("user-joined-room")
+        spectatorChannel.off("user-left-room")
+        spectatorChannel.off("user-status-event")
+        spectatorChannel.off("game-general-event")
+      }
    
     }
-  } , [lobbyRequestSent])
+  })
 
   return (
     <>
@@ -491,7 +472,7 @@ setTimeout(() => {
       </div> : <div></div>}
 
       {
-        roomUsers.length === 0 ? <div>No Users Found. Invalid Lobby</div> :     <div className='p-3 grid grid-cols-5 gap-4'>
+        roomUsers.length === 0 ? <div>No Users Found. Invalid Lobby</div> :     <div className='p-3 grid grid-cols-2 gap-4'>
         {
           roomUsers.map((val , idx) => (
           <div key={idx} className="card w-50 bg-base-100 shadow-xl">

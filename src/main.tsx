@@ -12,6 +12,7 @@ import ChessGame from "./chess";
 import ScribbleGame from "./scribble";
 import PokerGame from "./poker";
 import { WebSocketProvider } from "./socket/websocket_provider";
+import MatchScreen from "./screens/MatchScreen";
 
 
 
@@ -43,6 +44,10 @@ let router = createBrowserRouter([
   {
     path: "/chess/:game_id/:host_user_id",
     element: <ChessGame/>
+  },
+  {
+    path: "/match/:game_id/:gameType",
+    element: <MatchScreen/>
   }
 ])
 
