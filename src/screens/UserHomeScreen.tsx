@@ -113,7 +113,7 @@ const UserHomeScreen = () => {
               "ongoing-games": <OngoingGamesScreen/>,
               "create-lobby": <CreateLobby setCurrentScreen={setCurrentScreen}/>,
               "profile": <ProfileScreen/>,
-              "find-match": <FindMatchScreen/>,
+              "find-match": <FindMatchScreen setCurrentScreen={setCurrentScreen}/>,
             }[currentScreen]
       
           }
