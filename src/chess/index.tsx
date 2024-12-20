@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import BoardComponent from './componets/BoardComponent'
 import { useChessMainStore, useGameStore, useUserStore } from '../state/UserAndGameState'
 import Cockpit from './componets/UI/Cockpit'
@@ -11,9 +11,13 @@ import { listen } from '@tauri-apps/api/event'
 import { MQTTPayload } from '../types/models'
 import GeneralPurposeModal from '../components/screens/GeneralPurposeModal'
 import { IconQrcode } from '@tabler/icons-react'
+import { WebSocketContext } from '../socket/websocket_provider'
 
 
 const ChessGame = () => {
+
+  const {chann , spectatorChannel} = useContext(WebSocketContext)
+
   const [generalPurposeMessage, setGeneralPurposeMessage] = useState("")
   const [generalPurposeTitle, setGeneralPurposeTitle] = useState("")
   const navigate = useNavigate()
@@ -24,36 +28,76 @@ const ChessGame = () => {
   const {game_id, host_user_id} = useParams()
   const {user_details} = useUserStore()
 
-  const startListeningToGameGeneralEvents = async () => {
-    const unlisten =   listen<MQTTPayload>(GAME_GENERAL_EVENT, async (event) => {
-      let parsed_payload = JSON.parse(event.payload.message)
-    if (parsed_payload.message === "host-left") {
+
+  // Player Events
+  useEffect(() => {
+   
+    if(gameStore.isSpectator)
+      return;
+
+    chann?.on(GAME_GENERAL_EVENT , async (msg) => {
+
+      if(msg.message ===  "host-left") {
+            setGeneralPurposeMessage("Host Left. Redirecting to home screen")
+            setGeneralPurposeTitle("Redirecting")
+            document.getElementById("general_purpose_modal")!.showModal()
+          let payload = JSON.stringify({topic_name: MQTT_GAME_EVENTS + game_id});
+          await invoke('unsubscribe_to_game_topic', {payload:  payload})
+        setTimeout(() => {
+          
+          document.getElementById("general_purpose_modal")!.close()
+          navigate("/home")
+        }, 1000)
+      }
+
+    })
+
+
+    return () => {
+      chann?.off(GAME_GENERAL_EVENT)
+    }
+
+  })
+
+  // Spectator events
+  useEffect(() => {
+
+    if(!gameStore.isSpectator)
+      return;
+
+
+    spectatorChannel?.on(GAME_GENERAL_EVENT , async (msg) => {
+
+      if(msg.message ===  "host-left") {
         setGeneralPurposeMessage("Host Left. Redirecting to home screen")
         setGeneralPurposeTitle("Redirecting")
         document.getElementById("general_purpose_modal")!.showModal()
       let payload = JSON.stringify({topic_name: MQTT_GAME_EVENTS + game_id});
-       await invoke('unsubscribe_to_game_topic', {payload:  payload})
-     setTimeout(() => {
+      await invoke('unsubscribe_to_game_topic', {payload:  payload})
+    setTimeout(() => {
       
       document.getElementById("general_purpose_modal")!.close()
       navigate("/home")
-     }, 1000)
-      }
-            })
-
-            return () => {
-              unlisten.then(f => f())
-            }
+    }, 1000)
   }
+
+
+
+    })
+
+
+    return () => {
+      spectatorChannel?.off(GAME_GENERAL_EVENT)
+    }
+
+  })
+
+
+
 
   useEffect(() => {
     restart()
     setGameCurrentStatus("IN PROGRESS")
-
-    if(gameStore.isSpectator) {
-     // startGameFromFen(gameStore.chess_state)
-      startListeningToGameGeneralEvents()
-    }
 
     setLoading(false)
   } , [])

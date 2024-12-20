@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { socket } from "./socket";
 import { useUserStore } from "../state/UserAndGameState";
-import { GameInviteUserModel } from "../types/models";
+import { FriendRequestModel, GameInviteUserModel } from "../types/models";
 
 
 interface WebSocketProviderProps {
@@ -72,7 +72,14 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
             console.log("Friend Request Event Recieved")
             console.log(msg)
 
-           // addFriendRequestModel(msg)
+            let model: FriendRequestModel = {
+              friend_request_id: msg.friend_request_id,
+              user_who_send_request_id: msg.user_who_send_request_id,
+              user_who_send_request_username: msg.user_who_send_request_username,
+              user_who_we_are_sending_event: msg.user_who_we_are_sending_event 
+            }
+
+            addFriendRequestModel(model)
           })
       }
 

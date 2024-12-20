@@ -6,8 +6,6 @@ import { FriendRequestModel, MQTTPayload } from '../../types/models';
 import { useUserStore } from '../../state/UserAndGameState';
 import { getUserTokenFromStore } from '../../persistent_storage/save_user_details';
 import { get_user_friend_requests } from '../../helper_functions/apiCall';
-import { listen } from '@tauri-apps/api/event';
-import { FRIEND_REQUEST_EVENT } from '../../utils/mqtt_event_names';
 
 interface FriendReqModalScrollProps {
   setFriendReqCount: React.Dispatch<React.SetStateAction<number>>
@@ -22,7 +20,7 @@ const FriendRequestsScroll = ({setFriendReqCount}: FriendReqModalScrollProps) =>
     });
     
     const [loading, setLoading] = useState(true)
-    const {addFriendRequestModel , user_details , friend_invites} = useUserStore()
+    const {addFriendRequestModel , user_details} = useUserStore()
     const translateFirst = useTransform(scrollYProgress, [0, 1], [0, -200]);
 
     const [friendRequests, setFriendRequests] = useState<FriendRequestModel[]>([]);
@@ -46,34 +44,15 @@ const FriendRequestsScroll = ({setFriendReqCount}: FriendReqModalScrollProps) =>
             return new_req
           })
 
-          setFriendRequests([...friend_requests])
+         // setFriendRequests([...friend_requests])
       }
       setTimeout(() => {
         setFriendReqCount(friendRequests.length)
-      }, 2000)
+      }, 1000)
       setLoading(false)
     }
 
-    const startListeningToFriendRequestEvent = async () => {
-     const unlisten = listen<MQTTPayload>(FRIEND_REQUEST_EVENT, (event) => {
-        let parsed_payload = JSON.parse(event.payload.message) as FriendRequestModel
-        let model: FriendRequestModel = {
-          friend_request_id: parsed_payload.friend_request_id,
-          user_who_send_request_id: parsed_payload.user_who_send_request_id,
-          user_who_send_request_username: parsed_payload.user_who_send_request_username,
-          user_who_we_are_sending_event: parsed_payload.user_who_we_are_sending_event
-        }
-        setFriendRequests([model, ...friendRequests])
-        addFriendRequestModel(model)
-        setTimeout(() => {
-          setFriendReqCount(friendRequests.length)
-        }, 500)
-    });
 
-    return () => {
-      unlisten.then(f => f())
-    }
-    }
 
     //Replace this function with some zustand global state fn. This is just temp fix
     const deleteIdFromArray = async (id: string) => {
@@ -81,11 +60,20 @@ const FriendRequestsScroll = ({setFriendReqCount}: FriendReqModalScrollProps) =>
       setFriendRequests([...new_array])
     }
 
-    useEffect(() => {
-      getUsersFriendRequests().then(() => {
-        startListeningToFriendRequestEvent()
-      })
-    }, [])
+
+    const listenToFriendRequestsCount = (invites: FriendRequestModel[]) => {
+      setFriendRequests([...invites])
+      setFriendReqCount(invites.length)
+    }
+
+        
+    
+      useEffect(() => { 
+        getUsersFriendRequests()
+        useUserStore.subscribe( (state) => state.friend_invites , listenToFriendRequestsCount)
+      }, [])
+
+
   
     return (
     <div>
