@@ -45,8 +45,6 @@ function App() {
               if(recv_msg.user_data.verified) {
 
         
-            //  conn?.connect({token: userToken , user_id: user_mod.id, username: user_mod.username})
-             // setConn(socket)
                 navigate("/home")
               } else {
                 navigate("/verify_user")

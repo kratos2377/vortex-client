@@ -2,6 +2,8 @@ import { Channel } from "phoenix"
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { socket } from "./socket";
+import { useUserStore } from "../state/UserAndGameState";
+import { GameInviteUserModel } from "../types/models";
 
 
 interface WebSocketProviderProps {
@@ -32,6 +34,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
     const [chann, setChannel] = useState<S>(null);
     const [userChannel , setUserChannel] = useState<S>(null);
     const [spectatorChannel , setSpectatorChannel] = useState<S>(null);
+    const {addGameInviteModel , addFriendRequestModel} = useUserStore()
     // useEffect(() => {
     //   if (!conn  && !isConnecting.current) {
     //     isConnecting.current = true;
@@ -53,11 +56,23 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
           userChannel.on("game-invite-event", (msg) => {
             console.log("Game Invite Event Recieved")
             console.log(msg)
+
+               let model: GameInviteUserModel = {
+                        game_id: msg.game_id,
+                        user_id: msg.user_who_send_request_id,
+                        username: msg.user_who_send_request_username,
+                        game_name: msg.game_name,
+                        game_type: msg.game_type
+                      }
+
+            addGameInviteModel(model)
           })
 
           userChannel.on("friend-request-event", (msg) => {
             console.log("Friend Request Event Recieved")
             console.log(msg)
+
+           // addFriendRequestModel(msg)
           })
       }
 
