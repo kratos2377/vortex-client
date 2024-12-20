@@ -454,7 +454,7 @@ setTimeout(() => {
       </div> : <div></div>}
 
       {
-        roomUsers.length === 0 ? <div>No Users Found. Invalid Lobby</div> :     <div className='mt-4 p-5 flex flex-row space-between'>
+        roomUsers.length === 0 ? <div>No Users Found. Invalid Lobby</div> :     <div className='mt-4 p-5 flex flex-row space-x-5'>
         {
           roomUsers.map((val , idx) => (
           <div key={idx} className="card w-30 bg-base-100 shadow-xl">
