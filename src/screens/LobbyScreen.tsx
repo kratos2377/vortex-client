@@ -192,24 +192,6 @@ setTimeout(() => {
     }
   }
 
-  const sendJoinedRoomSocketEvent = useCallback(() => {
-    if(gameStore.isSpectator)
-      return
-
-    console.log("GAME TYPE IS")
-    console.log(gameType)
-    // if(chann === undefined || chann === null) {
-    //   let chann_new = conn?.channel("game:" + gameType + ":" + game_id)
-    // chann_new?.join()
-    // setChannel(chann_new!)
-    // chann_new?.push("joined-room", {game_id: game_id, user_id: user_details.id , username: user_details.username})
-    // }
-
-    return () => {
-      //chann?.off("joined-room")
-    }
-  }, [])
-
 
 
   useEffect(() => {
@@ -472,11 +454,11 @@ setTimeout(() => {
       </div> : <div></div>}
 
       {
-        roomUsers.length === 0 ? <div>No Users Found. Invalid Lobby</div> :     <div className='p-3 grid grid-cols-2 gap-4'>
+        roomUsers.length === 0 ? <div>No Users Found. Invalid Lobby</div> :     <div className='mt-2 p-5 grid grid-cols-2 gap-4'>
         {
           roomUsers.map((val , idx) => (
           <div key={idx} className="card w-50 bg-base-100 shadow-xl">
-            <figure className="self-center avatar w-20 rounded-full ring ring-black ring-offset-base-100 ring-offset-2 mt-5">
+            <figure className="self-center avatar w-30 rounded-full ring ring-black ring-offset-base-100 ring-offset-2 mt-5">
             <img src={`https://robohash.org/${val.username}`} alt={`${val.username}`}/>
             </figure>
             <div className="card-body items-center text-center">
