@@ -194,8 +194,11 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
 
           if (data.event_type === "normal") {
             let game_move = data.game_event as ChessNormalEvent
-            let init_pos = JSON.parse(game_move.initial_cell) as ChessCoordinateStruct 
-            let target_pos = JSON.parse(game_move.target_cell ) as ChessCoordinateStruct
+
+            console.log("Game parsed move is")
+            console.log(game_move)
+            let init_pos = JSON.parse(game_move.initial_cell) 
+            let target_pos = JSON.parse(game_move.target_cell ) 
             let init_cell = board.getCell(init_pos.x , init_pos.y)
             let target_cell = board.getCell(target_pos.x , target_pos.y)
  
@@ -217,8 +220,8 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
 
           } else if (data.event_type === "promotion") {
             let game_move = data.game_event as ChessPromotionEvent
-            let init_pos = JSON.parse(game_move.initial_cell) as ChessCoordinateStruct 
-            let target_pos = JSON.parse(game_move.target_cell ) as ChessCoordinateStruct
+            let init_pos = JSON.parse(game_move.initial_cell) 
+            let target_pos = JSON.parse(game_move.target_cell ) 
             let piece_name = game_move.promoted_to
    
 
