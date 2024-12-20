@@ -193,7 +193,7 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
       console.log(data)
 
           if (data.event_type === "normal") {
-            let game_move = data.game_event as ChessNormalEvent
+            let game_move = JSON.parse(data.game_event)
 
             console.log("Game parsed move is")
             console.log(game_move)
@@ -219,7 +219,7 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
       resetPassantCells();
 
           } else if (data.event_type === "promotion") {
-            let game_move = data.game_event as ChessPromotionEvent
+            let game_move = JSON.parse(data.game_event)
             let init_pos = JSON.parse(game_move.initial_cell) 
             let target_pos = JSON.parse(game_move.target_cell ) 
             let piece_name = game_move.promoted_to
