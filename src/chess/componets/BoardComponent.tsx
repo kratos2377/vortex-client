@@ -12,7 +12,7 @@ import { useChessMainStore, useGameStore } from "../../state/UserAndGameState";
 import { initialCastlingState } from "../../state/chess_store/initial_states/castlingUtils";
 import { rankCoordinates } from "../../state/chess_store/initial_states/rankCoordinates";
 import { Color } from "../../types/chess_types/constants";
-import { GameEventPayload } from "../../types/ws_and_game_events";
+import { ChessCoordinateStruct, GameEventPayload } from "../../types/ws_and_game_events";
 import { ChessNormalEvent, ChessPromotionEvent } from "../../types/game_event_model";
 import { PieceChar, getPieceCharFromPieceName } from "../models/Piece/types";
 import {  USER_GAME_MOVE } from "../../utils/mqtt_event_names";
@@ -193,10 +193,10 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
 
           if (data.event_type === "normal") {
             let game_move = data.game_event as ChessNormalEvent
-            let init_pos = game_move.initial_cell 
-            let target_pos = game_move.target_cell 
-            let init_cell = board.getCell(parseInt(init_pos.x) , parseInt(init_pos.y))
-            let target_cell = board.getCell(parseInt(target_pos.x) , parseInt(target_pos.y))
+            let init_pos = JSON.parse(game_move.initial_cell) as ChessCoordinateStruct 
+            let target_pos = JSON.parse(game_move.target_cell ) as ChessCoordinateStruct
+            let init_cell = board.getCell(init_pos.x , init_pos.y)
+            let target_cell = board.getCell(target_pos.x , target_pos.y)
  
       if (target_cell.piece instanceof King) return;
 
@@ -216,13 +216,14 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
 
           } else if (data.event_type === "promotion") {
             let game_move = data.game_event as ChessPromotionEvent
-            let init_pos = game_move.initial_cell 
-            let target_pos = game_move.target_cell 
+            let init_pos = JSON.parse(game_move.initial_cell) as ChessCoordinateStruct 
+            let target_pos = JSON.parse(game_move.target_cell ) as ChessCoordinateStruct
             let piece_name = game_move.promoted_to
    
 
-            let init_cell = board.getCell(parseInt(init_pos.x) , parseInt(init_pos.y))
-            let target_cell = board.getCell(parseInt(target_pos.x) , parseInt(target_pos.y))
+            let init_cell = board.getCell(init_pos.x , init_pos.y)
+            let target_cell = board.getCell(target_pos.x , target_pos.y)
+ 
  
       if (target_cell.piece instanceof King) return;
 

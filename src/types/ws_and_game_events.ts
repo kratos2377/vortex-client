@@ -1,9 +1,16 @@
+import { Cell } from "../chess/models/Cell/Cell";
 
 
 export type GameEvent = {
     game_type: Object,
     event: Object,
     additional: Object,
+}
+
+
+export type ChessCoordinateStruct = {
+    x: number,
+    y: number
 }
 
 export type GameEventPayload = {
