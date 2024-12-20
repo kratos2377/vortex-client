@@ -5,6 +5,7 @@ import useBoardStore from './chess_store/board'
 import usePlayerStore from './chess_store/player'
 import useChessGameStore from './chess_store/game'
 import { CanvasState } from './scribble_store/canvasStore'
+import { subscribeWithSelector } from 'zustand/middleware';
 import { FriendRequestModel, GameInviteUserModel, PlayerModel, PlayerTurnMappingModel, UserModel } from '../types/models'
 
 type UserState  = {
@@ -93,7 +94,7 @@ type UserAction = {
   
   
 
-export const useUserStore = create<UserState & UserAction>((set) => ({
+export const useUserStore = create<UserState & UserAction>()(subscribeWithSelector((set) => ({
     user_id: '',
     in_game: false,
     user_details: {
@@ -129,7 +130,7 @@ export const useUserStore = create<UserState & UserAction>((set) => ({
       score: 0,
       verified: false
     }}))
-}))
+})))
 
 export const useGameStore = create<GameState & GameAction> ((set) => ({
     game_id: '',

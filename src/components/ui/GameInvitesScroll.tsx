@@ -1,16 +1,13 @@
 import { useScroll, useTransform } from "framer-motion";
-import { useContext, useEffect, useRef, useState } from "react";
+import {  useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { cn } from "../../utils/cn";
-import { listen } from "@tauri-apps/api/event";
 import { IconCheck, IconX } from "@tabler/icons-react";
 import { GameInviteUserModel, MQTTPayload } from "../../types/models";
-import { GAME_INVITE_EVENT } from "../../utils/mqtt_event_names";
 import { useGameStore, useUserStore } from "../../state/UserAndGameState";
 import { join_lobby_call, verify_game_status_call } from "../../helper_functions/apiCall";
 import { getUserTokenFromStore } from "../../persistent_storage/save_user_details";
 import { useNavigate } from "react-router-dom";
-import { WebSocketContext } from "../../socket/websocket_provider";
 
 
 
@@ -28,7 +25,8 @@ export const GameInvitesScroll = ({setIsAlert , setAlertMessage , setAlertType}:
     });
     const navigate = useNavigate()
     const [requestSent , setRequestSent] = useState(false)
-    const {addGameInviteModel, game_invites} = useUserStore()
+    const {game_invites} = useUserStore()
+   
     const translateFirst = useTransform(scrollYProgress, [0, 1], [0, -200]);
     const {user_details} = useUserStore()
     const [sortedUsers, setSortedUsers] = useState<GameInviteUserModel[]>([...game_invites]);
@@ -54,13 +52,16 @@ export const GameInvitesScroll = ({setIsAlert , setAlertMessage , setAlertType}:
     // }
 
 
+    const updateGameInvites = (invites: GameInviteUserModel[]) => {
+        setSortedUsers([...invites])
+    }
+
+
 
     useEffect(() => {
        
-
-      
-
-    })
+      useUserStore.subscribe( (state) => state.game_invites , updateGameInvites)
+    }, [])
 
     const acceptAndJoinLobby = async (game_id: string , game_name: string, game_type: string) => {
       setRequestSent(true)
