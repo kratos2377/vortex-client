@@ -454,10 +454,10 @@ setTimeout(() => {
       </div> : <div></div>}
 
       {
-        roomUsers.length === 0 ? <div>No Users Found. Invalid Lobby</div> :     <div className='mt-2 p-5 grid grid-cols-2 gap-4'>
+        roomUsers.length === 0 ? <div>No Users Found. Invalid Lobby</div> :     <div className='mt-4 p-5 flex flex-row space-between'>
         {
           roomUsers.map((val , idx) => (
-          <div key={idx} className="card w-50 bg-base-100 shadow-xl">
+          <div key={idx} className="card w-30 bg-base-100 shadow-xl">
             <figure className="self-center avatar w-30 rounded-full ring ring-black ring-offset-base-100 ring-offset-2 mt-5">
             <img src={`https://robohash.org/${val.username}`} alt={`${val.username}`}/>
             </figure>
