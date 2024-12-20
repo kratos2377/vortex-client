@@ -1,0 +1,2 @@
+- [ ] When user is joining the lobby the user model is shown twice
+- [ ] User Model is too big for the grid and it covers the game logo (Center the user model and make the card a bit smaller such that it looks good side by side)
