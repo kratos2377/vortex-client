@@ -189,7 +189,8 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
     
     chann?.on("send-user-game-event" , (data) => {
          
-
+      console.log("Game Move Data Recieved is")
+      console.log(data)
 
           if (data.event_type === "normal") {
             let game_move = data.game_event as ChessNormalEvent
