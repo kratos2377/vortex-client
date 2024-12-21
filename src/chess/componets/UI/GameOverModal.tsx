@@ -83,6 +83,8 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
                 } , 2000)
 
             }
+
+            setRequestSent(false)
     }
 
 
@@ -96,6 +98,7 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
 
         chann?.on("start-the-replay-match" , (msg) => {
             restart()
+            document.getElementById('game_over_modal')!.close()
         })
 
 
