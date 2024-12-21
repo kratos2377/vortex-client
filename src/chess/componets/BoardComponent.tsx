@@ -281,9 +281,23 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
 
     })
 
+    chann?.on("game-over" , (data) => {
+
+
+      setWinnerUsername(data.winner_username)
+      setWinnerUserId(data.winner_user_id)
+      setLoserUsername(data.loser_username)
+      setLoserUserId(data.loser_user_id)
+
+
+      document.getElementById("game_over_modal")!.showModal()
+
+    })
+
     return () => {
       chann?.off("send-user-game-event")
       chann?.off("checkmate")
+      chann?.off("game-over")
     };
 
   })

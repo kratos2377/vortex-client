@@ -148,10 +148,10 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
      <>
        <dialog id="game_over_modal" className="modal modal-bottom sm:modal-middle">
    <div className="modal-box">
-   <h3>Game Over: {winner_username} won!</h3>
+   <h3>{winner_username} won!</h3>
    {isAlert ? alertType==="success" ? <SuccessAlert message={alertMessage} /> : <ErrorAlert message={alertMessage} /> : <div></div>}
 
-    <div className='flex flex-row space-x-2 w-1/2 h-1/2 justify-center'>
+    <div className='flex flex-row space-x-2 h-1/2 justify-center mt-1'>
 
 
         <div key={winner_user_id} className="card w-30 bg-base-90 shadow-xl">
