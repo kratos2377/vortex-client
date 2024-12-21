@@ -46,7 +46,7 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
 
   const {user_details} = useUserStore()
   const gameStore = useGameStore()
-  const { currentTurn , setGameCondition, setTakenPieces, setCastlingBtn, setCurrentTurn , setMovesHistory } = useChessMainStore();
+  const { currentTurn , setGameCondition, setTakenPieces, setCastlingBtn, setCurrentTurn , setMovesHistory, setGameCurrentStatus } = useChessMainStore();
   const [pawnTransformUtils, setPawnTransformUtils] = useState<IPawnTransformUtils>(initialState);
   const [passantAvailable, setPassantAvailable] = useState<boolean>(false);
   const [firstRender, setFirstRender] = useState<boolean>(true);
@@ -288,7 +288,7 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
       setWinnerUserId(data.winner_user_id)
       setLoserUsername(data.loser_username)
       setLoserUserId(data.loser_user_id)
-
+      setGameCurrentStatus("GAME-OVER")
 
       document.getElementById("game_over_modal")!.showModal()
 
@@ -381,8 +381,8 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
       setWinnerUserId(data.winner_user_id)
       setLoserUsername(data.loser_username)
       setLoserUserId(data.loser_user_id)
-
-
+      
+      setGameCurrentStatus("GAME-OVER")
       document.getElementById("game_over_modal")!.showModal()
 
     })
