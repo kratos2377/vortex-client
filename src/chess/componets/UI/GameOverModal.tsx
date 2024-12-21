@@ -33,6 +33,7 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
     
           const {
             totalSeconds,
+            seconds
           } = useTimer({ autoStart: true , expiryTimestamp: time , onExpire: () => {
             //Remove Circular clock screen
             if(!replay_req_success) {
@@ -57,7 +58,7 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
             setRequestSent(true)
             
             let token = await getUserTokenFromStore()
-            let payload = JSON.stringify({user_id: user_id , game_id: game_id })
+            let payload = JSON.stringify({user_id: user_id , game_id: game_id , status: "ready"})
             let res = await replay_game(payload ,token)
 
 
@@ -154,7 +155,7 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
     <div className='flex flex-row space-x-2 h-1/2 justify-center mt-1'>
 
 
-        <div key={winner_user_id} className="card w-30 bg-base-90 shadow-xl">
+        <div key={"winner-card-" + Math.floor(Math.random() * 1000)}  className="card w-30 bg-base-90 shadow-xl">
             <div>Won</div>
             <figure className="self-center avatar w-20 rounded-full ring ring-black ring-offset-base-100 ring-offset-2 mt-5">
             <img src={`https://robohash.org/${winner_username}`} alt={`${winner_username}`}/>
@@ -166,7 +167,7 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
           </div>
 
 
-          <div key={loser_user_id} className="card w-30 bg-base-90 shadow-xl">
+          <div key={"loser-card-" + Math.floor(Math.random() * 1000)}  className="card w-30 bg-base-90 shadow-xl">
             <div>Lost </div>
             <figure className="self-center avatar w-20 rounded-full ring ring-black ring-offset-base-100 ring-offset-2 mt-5">
             <img src={`https://robohash.org/${loser_username}`} alt={`${loser_username}`}/>
@@ -184,7 +185,7 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
      requestSent ? <span className="loading loading-dots loading-lg"></span> :     
      <div className="modal-action">
        <div className='flex flex-row justify-end mt-2'>
-        <button type="submit" className="btn btn-outline btn-success" onClick={replayMatchAgainCall} disabled={replay_req_success || leave_req_sent} >Replay Match  <span className='border-rounded border-black text-red-800'>{totalSeconds}</span></button>
+        <button type="submit" className="btn btn-outline btn-success" onClick={replayMatchAgainCall} disabled={replay_req_success || leave_req_sent} >Replay Match  <span>{seconds}</span></button>
        <button type="button" className="ml-2 btn btn-outline btn-error" onClick={() => {
         setLeaveReqSent(true)
         chann?.push("replay-false" , {})
