@@ -17,6 +17,7 @@ import { ChessNormalEvent, ChessPromotionEvent } from "../../types/game_event_mo
 import { PieceChar, getPieceCharFromPieceName } from "../models/Piece/types";
 import {  USER_GAME_MOVE } from "../../utils/mqtt_event_names";
 import { WebSocketContext } from "../../socket/websocket_provider";
+import GameOverModal from "./UI/GameOverModal";
 
 
 interface BoardComponentProps {
@@ -49,6 +50,11 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
   const [pawnTransformUtils, setPawnTransformUtils] = useState<IPawnTransformUtils>(initialState);
   const [passantAvailable, setPassantAvailable] = useState<boolean>(false);
   const [firstRender, setFirstRender] = useState<boolean>(true);
+
+  const [winner_username , setWinnerUsername] = useState("")
+  const [winner_user_id , setWinnerUserId] = useState("")
+  const [loser_username , setLoserUsername] = useState("")
+  const [loser_user_id , setLoserUserId] = useState("")
 
 
   const clickHandler = (cell: Cell): void => {
@@ -263,6 +269,14 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
           game_id: game_id
         } )
 
+        setWinnerUsername(data.winner_username)
+        setWinnerUserId(data.winner_user_id)
+        setLoserUsername(user_details.username)
+        setLoserUserId(user_details.id)
+
+
+        document.getElementById("game_over_modal")!.showModal()
+
       }
 
     })
@@ -346,7 +360,16 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
     })
 
 
-    spectatorChannel?.on("game-over" , (msg) => {
+    spectatorChannel?.on("game-over" , (data) => {
+
+
+      setWinnerUsername(data.winner_username)
+      setWinnerUserId(data.winner_user_id)
+      setLoserUsername(data.loser_username)
+      setLoserUserId(data.loser_user_id)
+
+
+      document.getElementById("game_over_modal")!.showModal()
 
     })
   
@@ -498,6 +521,8 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
         initialState={initialState}
         setPawnTransformUtils={setPawnTransformUtils} user_id={user_id} game_id={game_id}      ></PawnTransform>
 
+
+            <GameOverModal winner_username={winner_username} winner_user_id={winner_user_id} loser_username={loser_username} loser_user_id={loser_user_id} game_id={game_id} user_id={user_details.id}/>
 
     </>
   );

@@ -6,6 +6,7 @@ import { getUserTokenFromStore } from '../../../persistent_storage/save_user_det
 import { useTimer } from 'react-timer-hook'
 import { useChessMainStore, useGameStore } from '../../../state/UserAndGameState'
 import useChessGameStore from '../../../state/chess_store/game'
+import { useNavigate } from 'react-router-dom'
 
 
 interface GameOverModalProps {
@@ -21,7 +22,7 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
 
     const {chann , spectatorChannel} = useContext(WebSocketContext)
 
-
+  const navigator = useNavigate()
           const currentTime = new Date();
           currentTime.setTime(currentTime.getSeconds() + 20)
     
@@ -48,6 +49,7 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
     const [lost_user_replay , setLostUserReplay] = useState(false)
     const [won_user_replay , setWonUserReplay] = useState(false)
     const [replay_req_success , setReplayReqSuccess] = useState(false)
+    const [leave_req_sent , setLeaveReqSent] = useState(false)
 
 
     const replayMatchAgainCall = async () => {
@@ -94,7 +96,29 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
         chann?.on("start-the-replay-match" , (msg) => {
             restart()
         })
+
+
+        chann?.on("replay-false-event" , (msg) => {
+
+          setLeaveReqSent(true)
+          setAlertMessage("Redirecting to Homescreen")
+          setAlertType("success")
+          setIsAlert(true)
+  
+  
+          setTimeout(() => {
+            setIsAlert(false)
+            document.getElementById('game_over_modal')!.close()
+            navigator("/home")
+          } , 2000)
+
+        })
         
+
+        return () => {
+          chann?.off("start-the-replay-match")
+          chann?.off("replay-false-event")
+        }
 
     })
 
@@ -113,6 +137,10 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
 
             //close this modal after 5 secs
         })
+
+        return () => {
+          spectatorChannel?.off("start-the-replay-match")
+        }
     })
 
 
@@ -156,8 +184,22 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
      requestSent ? <span className="loading loading-dots loading-lg"></span> :     
      <div className="modal-action">
        <div className='flex flex-row justify-end mt-2'>
-        <button type="submit" className="btn btn-outline btn-success" onClick={replayMatchAgainCall} disabled={replay_req_success} >Replay Match  <span className='border-rounded border-black text-red-800'>{totalSeconds}</span></button>
-       <button type="button" className="ml-2 btn btn-outline btn-error" onClick={() => document.getElementById('game_over_modal')!.close()}  disabled={replay_req_success}>Leave</button>
+        <button type="submit" className="btn btn-outline btn-success" onClick={replayMatchAgainCall} disabled={replay_req_success || leave_req_sent} >Replay Match  <span className='border-rounded border-black text-red-800'>{totalSeconds}</span></button>
+       <button type="button" className="ml-2 btn btn-outline btn-error" onClick={() => {
+        setLeaveReqSent(true)
+        chann?.push("replay-false" , {})
+        setAlertMessage("Redirecting to Homescreen")
+        setAlertType("success")
+        setIsAlert(true)
+
+
+        setTimeout(() => {
+          setIsAlert(false)
+          document.getElementById('game_over_modal')!.close()
+          navigator("/home")
+        } , 2000)
+
+       }}  disabled={replay_req_success || leave_req_sent}>Leave</button>
        </div>
     </div>
    }
