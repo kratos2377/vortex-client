@@ -24,7 +24,7 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
 
   const navigator = useNavigate()
           const currentTime = new Date();
-          currentTime.setTime(currentTime.getSeconds() + 20)
+          currentTime.setTime(currentTime.getSeconds() + 30)
     
           const [isComplete, setIsComplete] = useState(false);
     
@@ -36,11 +36,11 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
           } = useTimer({ autoStart: true , expiryTimestamp: time , onExpire: () => {
             //Remove Circular clock screen
             if(!replay_req_success) {
-                replayMatchAgainCall()
+                // replayMatchAgainCall()
             }
           } });
 
-    const [isAlert , setIsAlert] = useState(true)
+    const [isAlert , setIsAlert] = useState(false)
     const [alertMessage , setAlertMessage] = useState("")
     const gameStore = useGameStore()
     const {restart} = useChessMainStore()
