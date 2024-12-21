@@ -416,6 +416,22 @@ export const delete_match_making_ticket = async (payload: string, token: string)
   return val
 }
 
+export const replay_game = async (payload: string, token: string) => {
+  let val = await invoke('replay_game', {payload: payload, token: getBearerToken(token)}).then((message) => {
+    let recv_msg = JSON.parse(message as string)
+
+    logMessage("replay_game", recv_msg)
+
+    if(!recv_msg.result.success) {
+      return { "error_message": recv_msg.error_message, "status": false  }
+    } else {
+      return {"status": true}
+    }
+  });
+
+  return val
+}
+
 //Helper fns
 const getBearerToken = ( token: string) => {
   return "Bearer " + token;

@@ -8,7 +8,7 @@ import usePlayerStore from "../../state/chess_store/player";
 import { King } from "../models/Piece/King";
 import PawnTransform from "./PawnTransform";
 import { IPawnTransformUtils } from "./types";
-import { useChessMainStore, useGameStore } from "../../state/UserAndGameState";
+import { useChessMainStore, useGameStore, useUserStore } from "../../state/UserAndGameState";
 import { initialCastlingState } from "../../state/chess_store/initial_states/castlingUtils";
 import { rankCoordinates } from "../../state/chess_store/initial_states/rankCoordinates";
 import { Color } from "../../types/chess_types/constants";
@@ -43,16 +43,18 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
   } = useChessGameStore();
 
 
+  const {user_details} = useUserStore()
   const gameStore = useGameStore()
   const { currentTurn , setGameCondition, setTakenPieces, setCastlingBtn, setCurrentTurn , setMovesHistory } = useChessMainStore();
   const [pawnTransformUtils, setPawnTransformUtils] = useState<IPawnTransformUtils>(initialState);
   const [passantAvailable, setPassantAvailable] = useState<boolean>(false);
   const [firstRender, setFirstRender] = useState<boolean>(true);
+
+
   const clickHandler = (cell: Cell): void => {
     if (gameStore.isSpectator) 
         return;
 
-    console.log("SPECTATOR NOT ALLOWED HERE")
     if (player_color !== currentPlayer)
         return;
 
@@ -124,7 +126,7 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
       opposite(currentPlayer)
     );
     if (isCheckOnClone) {
-      const message = colorInCheck ? "Protect your king" : "Invalid move, king must be protected";
+      const message = colorInCheck ? "Protect your king" : "Invalid Move, Your King will be in danger";
       setGameCondition(message);
       setTimeout(() => setGameCondition(""), 3000);
     } else {
@@ -147,7 +149,7 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
       opposite(currentPlayer)
     );
     if (isCheckOnClone) {
-      const message = colorInCheck ? "Protect your king" : "Invalid move, king must be protected";
+      const message = colorInCheck ? "Protect your king" : "Invalid Move, Your King will be in danger";
       setGameCondition(message);
       setTimeout(() => setGameCondition(""), 3000);
     } else {
@@ -189,14 +191,10 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
     
     chann?.on("send-user-game-event" , (data) => {
          
-      console.log("Game Move Data Recieved is")
-      console.log(data)
 
           if (data.event_type === "normal") {
             let game_move = JSON.parse(data.game_event)
 
-            console.log("Game parsed move is")
-            console.log(game_move)
             let init_pos = JSON.parse(game_move.initial_cell) 
             let target_pos = JSON.parse(game_move.target_cell ) 
             let init_cell = board.getCell(init_pos.x , init_pos.y)
@@ -252,8 +250,26 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
 
     })
 
+
+    chann?.on("checkmate", (data) => {
+      if(data.color_in_check_mate === player_color) {
+
+        chann.push("checkmate-accepted" , {
+          color_in_check_mate: data.color_in_check_mate,
+          winner_username: data.winner_username,
+          winner_user_id: data.winner_user_id,
+          loser_username: user_details.username,
+          loser_user_id: user_details.id,
+          game_id: game_id
+        } )
+
+      }
+
+    })
+
     return () => {
       chann?.off("send-user-game-event")
+      chann?.off("checkmate")
     };
 
   })
@@ -328,13 +344,42 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
 
 
     })
+
+
+    spectatorChannel?.on("game-over" , (msg) => {
+
+    })
   
   
     return () => {
       spectatorChannel?.off(USER_GAME_MOVE)
+      spectatorChannel?.off("game-over")
     }
   
   })
+
+
+  const checkMateSocketPublisher =  (checkmateColor: Color | null) => {
+
+    if(gameStore.isSpectator)
+      return;
+
+    if(checkmateColor !== null && checkmateColor !== player_color) {
+
+        chann?.push("checkmate-move" , {
+          color_in_check_mate: checkmateColor,
+          player_color: player_color,
+          winner_username: user_details.username,
+          winner_user_id: user_details.id,
+        })
+
+    }
+
+  }
+
+  useEffect(() => {
+    useChessGameStore.subscribe( (state) => state.colorInCheckMate , checkMateSocketPublisher)
+  } , [])
 
 
   // const startListeningToGameEvents = async () => {

@@ -201,6 +201,8 @@ setTimeout(() => {
     getAllLobbyPlayers()
   } , [])
 
+
+  //Spectator calls (This needs to be fixed)
   useEffect( () => {
     if(!gameStore.isSpectator) {
 
@@ -464,7 +466,7 @@ setTimeout(() => {
             <div className="card-body items-center text-center">
               <h2 className="card-title">{val.username}</h2>
               {val.user_id === host_user_id ? <h3 className="">(Host)</h3> : <div></div>}
-              {val.player_status === "ready" ? <h3 className='text-green'>Ready!</h3> : <h3 className='text-red'>Not Ready</h3>}
+              {val.player_status === "ready" ? <h3 className='text-green-700'>Ready!</h3> : <h3 className='text-red-700'>Not Ready</h3>}
             </div>
           </div>
           ))

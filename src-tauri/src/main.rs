@@ -54,6 +54,7 @@ async fn main() {
             api::game::get_game_details,
             api::game::create_match_making_ticket,
             api::game::delete_match_making_ticket,
+            api::game::replay_game,
 
             //MQTT User events
             // events::mqtt_events::subscribe_to_user_topic,

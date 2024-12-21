@@ -260,3 +260,19 @@ let rec = res.unwrap().text().await.unwrap();
 
 Ok(rec)
 }
+
+
+#[tauri::command]
+pub async fn replay_game(payload: String , token: String, state: State<'_ , MessierClient>) -> Result<String , ()> {
+let req_url = BASE_VORTEX_PUB_SUB_URL.to_string() + GAME_API_ROUTE + "/replay_game";
+
+let res = state.client.post(req_url).body(payload).header("Authorization" , token).header("Content-Type", "application/json").send().await;
+
+if(res.is_err()){
+    return Ok(format!("{:?}", APIError::default()))
+}
+
+let rec = res.unwrap().text().await.unwrap();
+
+Ok(rec)
+}

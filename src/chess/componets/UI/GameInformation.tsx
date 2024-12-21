@@ -8,9 +8,9 @@ const GameInformation: FC = () => {
   return (
     <>
 
-      <div className="game-states">
+      {/* <div className="game-states">
         <GameStates />
-      </div>
+      </div> */}
 
       <TakenPieces color={Color.WHITE} />
       <TakenPieces color={Color.BLACK} />

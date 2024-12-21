@@ -10,9 +10,10 @@ import { GameStore } from "./chess_store_types";
 import usePlayerStore from "./player";
 import { opposite } from "../../helper_functions/getChessOpponentColor";
 import { initialCastlingState } from "./initial_states/castlingUtils";
+import { subscribeWithSelector } from "zustand/middleware";
 
 
-const useChessGameStore = create<GameStore>((set) => {
+const useChessGameStore = create<GameStore>()(subscribeWithSelector((set) => {
   return {
     check: new GameStateCheck(),
     checkMate: new GameStateCheckMate(),
@@ -60,6 +61,6 @@ const useChessGameStore = create<GameStore>((set) => {
       }));
     },
   };
-});
+}));
 
 export default useChessGameStore;
