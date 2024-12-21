@@ -32,6 +32,9 @@ const FriendRequestsScroll = ({setFriendReqCount}: FriendReqModalScrollProps) =>
 
       if (val.status) {
           let friend_requests: FriendRequestModel[] = val.friends.map((el) => {
+
+            console.log("Friend Elements is")
+            console.log(el)
          
             let new_req: FriendRequestModel = {
               friend_request_id: el.id ,
@@ -44,7 +47,7 @@ const FriendRequestsScroll = ({setFriendReqCount}: FriendReqModalScrollProps) =>
             return new_req
           })
 
-         // setFriendRequests([...friend_requests])
+          //setFriendRequests([...friend_requests])
       }
       setTimeout(() => {
         setFriendReqCount(friendRequests.length)
