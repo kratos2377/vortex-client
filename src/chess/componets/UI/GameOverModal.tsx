@@ -7,6 +7,7 @@ import { useTimer } from 'react-timer-hook'
 import { useChessMainStore, useGameStore } from '../../../state/UserAndGameState'
 import useChessGameStore from '../../../state/chess_store/game'
 import { useNavigate } from 'react-router-dom'
+import { Color } from '../../models/Piece/types'
 
 
 interface GameOverModalProps {
@@ -39,7 +40,7 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
     const [isAlert , setIsAlert] = useState(false)
     const [alertMessage , setAlertMessage] = useState("")
     const gameStore = useGameStore()
-    const {restart , setGameCurrentStatus} = useChessMainStore()
+    const {restart , setGameCurrentStatus , setCurrentTurn} = useChessMainStore()
     const [alertType , setAlertType] = useState<"success" | "error">("success")
     const [requestSent , setRequestSent] = useState(false)
     const [lost_user_replay , setLostUserReplay] = useState(false)
@@ -96,6 +97,7 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
         chann?.on("start-the-replay-match" , (msg) => {
             restart()
             setGameCurrentStatus("IN PROGRESS")
+            setCurrentTurn(Color.WHITE)
             document.getElementById('game_over_modal')!.close()
         })
 
@@ -149,6 +151,7 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
         spectatorChannel?.on("start-the-replay-match-for-spectators" , (msg) => {
              restart()
              setGameCurrentStatus("IN PROGRESS")
+             setCurrentTurn(Color.WHITE)
              document.getElementById('game_over_modal')!.close()
         })
 
