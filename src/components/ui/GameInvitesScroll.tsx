@@ -101,6 +101,7 @@ export const GameInvitesScroll = ({setIsAlert , setAlertMessage , setAlertType}:
           }
           // Add Game subscription
           else {
+            chann_new.push("joined-room" , {user_id: user_details.id , username: user_details.username , game_id: game_id})
             setChannel(chann_new)
             updateIsSpectator(false)
             updateGameId(game_id)
