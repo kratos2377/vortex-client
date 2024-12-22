@@ -94,7 +94,7 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
             return;
 
 
-        chann?.on("start-the-replay-match" , (msg) => {
+        chann?.on("start-the-replay-match-for-users" , (msg) => {
             restart()
             setGameCurrentStatus("IN PROGRESS")
             setCurrentTurn(Color.WHITE)
@@ -131,7 +131,7 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
         
 
         return () => {
-          chann?.off("start-the-replay-match")
+          chann?.off("start-the-replay-match-for-users")
           chann?.off("replay-false-event")
           chann?.off("replay-accepted-by-user")
         }

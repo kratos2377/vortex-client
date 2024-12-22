@@ -76,7 +76,7 @@ const MatchScreen = () => {
          })
     
 
-         chann?.on("start-the-match" , () => {
+         chann?.on("start-the-match-for-users" , () => {
           navigate("/" + gameType + "/" + game_id + "/" + "random_host_id")
          })
     
@@ -86,7 +86,7 @@ const MatchScreen = () => {
          return () => {
           chann?.off("user-status-update")
           chann?.off("error-event-occured")
-          chann?.off("start-the-match")
+          chann?.off("start-the-match-for-users")
          }
 
   } )
