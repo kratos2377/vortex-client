@@ -76,7 +76,7 @@ export const OngoingGameCard = ({
 
 
 
-        let spec_chann_new = socket.channel("game:spectate:chess:" + game_id , {} )
+        let spec_chann_new = socket.channel("spectate:chess:" + game_id , {} )
 
         spec_chann_new.join().receive("ok" , () => {
           gameStore.updateIsSpectator(true)
