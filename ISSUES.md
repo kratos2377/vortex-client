@@ -11,3 +11,8 @@
 
 
 - [ ] Add same Logic for Matched Users As well and finish it
+
+
+- [ ] Spectator channel is not able to listen to events (seems like endpoint.broadcast is not working)
+- [ ] By default its showing scribble image in the lobby
+- [ ] In backend the status does not change from lobby to game (if spectator tries to directly go to game it shows error)
