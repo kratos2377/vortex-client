@@ -361,33 +361,33 @@ setTimeout(() => {
       })
 
 
-      spectatorChannel?.on("game-general-event" , async (payload) => {
+      // spectatorChannel?.on("game-general-event" , async (payload) => {
 
-        if (payload.message === "start-game") {
+      //   if (payload.message === "start-game") {
      
-          navigate("/" + gameType + "/" + game_id + "/" + host_user_id)
-        } else if (payload.message === "host-left") {
-          setGeneralPurposeMessage("Host Left. Redirecting to home screen")
-          setGeneralPurposeTitle("Redirecting")
-          document.getElementById("general_purpose_modal")!.showModal()
+      //     navigate("/" + gameType + "/" + game_id + "/" + host_user_id)
+      //   } else if (payload.message === "host-left") {
+      //     setGeneralPurposeMessage("Host Left. Redirecting to home screen")
+      //     setGeneralPurposeTitle("Redirecting")
+      //     document.getElementById("general_purpose_modal")!.showModal()
        
-          spectatorChannel?.leave().receive("ok" , (msg) => {
-            console.log("Successfully left channel")
-          }).receive("error" , (msg) => {
-            console.log(`Error while leaving channel: ${msg}`)
-          })
+      //     spectatorChannel?.leave().receive("ok" , (msg) => {
+      //       console.log("Successfully left channel")
+      //     }).receive("error" , (msg) => {
+      //       console.log(`Error while leaving channel: ${msg}`)
+      //     })
 
-          setSpectatorChannel(null)
+      //     setSpectatorChannel(null)
 
 
-       setTimeout(() => {
+      //  setTimeout(() => {
         
-        document.getElementById("general_purpose_modal")!.close()
-        navigate("/home")
-       }, 1000)
-        }
+      //   document.getElementById("general_purpose_modal")!.close()
+      //   navigate("/home")
+      //  }, 1000)
+      //   }
       
-      })
+      // })
 
       spectatorChannel?.on("start-game-for-all" , (msg) => {
         //document.getElementById("general_purpose_modal")!.close()
@@ -416,7 +416,7 @@ setTimeout(() => {
         spectatorChannel?.off("user-joined-room")
         spectatorChannel?.off("user-left-room")
         spectatorChannel?.off("user-status-event")
-        spectatorChannel?.off("game-general-event")
+      //  spectatorChannel?.off("game-general-event")
         spectatorChannel?.off("start-game-for-all")
         spectatorChannel?.off("remove-all-users")
         spectatorChannel?.off("verifying-game")
