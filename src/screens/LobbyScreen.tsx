@@ -389,9 +389,12 @@ setTimeout(() => {
       
       })
 
-      spectatorChannel?.on("start-game-for-all" , () => {
-        document.getElementById("general_purpose_modal")!.close()
-        navigate("/chess" + "/" + game_id  + "/" + host_user_id)
+      spectatorChannel?.on("start-game-for-all" , (msg) => {
+        //document.getElementById("general_purpose_modal")!.close()
+
+          console.log("Start game for all event recieved. The data is")
+          console.log(msg)
+        navigate("/chess/" + msg.game_id  + "/" + msg.admin_id)
       })
 
 

@@ -23,6 +23,7 @@ export const OngoingGameCard = ({
   items: {
     game_id: string;
     game_type: string;
+    game_name: string,
     game_image_url: string | null | undefined;
     is_staked: boolean;
     total_money_staked?: number | null;
@@ -73,6 +74,7 @@ export const OngoingGameCard = ({
 
 
     } else {
+      
 
 
         console.log("Setting spec channel for game_id=" + game_id)
