@@ -109,7 +109,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
             setUserChannel,
             setSpectatorChannel
           }),
-          [chann]
+          [chann , userChannel , spectatorChannel]
         )}
       >
         {children}

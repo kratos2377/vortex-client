@@ -24,6 +24,7 @@ const LeaveSpectateRoomModal = ({game_id}: LeaveSpectateRoomModalProps) => {
 
 
       if(spectatorChannel !== undefined && spectatorChannel !== null) {
+        console.log("Spectate Leave Modal called for spectator")
         spectatorChannel.leave()
         setSpectatorChannel(null)
       }

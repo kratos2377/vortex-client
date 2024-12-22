@@ -377,7 +377,7 @@ setTimeout(() => {
             console.log(`Error while leaving channel: ${msg}`)
           })
 
-
+          console.log("RECIEVED GENERAL EVENT FOR SOCKET IN LOBBY SCREEN")
           setSpectatorChannel(null)
 
 
