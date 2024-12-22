@@ -375,6 +375,7 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
 
     spectatorChannel?.on("game-over" , (data) => {
 
+      console.log("Gam over event recieved")
 
       setWinnerUsername(data.winner_username)
       setWinnerUserId(data.winner_user_id)
