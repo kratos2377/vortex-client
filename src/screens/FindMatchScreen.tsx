@@ -23,6 +23,7 @@ const FindMatchScreen = ({ setCurrentScreen } : { setCurrentScreen:  React.Dispa
   const [redirecting , setRedirecting] = useState(false)
   const [requestSent , setRequestSent] = useState(false)
   const [startClock , setStartClock] = useState(false)
+  const [time , setTime] = useState(new Date())
   const [selectedType, setSelectedType] = useState('');
   const {user_details} = useUserStore()
   const [matchFound , setMatchFound] = useState(false)
@@ -66,6 +67,10 @@ const FindMatchScreen = ({ setCurrentScreen } : { setCurrentScreen:  React.Dispa
 
       setRequestSent(false)
       setIsAlert(true)
+
+      const new_time = new Date()
+      new_time.setTime(new_time.getSeconds() + 300)
+      setTime(new_time)
 
       setStartClock(true)
 
@@ -170,7 +175,10 @@ const FindMatchScreen = ({ setCurrentScreen } : { setCurrentScreen:  React.Dispa
       <>
       
    {
-    matchFound ? <RedirectingToMatchModal/> :    startClock ? <CircularClock setCircularClock={setStartClock} setCurrentScreen={setCurrentScreen}/> :       <div className="fixed inset-0 flex items-center justify-center self-center z-50">
+    matchFound ? <RedirectingToMatchModal/> :    startClock ? <div className='flex flex-col justify-center align-center items-center'>
+<CircularClock setCircularClock={setStartClock} setCurrentScreen={setCurrentScreen} time={time}/>
+
+    </div> :       <div className="fixed inset-0 flex items-center justify-center self-center z-50">
     <div className="absolute inset-0 bg-black opacity-50"></div>
     <div className="bg-white rounded-lg p-8 z-50">
       <div className="flex justify-between items-center mb-4">
