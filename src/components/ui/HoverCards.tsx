@@ -75,7 +75,7 @@ export const OngoingGameCard = ({
     } else {
 
 
-
+        console.log("Setting spec channel for game_id=" + game_id)
         let spec_chann_new = socket.channel("spectate:chess:" + game_id , {} )
 
         spec_chann_new.join().receive("ok" , () => {
