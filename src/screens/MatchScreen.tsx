@@ -239,7 +239,7 @@ const MatchScreen = () => {
           if(!gameStore.isSpectator) {
             const new_time = new Date()
             new_time.setTime(new_time.getSeconds() + 20)
-            restart(new)
+            restart(new_time)
           }
 
         }
