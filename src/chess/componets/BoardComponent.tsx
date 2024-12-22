@@ -313,14 +313,14 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
 
     spectatorChannel?.on("user-game-move" , (parsed_payload) => {
 
-      if (parsed_payload.userGameMove.moveType === "normal") {
+      if (parsed_payload.event_type === "normal") {
                   console.log("Normal move received")
-                    let game_move = JSON.parse(parsed_payload.userGameMove.userMove) as ChessNormalEvent
-                    let init_pos = JSON.parse(game_move.initial_cell) 
-                    let target_pos = JSON.parse(game_move.target_cell) 
-                
-                    let init_cell = board.getCell(parseInt(init_pos.x) , parseInt(init_pos.y))
-                    let target_cell = board.getCell(parseInt(target_pos.x) , parseInt(target_pos.y))
+                  let game_move = JSON.parse(parsed_payload.game_event)
+
+                  let init_pos = JSON.parse(game_move.initial_cell) 
+                  let target_pos = JSON.parse(game_move.target_cell ) 
+                  let init_cell = board.getCell(init_pos.x , init_pos.y)
+                  let target_cell = board.getCell(target_pos.x , target_pos.y)
 
               if (target_cell.piece instanceof King) return;
 
@@ -338,16 +338,15 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
 
               resetPassantCells();
 
-        } else if (parsed_payload.userGameMove.moveType === "promotion") {
-                    let game_move = JSON.parse(parsed_payload.userGameMove.userMove) as ChessPromotionEvent
-                    let init_pos = JSON.parse(game_move.initial_cell) 
-                    let target_pos = JSON.parse(game_move.target_cell) 
-                    let piece_name = game_move.promoted_to
+        } else if (parsed_payload.event_type === "promotion") {
+          let game_move = JSON.parse(parsed_payload.game_event)
+          let init_pos = JSON.parse(game_move.initial_cell) 
+          let target_pos = JSON.parse(game_move.target_cell ) 
+          let piece_name = game_move.promoted_to
+ 
 
-
-                    let init_cell = board.getCell(parseInt(init_pos.x) , parseInt(init_pos.y))
-                    let target_cell = board.getCell(parseInt(target_pos.x) , parseInt(target_pos.y))
-
+          let init_cell = board.getCell(init_pos.x , init_pos.y)
+          let target_cell = board.getCell(target_pos.x , target_pos.y)
               if (target_cell.piece instanceof King) return;
 
               if (target_cell.availableToPassant) {
