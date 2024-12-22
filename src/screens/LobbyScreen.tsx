@@ -391,7 +391,7 @@ setTimeout(() => {
 
       spectatorChannel?.on("start-game-for-all" , () => {
         document.getElementById("general_purpose_modal")!.close()
-        navigate("/" + gameStore.game_name + "/" + game_id  + "/" + host_user_id)
+        navigate("/chess" + "/" + game_id  + "/" + host_user_id)
       })
 
 
