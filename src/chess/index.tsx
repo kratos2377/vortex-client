@@ -37,17 +37,20 @@ const ChessGame = () => {
 
     chann?.on(GAME_GENERAL_EVENT , async (msg) => {
 
+      console.log("General game event recieved")
+      console.log(msg)
+
       if(msg.message ===  "host-left") {
-            setGeneralPurposeMessage("Host Left. Redirecting to home screen")
-            setGeneralPurposeTitle("Redirecting")
-            document.getElementById("general_purpose_modal")!.showModal()
-          let payload = JSON.stringify({topic_name: MQTT_GAME_EVENTS + game_id});
-          await invoke('unsubscribe_to_game_topic', {payload:  payload})
-        setTimeout(() => {
+        //     setGeneralPurposeMessage("Host Left. Redirecting to home screen")
+        //     setGeneralPurposeTitle("Redirecting")
+        //     document.getElementById("general_purpose_modal")!.showModal()
+        //   let payload = JSON.stringify({topic_name: MQTT_GAME_EVENTS + game_id});
+        //   await invoke('unsubscribe_to_game_topic', {payload:  payload})
+        // setTimeout(() => {
           
-          document.getElementById("general_purpose_modal")!.close()
-          navigate("/home")
-        }, 1000)
+        //   document.getElementById("general_purpose_modal")!.close()
+        //   navigate("/home")
+        // }, 1000)
       }
 
     })
@@ -68,18 +71,18 @@ const ChessGame = () => {
 
     spectatorChannel?.on(GAME_GENERAL_EVENT , async (msg) => {
 
-      if(msg.message ===  "host-left") {
-        setGeneralPurposeMessage("Host Left. Redirecting to home screen")
-        setGeneralPurposeTitle("Redirecting")
-        document.getElementById("general_purpose_modal")!.showModal()
-      let payload = JSON.stringify({topic_name: MQTT_GAME_EVENTS + game_id});
-      await invoke('unsubscribe_to_game_topic', {payload:  payload})
-    setTimeout(() => {
+  //     if(msg.message ===  "host-left") {
+  //       setGeneralPurposeMessage("Host Left. Redirecting to home screen")
+  //       setGeneralPurposeTitle("Redirecting")
+  //       document.getElementById("general_purpose_modal")!.showModal()
+  //     let payload = JSON.stringify({topic_name: MQTT_GAME_EVENTS + game_id});
+  //     await invoke('unsubscribe_to_game_topic', {payload:  payload})
+  //   setTimeout(() => {
       
-      document.getElementById("general_purpose_modal")!.close()
-      navigate("/home")
-    }, 1000)
-  }
+  //     document.getElementById("general_purpose_modal")!.close()
+  //     navigate("/home")
+  //   }, 1000)
+  // }
 
 
 
