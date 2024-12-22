@@ -33,7 +33,7 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
             restart: timeRestart
           } = useTimer({ autoStart: true , expiryTimestamp: time , onExpire: () => {
             //Remove Circular clock screen
-            replayMatchAgainCall()
+           // replayMatchAgainCall()
           } });
 
     const [isAlert , setIsAlert] = useState(false)

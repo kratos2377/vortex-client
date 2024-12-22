@@ -311,7 +311,7 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
 
 
 
-    spectatorChannel?.on(USER_GAME_MOVE , (parsed_payload) => {
+    spectatorChannel?.on("user-game-move" , (parsed_payload) => {
 
       if (parsed_payload.userGameMove.moveType === "normal") {
                   console.log("Normal move received")
@@ -389,7 +389,7 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
   
   
     return () => {
-      spectatorChannel?.off(USER_GAME_MOVE)
+      spectatorChannel?.off("user-game-move")
       spectatorChannel?.off("game-over")
     }
   
