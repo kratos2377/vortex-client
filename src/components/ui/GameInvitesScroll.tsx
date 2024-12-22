@@ -1,5 +1,5 @@
 import { useScroll, useTransform } from "framer-motion";
-import {  useEffect, useRef, useState } from "react";
+import {  useContext, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { cn } from "../../utils/cn";
 import { IconCheck, IconX } from "@tabler/icons-react";
@@ -8,6 +8,8 @@ import { useGameStore, useUserStore } from "../../state/UserAndGameState";
 import { join_lobby_call, verify_game_status_call } from "../../helper_functions/apiCall";
 import { getUserTokenFromStore } from "../../persistent_storage/save_user_details";
 import { useNavigate } from "react-router-dom";
+import { socket } from "../../socket/socket";
+import { WebSocketContext } from "../../socket/websocket_provider";
 
 
 
@@ -18,6 +20,8 @@ interface GameInviteScrollProps  {
 }
 
 export const GameInvitesScroll = ({setIsAlert , setAlertMessage , setAlertType}: GameInviteScrollProps) => {
+
+  const {setChannel} = useContext(WebSocketContext)
     const gridRef = useRef<any>(null);
     const { scrollYProgress } = useScroll({
       container: gridRef,
@@ -80,27 +84,48 @@ export const GameInvitesScroll = ({setIsAlert , setAlertMessage , setAlertType}:
           setIsAlert(false)
         }, 3000)
       } else {
-        document.getElementById('joining_lobby_modal')!.close()
-        document.getElementById("redirecting_to_lobby_modal")!.showModal()
-        let verify_call_payload = JSON.stringify({game_id: game_id , game_name: game_name, host_user_id: val.game_host_id, user_id: user_details.id})
-        let verify_rsp = await verify_game_status_call( verify_call_payload,user_token)
 
-        if (!verify_rsp.status) {
-          document.getElementById("redirecting_to_lobby_modal")!.close()
-          navigate("/invalid_lobby/"  + game_id + "/" + game_name + "/" + val.game_host_id)
-        }
-        // Add Game subscription
-        else {
-          updateIsSpectator(false)
-          updateGameId(game_id)
-          updateGameName(game_name)
-          updateGameType(game_type)
-          updateUserPlayerCountId(val.user_count_id)
-          setTimeout(() => {
+        let chann_new = socket.channel("game:chess:" + game_id , {})
+
+        chann_new.join().receive("ok" , async () => {
+
+
+          document.getElementById('joining_lobby_modal')!.close()
+          document.getElementById("redirecting_to_lobby_modal")!.showModal()
+          let verify_call_payload = JSON.stringify({game_id: game_id , game_name: game_name, host_user_id: val.game_host_id, user_id: user_details.id})
+          let verify_rsp = await verify_game_status_call( verify_call_payload,user_token)
+  
+          if (!verify_rsp.status) {
             document.getElementById("redirecting_to_lobby_modal")!.close()
-            navigate("/lobby/" + game_id + "/" + game_name + "/" + val.game_host_id)
-          }, 100)
-        }
+            navigate("/invalid_lobby/"  + game_id + "/" + game_name + "/" + val.game_host_id)
+          }
+          // Add Game subscription
+          else {
+            setChannel(chann_new)
+            updateIsSpectator(false)
+            updateGameId(game_id)
+            updateGameName(game_name)
+            updateGameType(game_type)
+            updateUserPlayerCountId(val.user_count_id)
+            setTimeout(() => {
+              document.getElementById("redirecting_to_lobby_modal")!.close()
+              navigate("/lobby/" + game_id + "/" + game_name + "/" + val.game_host_id)
+            }, 100)
+          }
+
+        }).receive("error" , async () => {
+
+          setAlertMessage("Error While Joining the Game channel")
+          setAlertType("error")
+          setIsAlert(true)
+  
+          setTimeout(() => {
+            setIsAlert(false)
+          }, 3000)
+
+        })
+
+
       }
 
 

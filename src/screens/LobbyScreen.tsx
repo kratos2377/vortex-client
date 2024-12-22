@@ -203,47 +203,7 @@ setTimeout(() => {
 
 
   //Spectator calls (This needs to be fixed)
-  useEffect( () => {
-    if(!gameStore.isSpectator) {
 
-     
-
-      console.log("Channel join loop. Current status of channel is")
-      console.log(chann)
-      
-      
-     if(chann === null) {
-      console.log("setting chann this time")
-      let chann_new = socket.channel("game:" + gameType + ":" + game_id , {})
-      console.log("new channel is")
-      console.log(chann_new)
-
-      chann_new.join().receive("ok", response => {
-        console.log(`Joined game successfully 😊`)
-      })
-      .receive("error", response => {
-        console.log("Error while joining game")
-        console.log(response)
-      })
-
-      chann_new.onError((response) => {
-        console.log("SOme error occured on the channel")
-        console.log(response)
-      })
-      
-      setChannel(chann_new);
-      chann_new?.push("joined-room", {game_id: game_id, user_id: user_details.id , username: user_details.username})
-     }
-    
-
- 
-    } 
-
-    return () => {
-      chann?.off("joined-room")
-    }
-   
-  } , [chann] )
 
 
   // Having chann? calls
@@ -348,9 +308,6 @@ setTimeout(() => {
 
 
   // isSpecator Events Listen
-
-
-
   useEffect(() => {
     if (gameStore.isSpectator && spectatorChannel !== null) {
 

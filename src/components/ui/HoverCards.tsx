@@ -1,6 +1,6 @@
 
 import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion";
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { cn } from "../../utils/cn";
 import { IconCurrencySolana } from "@tabler/icons-react";
 import GeneralPurposeModal from "../screens/GeneralPurposeModal";
@@ -10,6 +10,8 @@ import { getUserTokenFromStore } from "../../persistent_storage/save_user_detail
 import { useNavigate } from "react-router-dom";
 import { MQTT_GAME_EVENTS } from "../../utils/mqtt_event_names";
 import { invoke } from "@tauri-apps/api/tauri";
+import { WebSocketContext } from "../../socket/websocket_provider";
+import { socket } from "../../socket/socket";
 
 export const OngoingGameCard = ({
   items,
@@ -46,44 +48,7 @@ export const OngoingGameCard = ({
  
   const [subscribeError , setSubscribeError] = useState(false)
 
-
-  const subscribeInTheGame = async (game_id: string) => {
-    let payload = JSON.stringify({topic_name: MQTT_GAME_EVENTS + game_id});
-    let game_sub_rsp = await invoke('subscribe_to_game_topic', {payload:  payload})
-      if (game_sub_rsp === "error") {
-        setSubscribeError(true)
-        setAlertMessage("Error While subscribing to game")
-        setAlertType("error")
-        setIsAlert(true)
-  
-        document.getElementById("general_purpose_modal")!.close()
-  
-        setTimeout(() => {
-          setIsAlert(false)
-        }, 2000)
-
-        return
-  
-      }
-  }
-
-  const startListeningToGameGeneralEvents = async () => {
-    let event_sub = await invoke('listen_to_game_event');
-    if (event_sub === "error") {
-      setSubscribeError(true)
-      setAlertMessage("Error While subscribing to game")
-      setAlertType("error")
-      setIsAlert(true)
-
-      document.getElementById("general_purpose_modal")!.close()
-
-      setTimeout(() => {
-        setIsAlert(false)
-      }, 2000)
-
-      return
-    }
-  }
+  const {spectatorChannel , setSpectatorChannel} = useContext(WebSocketContext)
 
   const startSpectatingGame = async (game_id: string ) => {
     setSubscribeError(false)
@@ -108,22 +73,40 @@ export const OngoingGameCard = ({
 
 
     } else {
-   subscribeInTheGame(game_id)
-    startListeningToGameGeneralEvents()
 
-    gameStore.updateIsSpectator(true)
 
-      if(val.game.description === "LOBBY") {
-        
-      document.getElementById("general_purpose_modal")!.close()
-        navigate("/lobby/" + game_id + "/" +  val.game.name + "/" + val.game.host_id)
-      } else{
-        //For now  its right but we will change it in future accoring to the chess state
-        gameStore.updateChessState(val.game.current_state)
-        
-      document.getElementById("general_purpose_modal")!.close()
-      navigate("/" + val.game.name + "/" + game_id + "/" + val.game.host_id)
-      }
+
+        let spec_chann_new = socket.channel("game:spectate:chess:" + game_id , {} )
+
+        spec_chann_new.join().receive("ok" , () => {
+          gameStore.updateIsSpectator(true)
+
+          setSpectatorChannel(spec_chann_new)
+
+          if(val.game.description === "LOBBY") {
+            
+          document.getElementById("general_purpose_modal")!.close()
+            navigate("/lobby/" + game_id + "/" +  val.game.name + "/" + val.game.host_id)
+          } else{
+            //For now  its right but we will change it in future accoring to the chess state
+            gameStore.updateChessState(val.game.current_state)
+            
+          document.getElementById("general_purpose_modal")!.close()
+          navigate("/" + val.game.name + "/" + game_id + "/" + val.game.host_id)
+          }
+        }).receive("error" , () => {
+
+          setAlertMessage("Error While Joining Spectate Channel")
+          setAlertType("error")
+          setIsAlert(true)
+    
+          document.getElementById("general_purpose_modal")!.close()
+    
+          setTimeout(() => {
+            setIsAlert(false)
+          }, 3000)
+
+        })
 
     }
     
