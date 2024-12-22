@@ -62,7 +62,7 @@ const CreateLobby = ( { setCurrentScreen } : { setCurrentScreen:  React.Dispatch
     }
 
     setRequestSent(true)
-    let payload = JSON.stringify({ user_id: user_details.id , game_type: selectedType , game_name: selectedGame, username: user_details.username })
+    let payload = JSON.stringify({ user_id: user_details.id , game_type: selectedType , game_name: "chess", username: user_details.username })
     let token = await getUserTokenFromStore()
 
     let val = await create_lobby_call(payload , token)
@@ -83,9 +83,12 @@ const CreateLobby = ( { setCurrentScreen } : { setCurrentScreen:  React.Dispatch
       let new_chann = socket.channel("game:chess:" + val.game_id);
 
       new_chann.join().receive("ok" , () => {
+
+        console.log("OK RECIEVED FROM SERVER WHILE JOINING THIS CHANNEL")
+
         updateIsSpectator(false)
         updateGameId(val.game_id)
-        updateGameName(selectedGame)
+        updateGameName("chess")
         updateGameType(selectedType)
         updateUserPlayerCountId("1")
         setRedirecting(true)
@@ -100,7 +103,7 @@ const CreateLobby = ( { setCurrentScreen } : { setCurrentScreen:  React.Dispatch
           setIsAlert(false)
           setAlertMessage("")
           setAlertType("success")
-          navigate("/lobby/" + val.game_id + "/" +  selectedGame + "/" + user_details.id)
+          navigate("/lobby/" + val.game_id + "/" +  "chess" + "/" + user_details.id)
         } , 1000)
 
 

@@ -315,7 +315,12 @@ setTimeout(() => {
   useEffect(() => {
     if (gameStore.isSpectator && spectatorChannel !== null) {
 
-      spectatorChannel.on("user-joined-room" , (payload) => {
+      console.log("Spectator channel is")
+      console.log(spectatorChannel)
+
+      spectatorChannel.on("user-joined-room" , (payload ) => {
+        console.log("Recieved new user joined room call")
+        console
 
         let new_user: UserGameRelation = {
           user_id: payload.user_id,
@@ -408,7 +413,7 @@ setTimeout(() => {
         }
 
       <div className='h-1/5 w-2/12 p-5 self-center'>
-        {gameType === "chess" ? <img src={ChessLogo} alt="chess" />: <img src={ScribbleLogo} alt="scribble" />}
+        <img src={ChessLogo} alt="chess" />
       </div>
 
       {isAlert ? <div className='my-3'>
