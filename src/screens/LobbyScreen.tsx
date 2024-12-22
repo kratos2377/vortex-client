@@ -313,12 +313,13 @@ setTimeout(() => {
 
   // isSpecator Events Listen
   useEffect(() => {
-    if (gameStore.isSpectator && spectatorChannel !== null) {
+    if (!gameStore.isSpectator)
+      return;
 
       console.log("Spectator channel is")
       console.log(spectatorChannel)
 
-      spectatorChannel.on("user-joined-room" , (payload ) => {
+      spectatorChannel?.on("user-joined-room" , (payload ) => {
         console.log("Recieved new user joined room call")
         console
 
@@ -340,7 +341,7 @@ setTimeout(() => {
 
       })
 
-      spectatorChannel.on("user-left-room" , (payload) => {
+      spectatorChannel?.on("user-left-room" , (payload) => {
 
         setLobbyUsers( (prevState) => {
           let update_users = prevState.filter((el) => el.user_id !== payload.user_id)
@@ -350,7 +351,7 @@ setTimeout(() => {
       })
 
 
-      spectatorChannel.on("user-status-event" , (payload) => {
+      spectatorChannel?.on("user-status-event" , (payload) => {
 
         setLobbyUsers( (prevState) => {
           const updatedUsers = prevState.map((user) => user.user_id === payload.user_id ? {...user, player_status: payload.status} : user)
@@ -360,7 +361,7 @@ setTimeout(() => {
       })
 
 
-      spectatorChannel.on("game-general-event" , async (payload) => {
+      spectatorChannel?.on("game-general-event" , async (payload) => {
 
         if (payload.message === "start-game") {
      
@@ -370,7 +371,7 @@ setTimeout(() => {
           setGeneralPurposeTitle("Redirecting")
           document.getElementById("general_purpose_modal")!.showModal()
        
-          spectatorChannel.leave().receive("ok" , (msg) => {
+          spectatorChannel?.leave().receive("ok" , (msg) => {
             console.log("Successfully left channel")
           }).receive("error" , (msg) => {
             console.log(`Error while leaving channel: ${msg}`)
@@ -390,13 +391,13 @@ setTimeout(() => {
       })
 
       return () => {
-        spectatorChannel.off("user-joined-room")
-        spectatorChannel.off("user-left-room")
-        spectatorChannel.off("user-status-event")
-        spectatorChannel.off("game-general-event")
+        spectatorChannel?.off("user-joined-room")
+        spectatorChannel?.off("user-left-room")
+        spectatorChannel?.off("user-status-event")
+        spectatorChannel?.off("game-general-event")
       }
    
-    }
+    
   })
 
   return (
