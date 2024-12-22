@@ -316,8 +316,6 @@ setTimeout(() => {
     if (!gameStore.isSpectator)
       return;
 
-      console.log("Spectator channel is")
-      console.log(spectatorChannel)
 
       spectatorChannel?.on("user-joined-room" , (payload ) => {
         console.log("Recieved new user joined room call")
@@ -389,7 +387,7 @@ setTimeout(() => {
       
       // })
 
-      spectatorChannel?.on("start-game-for-all" , (msg) => {
+      spectatorChannel?.on("start-game-for-spectators" , (msg) => {
         //document.getElementById("general_purpose_modal")!.close()
 
           console.log("Start game for all event recieved. The data is")
@@ -417,7 +415,7 @@ setTimeout(() => {
         spectatorChannel?.off("user-left-room")
         spectatorChannel?.off("user-status-event")
       //  spectatorChannel?.off("game-general-event")
-        spectatorChannel?.off("start-game-for-all")
+        spectatorChannel?.off("start-game-for-spectators")
         spectatorChannel?.off("remove-all-users")
         spectatorChannel?.off("verifying-game")
       }
