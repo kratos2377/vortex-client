@@ -373,7 +373,7 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
     })
 
 
-    spectatorChannel?.on("game-over" , (data) => {
+    spectatorChannel?.on("game-over-for-spectators" , (data) => {
 
       console.log("Gam over event recieved")
 
@@ -390,7 +390,7 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
   
     return () => {
       spectatorChannel?.off("user-game-move")
-      spectatorChannel?.off("game-over")
+      spectatorChannel?.off("game-over-for-spectators")
     }
   
   })

@@ -146,14 +146,14 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
 
 
 
-        spectatorChannel?.on("start-the-replay-match" , (msg) => {
+        spectatorChannel?.on("start-the-replay-match-for-spectators" , (msg) => {
              restart()
              setGameCurrentStatus("IN PROGRESS")
              document.getElementById('game_over_modal')!.close()
         })
 
 
-        spectatorChannel?.on("replay-false-event" , (msg) => {
+        spectatorChannel?.on("replay-false-event-for-spectators" , (msg) => {
 
           setLeaveReqSent(true)
           setAlertMessage("Redirecting to Homescreen")
@@ -169,7 +169,7 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
 
         })
 
-        spectatorChannel?.on("replay-accepted-by-user" , (data) => {
+        spectatorChannel?.on("replay-accepted-by-user-for-spectators" , (data) => {
           if(loser_user_id === data.user_id) {
             setLostUserReplay(true)
           }
@@ -182,9 +182,9 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
         
 
         return () => {
-          spectatorChannel?.off("start-the-replay-match")
-          spectatorChannel?.off("replay-false-event")
-          spectatorChannel?.off("replay-accepted-by-user")
+          spectatorChannel?.off("start-the-replay-match-for-spectators")
+          spectatorChannel?.off("replay-false-event-for-spectators")
+          spectatorChannel?.off("replay-accepted-by-user-for-spectators")
         }
     })
 

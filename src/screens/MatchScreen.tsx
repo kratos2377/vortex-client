@@ -169,7 +169,7 @@ const MatchScreen = () => {
           
           })
 
-          spectatorChannel?.on("start-the-match" , () => {
+          spectatorChannel?.on("start-the-match-for-spectators" , () => {
             navigate("/" + gameType + "/" + game_id + "/" + "random_host_id")
           })
     
@@ -178,7 +178,7 @@ const MatchScreen = () => {
             spectatorChannel?.off("user-left-room")
             spectatorChannel?.off("user-status-event")
             spectatorChannel?.off("game-general-event")
-            spectatorChannel?.off("start-the-match")
+            spectatorChannel?.off("start-the-match-for-spectators")
           }
 
 

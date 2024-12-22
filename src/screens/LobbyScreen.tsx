@@ -339,7 +339,7 @@ setTimeout(() => {
 
       })
 
-      spectatorChannel?.on("user-left-room" , (payload) => {
+      spectatorChannel?.on("some-user-left" , (payload) => {
 
         setLobbyUsers( (prevState) => {
           let update_users = prevState.filter((el) => el.user_id !== payload.user_id)
@@ -396,7 +396,7 @@ setTimeout(() => {
       })
 
 
-      spectatorChannel?.on("remove-all-users" , (msg) => {
+      spectatorChannel?.on("remove-all-users-for-spectators" , (msg) => {
         setGeneralPurposeMessage("Host Left the Lobby")
         setGeneralPurposeTitle("Host Left the Lobby. Redirecting to HomeScreen")
         document.getElementById("general_purpose_modal")!.showModal()
@@ -412,12 +412,12 @@ setTimeout(() => {
 
       return () => {
         spectatorChannel?.off("user-joined-room")
-        spectatorChannel?.off("user-left-room")
+        spectatorChannel?.off("some-user-left")
         spectatorChannel?.off("user-status-event")
       //  spectatorChannel?.off("game-general-event")
         spectatorChannel?.off("start-game-for-spectators")
-        spectatorChannel?.off("remove-all-users")
-        spectatorChannel?.off("verifying-game")
+        spectatorChannel?.off("remove-all-users-for-spectators")
+        spectatorChannel?.off("verifying-game-for-spectators")
       }
    
     
