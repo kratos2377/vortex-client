@@ -1,15 +1,18 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { ErrorAlert, SuccessAlert } from '../components/ui/AlertMessage';
 import { useGameStore, useUserStore } from '../state/UserAndGameState';
 import { getUserTokenFromStore } from '../persistent_storage/save_user_details';
 import { create_lobby_call } from '../helper_functions/apiCall';
 import { useNavigate } from 'react-router-dom';
+import { socket } from '../socket/socket';
+import { WebSocketContext } from '../socket/websocket_provider';
 
 
 
 const CreateLobby = ( { setCurrentScreen } : { setCurrentScreen:  React.Dispatch<React.SetStateAction<string>> }) => {
 
   const navigate = useNavigate()
+  const {setChannel} = useContext(WebSocketContext)
   const [isOpen , setIsOpen] = useState(true)
   const [selectedGame, setSelectedGame] = useState('chess');
   const [selectedType, setSelectedType] = useState('');
@@ -76,22 +79,46 @@ const CreateLobby = ( { setCurrentScreen } : { setCurrentScreen:  React.Dispatch
       } , 3000)
 
     } else {
-      updateIsSpectator(false)
-      updateGameId(val.game_id)
-      updateGameName(selectedGame)
-      updateGameType(selectedType)
-      updateUserPlayerCountId("1")
-      setRedirecting(true)
-      setAlertMessage("Redirecting to Lobby Screen")
-      setAlertType("success")
-      setIsAlert(true)
-      setRequestSent(false)
-      setTimeout(() => {
-        setIsAlert(false)
-        setAlertMessage("")
+
+      let new_chann = socket.channel("game:chess:" + val.game_id);
+
+      new_chann.join().receive("ok" , () => {
+        updateIsSpectator(false)
+        updateGameId(val.game_id)
+        updateGameName(selectedGame)
+        updateGameType(selectedType)
+        updateUserPlayerCountId("1")
+        setRedirecting(true)
+        setAlertMessage("Redirecting to Lobby Screen")
         setAlertType("success")
-        navigate("/lobby/" + val.game_id + "/" +  selectedGame + "/" + user_details.id)
-      } , 1000)
+        setIsAlert(true)
+        setRequestSent(false)
+
+        setChannel(new_chann)
+  
+        setTimeout(() => {
+          setIsAlert(false)
+          setAlertMessage("")
+          setAlertType("success")
+          navigate("/lobby/" + val.game_id + "/" +  selectedGame + "/" + user_details.id)
+        } , 1000)
+
+
+      }).receive("error" , () => {
+
+
+        setAlertMessage("Error Occured While Joining Game Channel")
+        setAlertType("error")
+        setIsAlert(true)
+        setRequestSent(false)
+  
+        setTimeout(() => {
+          setIsAlert(false)
+        } , 2000)
+
+      })
+
+   
     }
 
   
