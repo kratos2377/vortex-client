@@ -157,7 +157,6 @@ const MatchScreen = () => {
                 console.log(`Error while leaving channel: ${msg}`)
               })
     
-              console.log("RECIEVED GENERAL EVENT FOR SOCKET IN MATCH SCREEN")
               setSpectatorChannel(null)
     
     

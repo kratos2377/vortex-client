@@ -377,7 +377,6 @@ setTimeout(() => {
             console.log(`Error while leaving channel: ${msg}`)
           })
 
-          console.log("RECIEVED GENERAL EVENT FOR SOCKET IN LOBBY SCREEN")
           setSpectatorChannel(null)
 
 
@@ -390,11 +389,34 @@ setTimeout(() => {
       
       })
 
+      spectatorChannel?.on("start-game-for-all" , () => {
+        document.getElementById("general_purpose_modal")!.close()
+        navigate("/" + gameStore.game_name + "/" + game_id  + "/" + host_user_id)
+      })
+
+
+      spectatorChannel?.on("remove-all-users" , (msg) => {
+        setGeneralPurposeMessage("Host Left the Lobby")
+        setGeneralPurposeTitle("Host Left the Lobby. Redirecting to HomeScreen")
+        document.getElementById("general_purpose_modal")!.showModal()
+  
+        setTimeout(() => {
+          
+        document.getElementById("general_purpose_modal")!.close()
+          navigate("/home")
+      } , 2000)
+       })
+
+      
+
       return () => {
         spectatorChannel?.off("user-joined-room")
         spectatorChannel?.off("user-left-room")
         spectatorChannel?.off("user-status-event")
         spectatorChannel?.off("game-general-event")
+        spectatorChannel?.off("start-game-for-all")
+        spectatorChannel?.off("remove-all-users")
+        spectatorChannel?.off("verifying-game")
       }
    
     

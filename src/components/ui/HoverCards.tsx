@@ -81,8 +81,6 @@ export const OngoingGameCard = ({
         spec_chann_new.join().receive("ok" , () => {
           gameStore.updateIsSpectator(true)
 
-          console.log("Setting spec_channel with value")
-          console.log(spec_chann_new)
           setSpectatorChannel(spec_chann_new)
 
           if(val.game.description === "LOBBY") {
