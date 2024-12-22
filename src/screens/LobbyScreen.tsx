@@ -105,7 +105,7 @@ const LobbyScreen = () => {
   const updatePlayerStatus = async (status: string) => {
     setUpdateRequestSent(true)
     let user_token = await getUserTokenFromStore()
-    let payload = JSON.stringify({game_id: game_id, user_id: user_details.id, game_name: gameStore.game_name, status: status   })
+    let payload = JSON.stringify({game_id: game_id, user_id: user_details.id, game_name: gameStore.game_name, status: status , is_match: false  })
     let val = await update_player_status(payload , user_token)
 
     if (!val.status) {
@@ -398,7 +398,6 @@ setTimeout(() => {
 
         {
           gameStore.isSpectator ?    <div className='top-4 left-4 z-500 self-center absolute flex flex-row'>
-          <button onClick={() => document.getElementById("stake_money_modal")!.showModal()} >  <IconPokerChip /> </button>
           <button className='ml-2' onClick={() => document.getElementById("leave_spectate_modal")!.showModal()}  >  <IconLogout /> </button>
     
          </div> : <></>
@@ -444,7 +443,6 @@ setTimeout(() => {
     }
 
     <OnlineFriendInviteModal/>
-    <StakeMoneyModal/>
 <LeaveSpectateRoomModal game_id={game_id!}/>
     <GeneralPurposeModal message={generalPurposeMessage} title={generalPurposeTitle} />
     </>

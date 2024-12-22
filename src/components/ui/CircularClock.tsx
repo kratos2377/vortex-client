@@ -1,19 +1,35 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useTimer } from 'react-timer-hook';
+import { getUserTokenFromStore } from '../../persistent_storage/save_user_details';
+import { useUserStore } from '../../state/UserAndGameState';
+import { delete_match_making_ticket } from '../../helper_functions/apiCall';
+import { ErrorAlert, SuccessAlert } from './AlertMessage';
 
-    const CircularClock = () => {
+
+interface CircularClockProps  {
+  setCircularClock: React.Dispatch<React.SetStateAction<boolean>>
+  setCurrentScreen: React.Dispatch<React.SetStateAction<string>>
+}
+const CircularClock: React.FC<CircularClockProps> = ({setCircularClock , setCurrentScreen}) => {
       const currentTime = new Date();
       currentTime.setTime(currentTime.getSeconds() + 300)
 
       const [isComplete, setIsComplete] = useState(false);
-
+      const {user_details} = useUserStore()
       const [requestSent , setRequestSent] = useState(false)
+
+        const [isAlert , setIsAlert] = useState(false)
+        const [alertType , setAlertType] = useState<"error" | "success">("success")
+        const [alertMessage , setAlertMessage] = useState("")
 
       const [time , setTime] = useState(currentTime)
 
       const {
         totalSeconds,
+        seconds,
+        restart,
+        pause
       } = useTimer({ autoStart: true , expiryTimestamp: time , onExpire: () => {
         //Remove Circular clock screen
         setIsComplete(true)
@@ -26,7 +42,7 @@ import { useTimer } from 'react-timer-hook';
       const circumference = 2 * Math.PI * radius;
     
       // Calculate progress
-      const progress = ((300 - totalSeconds) / totalTime) * 100;
+      const progress = ((300 - seconds) / totalTime) * 100;
     
 
 
@@ -43,15 +59,51 @@ import { useTimer } from 'react-timer-hook';
       const handleCancelMatchmaking = async () => {
           setRequestSent(true)
 
+          let token = await getUserTokenFromStore()
+          let res = await delete_match_making_ticket( JSON.stringify({user_id: user_details.id}) ,token)
 
-          setTimeout(() => {
-              setRequestSent(false)
-          } , 3000)
+
+          if(!res.status) {
+              setAlertMessage("Error while leaving matchmaking")
+              setAlertType("error")
+              setIsAlert(true)
+
+              setTimeout(() => {
+                  setIsAlert(false)
+              } , 2000)
+              
+          } else {
+
+            pause()
+            setAlertMessage("Redirecting to Ongoing GameScreen")
+            setAlertType("success")
+            setIsAlert(true)
+
+            setTimeout(() => {
+              
+                setIsAlert(false)
+                setCircularClock(false)
+
+                setCurrentScreen("ongoing-games")
+            } , 2000)
+
+          }
+
+
+          setRequestSent(false)
       }
+
+
+      useEffect(() => {
+          let new_time = new Date()
+          new_time.setTime(new_time.getSeconds() + 300)
+          restart(new_time)
+      } , [])
 
 
       return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 p-4">
+      {isAlert ? alertType === "success" ? <SuccessAlert message={alertMessage} /> : <ErrorAlert message={alertMessage}/> : <div></div>}
         <motion.div 
           className="bg-white rounded-2xl shadow-2xl p-8 text-center w-full max-w-md"
           initial={{ scale: 0.9, opacity: 0 }}
@@ -96,12 +148,12 @@ import { useTimer } from 'react-timer-hook';
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <motion.div 
                 className="text-5xl font-bold text-gray-800"
-                key={totalSeconds}
+                key={seconds}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.3 }}
               >
-                {formatTime(totalSeconds)}
+                {formatTime(seconds)}
               </motion.div>
               {isComplete && (
                 <motion.div

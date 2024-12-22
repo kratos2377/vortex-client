@@ -81,6 +81,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
 
             addFriendRequestModel(model)
           })
+
       }
 
       if(userChannel !== null && userChannel !== undefined) {

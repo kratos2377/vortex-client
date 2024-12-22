@@ -1,14 +1,16 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { ErrorAlert, SuccessAlert } from '../ui/AlertMessage'
 import { MQTT_GAME_EVENTS } from '../../utils/mqtt_event_names'
 import { invoke } from '@tauri-apps/api/tauri'
 import { useNavigate } from 'react-router-dom'
+import { WebSocketContext } from '../../socket/websocket_provider'
 
 interface LeaveSpectateRoomModalProps {
   game_id: string,
 }
 const LeaveSpectateRoomModal = ({game_id}: LeaveSpectateRoomModalProps) => {
 
+  const {spectatorChannel , setSpectatorChannel} = useContext(WebSocketContext)
     const [requestSent, setRequestSent] = useState(false)
     const navigate = useNavigate()
     //Alert states
@@ -19,8 +21,13 @@ const LeaveSpectateRoomModal = ({game_id}: LeaveSpectateRoomModalProps) => {
 
     const leaveTheSpectateRoom = async () => {
       setRequestSent(true)
-      let payload = JSON.stringify({topic_name: MQTT_GAME_EVENTS + game_id});
-      await invoke('unsubscribe_to_game_topic', {payload:  payload})
+
+
+      if(spectatorChannel !== undefined && spectatorChannel !== null) {
+        spectatorChannel.leave()
+        setSpectatorChannel(null)
+      }
+     
 
       setTimeout(() => {
         setRequestSent(false)
