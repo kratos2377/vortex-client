@@ -213,6 +213,10 @@ setTimeout(() => {
       return;
 
        console.log(`listening to chann? events value is, isSpectator: ${gameStore.isSpectator}`)
+
+       console.log("Game Chann is")
+       console.log(chann)
+
     chann?.on("user-left-room" , (msg) => {
       let parsed_payload = msg
       let update_users = roomUsers.filter((el) => el.user_id !== parsed_payload.user_id)
