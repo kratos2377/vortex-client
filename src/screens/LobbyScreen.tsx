@@ -105,7 +105,7 @@ const LobbyScreen = () => {
   const updatePlayerStatus = async (status: string) => {
     setUpdateRequestSent(true)
     let user_token = await getUserTokenFromStore()
-    let payload = JSON.stringify({game_id: game_id, user_id: user_details.id, game_name: gameStore.game_name, status: status , is_replay: false  })
+    let payload = JSON.stringify({game_id: game_id, user_id: user_details.id, game_name: gameStore.game_name, status: status , is_replay: false , is_match: false  })
     let val = await update_player_status(payload , user_token)
 
     if (!val.status) {
