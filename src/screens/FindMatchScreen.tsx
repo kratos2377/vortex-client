@@ -77,7 +77,7 @@ const FindMatchScreen = ({ setCurrentScreen } : { setCurrentScreen:  React.Dispa
 
       setTimeout(() => {
       setIsAlert(false)
-      } , 500)
+      } , 200)
 
     }
 
@@ -94,8 +94,10 @@ const FindMatchScreen = ({ setCurrentScreen } : { setCurrentScreen:  React.Dispa
       if(msg.index == 1) {
              setPlayerColor(Color.BLACK)
       }
-
+      setStartClock(false)
       setMatchFound(true)
+      
+      document.getElementById("redirecting_to_match_modal")!.showModal()
     })
 
     userChannel?.on("match-found-detail-for-users" , (msg) => {
@@ -109,9 +111,46 @@ const FindMatchScreen = ({ setCurrentScreen } : { setCurrentScreen:  React.Dispa
          }
 
 
-         updateOpponentUserId(msg.opponent_id)
-
-         userChannel.push("sharing-match-details" , {opponent_id: msg.opponent_id , player_username: user_details.username})
+         updateOpponentUserId(msg.opponent_details.user_id)
+         updateOpponentUsername(msg.opponent_details.username)
+    
+   
+         let chann_new = socket.channel("game:chess:" + msg.game_id , {})
+   
+         chann_new.join().receive("ok" , () => {
+   
+          setChannel(chann_new)
+   
+          updateIsSpectator(false)
+          updateGameId(msg.game_id)
+          updateGameName("chess")
+          //will update this accordingly
+          updateGameType("normal")
+          updateUserPlayerCountId(msg.index + 1)
+          
+         setTimeout(() => {
+          document.getElementById("redirecting_to_match_modal")!.close()
+          setMatchFound(false)
+   
+          navigate("/match/" + msg.game_id + "/:gameType")
+         } , 200)
+   
+         }).receive("error" , () => {
+   
+   
+          setAlertMessage("Error While connection to Game Channel")
+          setAlertType("error")
+          setIsAlert(false)
+   
+          document.getElementById("redirecting_to_match_modal")!.close()
+          setMatchFound(false)
+   
+          setTimeout(() => {
+            setIsAlert(false)
+          } , 200)
+   
+   
+         })
 
        
 
@@ -131,58 +170,13 @@ const FindMatchScreen = ({ setCurrentScreen } : { setCurrentScreen:  React.Dispa
     })
 
 
-    userChannel?.on("publish-details-to-opponent-to-player" , (data) => {
 
-
-      updateOpponentUsername(data.player_username)
-      document.getElementById("redirecting_to_match_modal")!.showModal()
- 
-
-      let chann_new = socket.channel("game:chess:" + data.game_id , {})
-
-      chann_new.join().receive("ok" , () => {
-
-       setChannel(chann_new)
-
-       updateIsSpectator(false)
-       updateGameId(data.game_id)
-       updateGameName("chess")
-       //will update this accordingly
-       updateGameType("normal")
-       updateUserPlayerCountId(data.index + 1)
-       
-      setTimeout(() => {
-       document.getElementById("redirecting_to_match_modal")!.close()
-       setMatchFound(false)
-
-       navigate("/match/" + data.game_id + "/:gameType")
-      } , 3000)
-
-      }).receive("error" , () => {
-
-
-       setAlertMessage("Error While connection to Game Channel")
-       setAlertType("error")
-       setIsAlert(false)
-
-       document.getElementById("redirecting_to_match_modal")!.close()
-       setMatchFound(false)
-
-       setTimeout(() => {
-         setIsAlert(false)
-       } , 2000)
-
-
-      })
-
-    })
 
 
     return () => {
       userChannel?.off("match-found-for-users")
       userChannel?.off("match-found-detail-for-users")
       userChannel?.off("match-game-error-for-users")
-      userChannel?.off("publish-details-to-opponent")
     }
 
   })
@@ -193,7 +187,7 @@ const FindMatchScreen = ({ setCurrentScreen } : { setCurrentScreen:  React.Dispa
       
    {
     matchFound ? <RedirectingToMatchModal/> :    startClock ? <div className='flex flex-col justify-center align-center items-center'>
-<CircularClock setCircularClock={setStartClock} setCurrentScreen={setCurrentScreen} time={time}/>
+<CircularClock setCircularClock={setStartClock} setCurrentScreen={setCurrentScreen}/>
 
     </div> :       <div className="fixed inset-0 flex items-center justify-center self-center z-50">
     <div className="absolute inset-0 bg-black opacity-50"></div>
