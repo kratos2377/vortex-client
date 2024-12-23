@@ -266,20 +266,21 @@ const MatchScreen = () => {
          </div> : <></>
         }
 
-      <div className='h-1/5 w-2/12 p-5 self-center'>
-        {gameType === "chess" ? <img src={ChessLogo} alt="chess" />: <img src={ScribbleLogo} alt="scribble" />}
+      <div className='h-1/5 w-2/12 p-5 mb-5 self-center'>
+         <img src={ChessLogo} alt="chess" />
       </div>
 
       {isAlert ? <div className='my-3'>
         {alertType === "success" ? <SuccessAlert message={alertMessage}/> : <ErrorAlert message={alertMessage} />}
       </div> : <div></div>}
 
-      {
+     <div className='flex flex-col h-3/5 align-center justify-center items-center mt-2'>
+     {
         roomUsers.length === 0 ? <div>No Users Found. Invalid Lobby</div> :     <div className='p-3 grid grid-cols-2 gap-4'>
         {
           roomUsers.map((val , idx) => (
-          <div key={idx} className="card w-50 bg-base-100 shadow-xl">
-            <figure className="self-center avatar w-20 rounded-full ring ring-black ring-offset-base-100 ring-offset-2 mt-5">
+          <div key={idx} className="card w-max bg-base-100 shadow-xl flex flex-col p-5 mt-5 ">
+            <figure className="self-center avatar w-30 rounded-full ring ring-black ring-offset-base-90 ring-offset-2 mt-3">
             <img src={`https://robohash.org/${val.username}`} alt={`${val.username}`}/>
             </figure>
             <div className="card-body items-center text-center">
@@ -291,9 +292,10 @@ const MatchScreen = () => {
         }
       </div>
       }
+     </div>
 
   {
-    gameStore.isSpectator ? <></> :      <div className='mt-3 self-center'>
+    gameStore.isSpectator ? <></> :      <div className='self-center'>
    { updateStatusRequestSent ?  <span className="loading loading-spinner loading-md mr-1 ml-1"></span> :
              <button className="btn btn-outline btn-success mr-1 ml-1" onClick={() => updatePlayerStatus("ready")} disabled={disableButton}>Ready!  <span>{seconds}</span></button> }
 
