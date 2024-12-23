@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { ErrorAlert, SuccessAlert } from '../components/ui/AlertMessage'
 import { create_match_making_ticket } from '../helper_functions/apiCall'
 import { getUserIdFromStore, getUserTokenFromStore } from '../persistent_storage/save_user_details'
-import { useGameStore, useUserStore } from '../state/UserAndGameState'
+import { useGameStore, useMatchStore, useUserStore } from '../state/UserAndGameState'
 import CircularClock from '../components/ui/CircularClock'
 import { WebSocketContext } from '../socket/websocket_provider'
 import usePlayerStore from '../state/chess_store/player'
@@ -29,6 +29,7 @@ const FindMatchScreen = ({ setCurrentScreen } : { setCurrentScreen:  React.Dispa
   const [matchFound , setMatchFound] = useState(false)
   const {setPlayerColor} = usePlayerStore()
   const navigate = useNavigate()
+  const {updateOpponentUserId , updateOpponentUsername} = useMatchStore()
 
   const handleTypeChange = (event: any) => {
     setSelectedType(event.target.value);
@@ -85,7 +86,7 @@ const FindMatchScreen = ({ setCurrentScreen } : { setCurrentScreen:  React.Dispa
   useEffect(() => {
 
 
-    userChannel?.on("match-found" , (msg) => {
+    userChannel?.on("match-found-for-users" , (msg) => {
       if(msg.index == 0) {
      setPlayerColor(Color.WHITE)
       } 
@@ -93,9 +94,11 @@ const FindMatchScreen = ({ setCurrentScreen } : { setCurrentScreen:  React.Dispa
       if(msg.index == 1) {
              setPlayerColor(Color.BLACK)
       }
+
+      setMatchFound(true)
     })
 
-    userChannel?.on("match-found-details" , (msg) => {
+    userChannel?.on("match-found-detail-for-users" , (msg) => {
         
       if(msg.index == 0) {
         setPlayerColor(Color.WHITE)
@@ -106,50 +109,16 @@ const FindMatchScreen = ({ setCurrentScreen } : { setCurrentScreen:  React.Dispa
          }
 
 
-         document.getElementById("redirecting_to_match_modal")!.showModal()
-         setMatchFound(true)
+         updateOpponentUserId(msg.opponent_id)
 
-         let chann_new = socket.channel("game:chess:" + msg.game_id , {})
+         userChannel.push("sharing-match-details" , {opponent_id: msg.opponent_id , player_username: user_details.username})
 
-         chann_new.join().receive("ok" , () => {
-
-          setChannel(chann_new)
-
-          updateIsSpectator(false)
-          updateGameId(msg.game_id)
-          updateGameName("chess")
-          //will update this accordingly
-          updateGameType("normal")
-          updateUserPlayerCountId(msg.index + 1)
-          
-         setTimeout(() => {
-          document.getElementById("redirecting_to_match_modal")!.close()
-          setMatchFound(false)
-
-          navigate("/match/" + msg.game_id + "/:gameType")
-         } , 3000)
-
-         }).receive("error" , () => {
-
-
-          setAlertMessage("Error While connection to Game Channel")
-          setAlertType("error")
-          setIsAlert(false)
-
-          document.getElementById("redirecting_to_match_modal")!.close()
-          setMatchFound(false)
-
-          setTimeout(() => {
-            setIsAlert(false)
-          } , 2000)
-
-
-         })
+       
 
     })
 
 
-    userChannel?.on("match-game-error" , (msg) => {
+    userChannel?.on("match-game-error-for-users" , (msg) => {
 
       setAlertType("error")
       setAlertMessage("Some Error Occured While making the game model for the match")
@@ -162,10 +131,58 @@ const FindMatchScreen = ({ setCurrentScreen } : { setCurrentScreen:  React.Dispa
     })
 
 
+    userChannel?.on("publish-details-to-opponent-to-player" , (data) => {
+
+
+      updateOpponentUsername(data.player_username)
+      document.getElementById("redirecting_to_match_modal")!.showModal()
+ 
+
+      let chann_new = socket.channel("game:chess:" + data.game_id , {})
+
+      chann_new.join().receive("ok" , () => {
+
+       setChannel(chann_new)
+
+       updateIsSpectator(false)
+       updateGameId(data.game_id)
+       updateGameName("chess")
+       //will update this accordingly
+       updateGameType("normal")
+       updateUserPlayerCountId(data.index + 1)
+       
+      setTimeout(() => {
+       document.getElementById("redirecting_to_match_modal")!.close()
+       setMatchFound(false)
+
+       navigate("/match/" + data.game_id + "/:gameType")
+      } , 3000)
+
+      }).receive("error" , () => {
+
+
+       setAlertMessage("Error While connection to Game Channel")
+       setAlertType("error")
+       setIsAlert(false)
+
+       document.getElementById("redirecting_to_match_modal")!.close()
+       setMatchFound(false)
+
+       setTimeout(() => {
+         setIsAlert(false)
+       } , 2000)
+
+
+      })
+
+    })
+
+
     return () => {
-      userChannel?.off("match-found")
-      userChannel?.off("match-found-details")
-      userChannel?.off("match-game-error")
+      userChannel?.off("match-found-for-users")
+      userChannel?.off("match-found-detail-for-users")
+      userChannel?.off("match-game-error-for-users")
+      userChannel?.off("publish-details-to-opponent")
     }
 
   })
