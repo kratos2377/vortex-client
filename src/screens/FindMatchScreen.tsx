@@ -132,7 +132,7 @@ const FindMatchScreen = ({ setCurrentScreen } : { setCurrentScreen:  React.Dispa
           document.getElementById("redirecting_to_match_modal")!.close()
           setMatchFound(false)
    
-          navigate("/match/" + msg.game_id + "/:gameType")
+          navigate("/match/" + msg.game_id + "/chess")
          } , 200)
    
          }).receive("error" , () => {
@@ -185,11 +185,12 @@ const FindMatchScreen = ({ setCurrentScreen } : { setCurrentScreen:  React.Dispa
   return (
       <>
       
-   {
-    matchFound ? <RedirectingToMatchModal/> :    startClock ? <div className='flex flex-col justify-center align-center items-center'>
+   {startClock ? <div className='flex flex-col justify-center align-center items-center'>
+       
 <CircularClock setCircularClock={setStartClock} setCurrentScreen={setCurrentScreen}/>
 
     </div> :       <div className="fixed inset-0 flex items-center justify-center self-center z-50">
+    <RedirectingToMatchModal/> 
     <div className="absolute inset-0 bg-black opacity-50"></div>
     <div className="bg-white rounded-lg p-8 z-50">
       <div className="flex justify-between items-center mb-4">
