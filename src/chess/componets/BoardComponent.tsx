@@ -311,16 +311,16 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
 
 
 
-    spectatorChannel?.on(USER_GAME_MOVE , (parsed_payload) => {
+    spectatorChannel?.on("user-game-move" , (parsed_payload) => {
 
-      if (parsed_payload.userGameMove.moveType === "normal") {
+      if (parsed_payload.event_type === "normal") {
                   console.log("Normal move received")
-                    let game_move = JSON.parse(parsed_payload.userGameMove.userMove) as ChessNormalEvent
-                    let init_pos = JSON.parse(game_move.initial_cell) 
-                    let target_pos = JSON.parse(game_move.target_cell) 
-                
-                    let init_cell = board.getCell(parseInt(init_pos.x) , parseInt(init_pos.y))
-                    let target_cell = board.getCell(parseInt(target_pos.x) , parseInt(target_pos.y))
+                  let game_move = JSON.parse(parsed_payload.game_event)
+
+                  let init_pos = JSON.parse(game_move.initial_cell) 
+                  let target_pos = JSON.parse(game_move.target_cell ) 
+                  let init_cell = board.getCell(init_pos.x , init_pos.y)
+                  let target_cell = board.getCell(target_pos.x , target_pos.y)
 
               if (target_cell.piece instanceof King) return;
 
@@ -338,16 +338,15 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
 
               resetPassantCells();
 
-        } else if (parsed_payload.userGameMove.moveType === "promotion") {
-                    let game_move = JSON.parse(parsed_payload.userGameMove.userMove) as ChessPromotionEvent
-                    let init_pos = JSON.parse(game_move.initial_cell) 
-                    let target_pos = JSON.parse(game_move.target_cell) 
-                    let piece_name = game_move.promoted_to
+        } else if (parsed_payload.event_type === "promotion") {
+          let game_move = JSON.parse(parsed_payload.game_event)
+          let init_pos = JSON.parse(game_move.initial_cell) 
+          let target_pos = JSON.parse(game_move.target_cell ) 
+          let piece_name = game_move.promoted_to
+ 
 
-
-                    let init_cell = board.getCell(parseInt(init_pos.x) , parseInt(init_pos.y))
-                    let target_cell = board.getCell(parseInt(target_pos.x) , parseInt(target_pos.y))
-
+          let init_cell = board.getCell(init_pos.x , init_pos.y)
+          let target_cell = board.getCell(target_pos.x , target_pos.y)
               if (target_cell.piece instanceof King) return;
 
               if (target_cell.availableToPassant) {
@@ -374,8 +373,9 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
     })
 
 
-    spectatorChannel?.on("game-over" , (data) => {
+    spectatorChannel?.on("game-over-for-spectators" , (data) => {
 
+      console.log("Gam over event recieved")
 
       setWinnerUsername(data.winner_username)
       setWinnerUserId(data.winner_user_id)
@@ -389,8 +389,8 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
   
   
     return () => {
-      spectatorChannel?.off(USER_GAME_MOVE)
-      spectatorChannel?.off("game-over")
+      spectatorChannel?.off("user-game-move")
+      spectatorChannel?.off("game-over-for-spectators")
     }
   
   })
@@ -419,83 +419,6 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
   } , [])
 
 
-  // const startListeningToGameEvents = async () => {
-  //   const unlisten =  listen<MQTTPayload>(USER_GAME_MOVE, (event) => {
-  //     console.log(`EVENT IS: ${USER_GAME_MOVE}`)
-  //     let parsed_payload = JSON.parse(event.payload.message) as UserGameEvent
-  //     console.log(parsed_payload)
-      
-  //     if (parsed_payload.userGameMove.moveType === "normal") {
-  //     console.log("Normal move received")
-  //       let game_move = JSON.parse(parsed_payload.userGameMove.userMove) as ChessNormalEvent
-  //       let init_pos = JSON.parse(game_move.initial_cell) 
-  //       let target_pos = JSON.parse(game_move.target_cell) 
-    
-  //       let init_cell = board.getCell(parseInt(init_pos.x) , parseInt(init_pos.y))
-  //       let target_cell = board.getCell(parseInt(target_pos.x) , parseInt(target_pos.y))
-
-  // if (target_cell.piece instanceof King) return;
-
-  // if (target_cell.availableToPassant) {
-  //   const pieceGetByPassant = pawnPassant.getPawnByPassant(target_cell, init_cell!, board);
-  //   setTakenPieces(pieceGetByPassant!);
-  // }
-
-  // if (!colorInCheck && pawnUtils.isPawnOnLastLine(currentPlayer, init_cell!, target_cell))
-  //   setPawnTransformUtils({ ...pawnTransformUtils, visible: true, targetCell: target_cell });
-
-  // else {
-  //   isCheckFromSocketMove(init_cell , target_cell);
-  // }
-
-  // resetPassantCells();
-
-  //     } else if (parsed_payload.userGameMove.moveType === "promotion") {
-  //       let game_move = JSON.parse(parsed_payload.userGameMove.userMove) as ChessPromotionEvent
-  //       let init_pos = JSON.parse(game_move.initial_cell) 
-  //       let target_pos = JSON.parse(game_move.target_cell) 
-  //       let piece_name = game_move.promoted_to
-
-
-  //       let init_cell = board.getCell(parseInt(init_pos.x) , parseInt(init_pos.y))
-  //       let target_cell = board.getCell(parseInt(target_pos.x) , parseInt(target_pos.y))
-
-  // if (target_cell.piece instanceof King) return;
-
-  // if (target_cell.availableToPassant) {
-  //   const pieceGetByPassant = pawnPassant.getPawnByPassant(target_cell, init_cell!, board);
-  //   setTakenPieces(pieceGetByPassant!);
-  // }
-
-  // setTakenPieces(target_cell!.piece!);
-  // pawnUtils.transform(init_cell!,target_cell,piece_name , currentPlayer);
-  // update();
-  // validateCheck();
-  // passTurn();
-  // setPawnTransformUtils(initialState);
-
-  // resetPassantCells();
-        
-  //     } else {
-  //       console.log("invalid event")
-  //     }
-
-
-  //           })
-
-  //           return () => {
-  //             unlisten.then(f => f())
-  //           }
-  // }
-
-
-
-
-  // useEffect(() => {
-  //   if(gameStore.isSpectator) {
-  //   startListeningToGameEvents()
-  //   }
-  // } ,  [])
 
   return (
     <>

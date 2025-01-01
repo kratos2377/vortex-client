@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { ErrorAlert, SuccessAlert } from '../components/ui/AlertMessage'
 import { create_match_making_ticket } from '../helper_functions/apiCall'
 import { getUserIdFromStore, getUserTokenFromStore } from '../persistent_storage/save_user_details'
-import { useGameStore, useUserStore } from '../state/UserAndGameState'
+import { useGameStore, useMatchStore, useUserStore } from '../state/UserAndGameState'
 import CircularClock from '../components/ui/CircularClock'
 import { WebSocketContext } from '../socket/websocket_provider'
 import usePlayerStore from '../state/chess_store/player'
@@ -23,11 +23,13 @@ const FindMatchScreen = ({ setCurrentScreen } : { setCurrentScreen:  React.Dispa
   const [redirecting , setRedirecting] = useState(false)
   const [requestSent , setRequestSent] = useState(false)
   const [startClock , setStartClock] = useState(false)
+  const [time , setTime] = useState(new Date())
   const [selectedType, setSelectedType] = useState('');
   const {user_details} = useUserStore()
   const [matchFound , setMatchFound] = useState(false)
   const {setPlayerColor} = usePlayerStore()
   const navigate = useNavigate()
+  const {updateOpponentUserId , updateOpponentUsername} = useMatchStore()
 
   const handleTypeChange = (event: any) => {
     setSelectedType(event.target.value);
@@ -67,11 +69,15 @@ const FindMatchScreen = ({ setCurrentScreen } : { setCurrentScreen:  React.Dispa
       setRequestSent(false)
       setIsAlert(true)
 
+      const new_time = new Date()
+      new_time.setTime(new_time.getSeconds() + 300)
+      setTime(new_time)
+
       setStartClock(true)
 
       setTimeout(() => {
       setIsAlert(false)
-      } , 500)
+      } , 200)
 
     }
 
@@ -80,7 +86,7 @@ const FindMatchScreen = ({ setCurrentScreen } : { setCurrentScreen:  React.Dispa
   useEffect(() => {
 
 
-    userChannel?.on("match-found" , (msg) => {
+    userChannel?.on("match-found-for-users" , (msg) => {
       if(msg.index == 0) {
      setPlayerColor(Color.WHITE)
       } 
@@ -88,9 +94,13 @@ const FindMatchScreen = ({ setCurrentScreen } : { setCurrentScreen:  React.Dispa
       if(msg.index == 1) {
              setPlayerColor(Color.BLACK)
       }
+      setStartClock(false)
+      setMatchFound(true)
+      
+      document.getElementById("redirecting_to_match_modal")!.showModal()
     })
 
-    userChannel?.on("match-found-details" , (msg) => {
+    userChannel?.on("match-found-detail-for-users" , (msg) => {
         
       if(msg.index == 0) {
         setPlayerColor(Color.WHITE)
@@ -101,15 +111,16 @@ const FindMatchScreen = ({ setCurrentScreen } : { setCurrentScreen:  React.Dispa
          }
 
 
-         document.getElementById("redirecting_to_match_modal")!.showModal()
-         setMatchFound(true)
-
+         updateOpponentUserId(msg.opponent_details.user_id)
+         updateOpponentUsername(msg.opponent_details.username)
+    
+   
          let chann_new = socket.channel("game:chess:" + msg.game_id , {})
-
+   
          chann_new.join().receive("ok" , () => {
-
+   
           setChannel(chann_new)
-
+   
           updateIsSpectator(false)
           updateGameId(msg.game_id)
           updateGameName("chess")
@@ -120,31 +131,33 @@ const FindMatchScreen = ({ setCurrentScreen } : { setCurrentScreen:  React.Dispa
          setTimeout(() => {
           document.getElementById("redirecting_to_match_modal")!.close()
           setMatchFound(false)
-
-          navigate("/match/" + msg.game_id + "/:gameType")
-         } , 3000)
-
+   
+          navigate("/match/" + msg.game_id + "/chess")
+         } , 200)
+   
          }).receive("error" , () => {
-
-
+   
+   
           setAlertMessage("Error While connection to Game Channel")
           setAlertType("error")
           setIsAlert(false)
-
+   
           document.getElementById("redirecting_to_match_modal")!.close()
           setMatchFound(false)
-
+   
           setTimeout(() => {
             setIsAlert(false)
-          } , 2000)
-
-
+          } , 200)
+   
+   
          })
+
+       
 
     })
 
 
-    userChannel?.on("match-game-error" , (msg) => {
+    userChannel?.on("match-game-error-for-users" , (msg) => {
 
       setAlertType("error")
       setAlertMessage("Some Error Occured While making the game model for the match")
@@ -157,10 +170,13 @@ const FindMatchScreen = ({ setCurrentScreen } : { setCurrentScreen:  React.Dispa
     })
 
 
+
+
+
     return () => {
-      userChannel?.off("match-found")
-      userChannel?.off("match-found-details")
-      userChannel?.off("match-game-error")
+      userChannel?.off("match-found-for-users")
+      userChannel?.off("match-found-detail-for-users")
+      userChannel?.off("match-game-error-for-users")
     }
 
   })
@@ -169,8 +185,12 @@ const FindMatchScreen = ({ setCurrentScreen } : { setCurrentScreen:  React.Dispa
   return (
       <>
       
-   {
-    matchFound ? <RedirectingToMatchModal/> :    startClock ? <CircularClock setCircularClock={setStartClock} setCurrentScreen={setCurrentScreen}/> :       <div className="fixed inset-0 flex items-center justify-center self-center z-50">
+   {startClock ? <div className='flex flex-col justify-center align-center items-center'>
+       
+<CircularClock setCircularClock={setStartClock} setCurrentScreen={setCurrentScreen}/>
+
+    </div> :       <div className="fixed inset-0 flex items-center justify-center self-center z-50">
+    <RedirectingToMatchModal/> 
     <div className="absolute inset-0 bg-black opacity-50"></div>
     <div className="bg-white rounded-lg p-8 z-50">
       <div className="flex justify-between items-center mb-4">

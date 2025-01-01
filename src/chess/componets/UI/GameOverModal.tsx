@@ -7,6 +7,7 @@ import { useTimer } from 'react-timer-hook'
 import { useChessMainStore, useGameStore } from '../../../state/UserAndGameState'
 import useChessGameStore from '../../../state/chess_store/game'
 import { useNavigate } from 'react-router-dom'
+import { Color } from '../../models/Piece/types'
 
 
 interface GameOverModalProps {
@@ -33,13 +34,13 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
             restart: timeRestart
           } = useTimer({ autoStart: true , expiryTimestamp: time , onExpire: () => {
             //Remove Circular clock screen
-            replayMatchAgainCall()
+           // replayMatchAgainCall()
           } });
 
     const [isAlert , setIsAlert] = useState(false)
     const [alertMessage , setAlertMessage] = useState("")
     const gameStore = useGameStore()
-    const {restart , setGameCurrentStatus} = useChessMainStore()
+    const {restart , setGameCurrentStatus , setCurrentTurn} = useChessMainStore()
     const [alertType , setAlertType] = useState<"success" | "error">("success")
     const [requestSent , setRequestSent] = useState(false)
     const [lost_user_replay , setLostUserReplay] = useState(false)
@@ -93,9 +94,10 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
             return;
 
 
-        chann?.on("start-the-replay-match" , (msg) => {
+        chann?.on("start-the-replay-match-for-users" , (msg) => {
             restart()
             setGameCurrentStatus("IN PROGRESS")
+            setCurrentTurn(Color.WHITE)
             document.getElementById('game_over_modal')!.close()
         })
 
@@ -129,7 +131,7 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
         
 
         return () => {
-          chann?.off("start-the-replay-match")
+          chann?.off("start-the-replay-match-for-users")
           chann?.off("replay-false-event")
           chann?.off("replay-accepted-by-user")
         }
@@ -146,14 +148,15 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
 
 
 
-        spectatorChannel?.on("start-the-replay-match" , (msg) => {
+        spectatorChannel?.on("start-the-replay-match-for-spectators" , (msg) => {
              restart()
              setGameCurrentStatus("IN PROGRESS")
+             setCurrentTurn(Color.WHITE)
              document.getElementById('game_over_modal')!.close()
         })
 
 
-        spectatorChannel?.on("replay-false-event" , (msg) => {
+        spectatorChannel?.on("replay-false-event-for-spectators" , (msg) => {
 
           setLeaveReqSent(true)
           setAlertMessage("Redirecting to Homescreen")
@@ -169,7 +172,7 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
 
         })
 
-        spectatorChannel?.on("replay-accepted-by-user" , (data) => {
+        spectatorChannel?.on("replay-accepted-by-user-for-spectators" , (data) => {
           if(loser_user_id === data.user_id) {
             setLostUserReplay(true)
           }
@@ -182,9 +185,9 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
         
 
         return () => {
-          spectatorChannel?.off("start-the-replay-match")
-          spectatorChannel?.off("replay-false-event")
-          spectatorChannel?.off("replay-accepted-by-user")
+          spectatorChannel?.off("start-the-replay-match-for-spectators")
+          spectatorChannel?.off("replay-false-event-for-spectators")
+          spectatorChannel?.off("replay-accepted-by-user-for-spectators")
         }
     })
 

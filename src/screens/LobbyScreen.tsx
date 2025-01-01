@@ -105,7 +105,7 @@ const LobbyScreen = () => {
   const updatePlayerStatus = async (status: string) => {
     setUpdateRequestSent(true)
     let user_token = await getUserTokenFromStore()
-    let payload = JSON.stringify({game_id: game_id, user_id: user_details.id, game_name: gameStore.game_name, status: status , is_replay: false  })
+    let payload = JSON.stringify({game_id: game_id, user_id: user_details.id, game_name: gameStore.game_name, status: status , is_replay: false , is_match: false  })
     let val = await update_player_status(payload , user_token)
 
     if (!val.status) {
@@ -313,9 +313,13 @@ setTimeout(() => {
 
   // isSpecator Events Listen
   useEffect(() => {
-    if (gameStore.isSpectator && spectatorChannel !== null) {
+    if (!gameStore.isSpectator)
+      return;
 
-      spectatorChannel.on("user-joined-room" , (payload) => {
+
+      spectatorChannel?.on("user-joined-room" , (payload ) => {
+        console.log("Recieved new user joined room call")
+        console
 
         let new_user: UserGameRelation = {
           user_id: payload.user_id,
@@ -335,7 +339,7 @@ setTimeout(() => {
 
       })
 
-      spectatorChannel.on("user-left-room" , (payload) => {
+      spectatorChannel?.on("some-user-left" , (payload) => {
 
         setLobbyUsers( (prevState) => {
           let update_users = prevState.filter((el) => el.user_id !== payload.user_id)
@@ -345,7 +349,7 @@ setTimeout(() => {
       })
 
 
-      spectatorChannel.on("user-status-event" , (payload) => {
+      spectatorChannel?.on("user-status-event" , (payload) => {
 
         setLobbyUsers( (prevState) => {
           const updatedUsers = prevState.map((user) => user.user_id === payload.user_id ? {...user, player_status: payload.status} : user)
@@ -355,43 +359,68 @@ setTimeout(() => {
       })
 
 
-      spectatorChannel.on("game-general-event" , async (payload) => {
+      // spectatorChannel?.on("game-general-event" , async (payload) => {
 
-        if (payload.message === "start-game") {
+      //   if (payload.message === "start-game") {
      
-          navigate("/" + gameType + "/" + game_id + "/" + host_user_id)
-        } else if (payload.message === "host-left") {
-          setGeneralPurposeMessage("Host Left. Redirecting to home screen")
-          setGeneralPurposeTitle("Redirecting")
-          document.getElementById("general_purpose_modal")!.showModal()
+      //     navigate("/" + gameType + "/" + game_id + "/" + host_user_id)
+      //   } else if (payload.message === "host-left") {
+      //     setGeneralPurposeMessage("Host Left. Redirecting to home screen")
+      //     setGeneralPurposeTitle("Redirecting")
+      //     document.getElementById("general_purpose_modal")!.showModal()
        
-          spectatorChannel.leave().receive("ok" , (msg) => {
-            console.log("Successfully left channel")
-          }).receive("error" , (msg) => {
-            console.log(`Error while leaving channel: ${msg}`)
-          })
+      //     spectatorChannel?.leave().receive("ok" , (msg) => {
+      //       console.log("Successfully left channel")
+      //     }).receive("error" , (msg) => {
+      //       console.log(`Error while leaving channel: ${msg}`)
+      //     })
+
+      //     setSpectatorChannel(null)
 
 
-          setSpectatorChannel(null)
-
-
-       setTimeout(() => {
+      //  setTimeout(() => {
         
-        document.getElementById("general_purpose_modal")!.close()
-        navigate("/home")
-       }, 1000)
-        }
+      //   document.getElementById("general_purpose_modal")!.close()
+      //   navigate("/home")
+      //  }, 1000)
+      //   }
       
+      // })
+
+      spectatorChannel?.on("start-game-for-spectators" , (msg) => {
+        //document.getElementById("general_purpose_modal")!.close()
+
+          console.log("Start game for all event recieved. The data is")
+          console.log(msg)
+        navigate("/chess/" + msg.game_id  + "/" + msg.admin_id)
       })
 
+
+      spectatorChannel?.on("remove-all-users-for-spectators" , (msg) => {
+        setGeneralPurposeMessage("Host Left the Lobby")
+        setGeneralPurposeTitle("Host Left the Lobby. Redirecting to HomeScreen")
+        document.getElementById("general_purpose_modal")!.showModal()
+  
+        setTimeout(() => {
+          
+        document.getElementById("general_purpose_modal")!.close()
+          navigate("/home")
+      } , 2000)
+       })
+
+      
+
       return () => {
-        spectatorChannel.off("user-joined-room")
-        spectatorChannel.off("user-left-room")
-        spectatorChannel.off("user-status-event")
-        spectatorChannel.off("game-general-event")
+        spectatorChannel?.off("user-joined-room")
+        spectatorChannel?.off("some-user-left")
+        spectatorChannel?.off("user-status-event")
+      //  spectatorChannel?.off("game-general-event")
+        spectatorChannel?.off("start-game-for-spectators")
+        spectatorChannel?.off("remove-all-users-for-spectators")
+        spectatorChannel?.off("verifying-game-for-spectators")
       }
    
-    }
+    
   })
 
   return (
@@ -408,7 +437,7 @@ setTimeout(() => {
         }
 
       <div className='h-1/5 w-2/12 p-5 self-center'>
-        {gameType === "chess" ? <img src={ChessLogo} alt="chess" />: <img src={ScribbleLogo} alt="scribble" />}
+        <img src={ChessLogo} alt="chess" />
       </div>
 
       {isAlert ? <div className='my-3'>

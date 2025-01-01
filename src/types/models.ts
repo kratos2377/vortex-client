@@ -21,6 +21,7 @@ export type UserGameRelation = {
 export type GameModel = {
     game_id: string,
     game_type: string,
+    game_name: string,
     is_staked: boolean,
     total_money_staked: number | null,
     game_image_url: string | null | undefined

@@ -23,6 +23,7 @@ export const OngoingGameCard = ({
   items: {
     game_id: string;
     game_type: string;
+    game_name: string,
     game_image_url: string | null | undefined;
     is_staked: boolean;
     total_money_staked?: number | null;
@@ -73,9 +74,10 @@ export const OngoingGameCard = ({
 
 
     } else {
+      
 
 
-
+        console.log("Setting spec channel for game_id=" + game_id)
         let spec_chann_new = socket.channel("spectate:chess:" + game_id , {} )
 
         spec_chann_new.join().receive("ok" , () => {
@@ -86,13 +88,13 @@ export const OngoingGameCard = ({
           if(val.game.description === "LOBBY") {
             
           document.getElementById("general_purpose_modal")!.close()
-            navigate("/lobby/" + game_id + "/" +  val.game.name + "/" + val.game.host_id)
+            navigate("/lobby/" + game_id + "/" +  "chess" + "/" + val.game.host_id)
           } else{
             //For now  its right but we will change it in future accoring to the chess state
             gameStore.updateChessState(val.game.current_state)
             
           document.getElementById("general_purpose_modal")!.close()
-          navigate("/" + val.game.name + "/" + game_id + "/" + val.game.host_id)
+          navigate("/" +  "chess" + "/" + game_id + "/" + val.game.host_id)
           }
         }).receive("error" , () => {
 

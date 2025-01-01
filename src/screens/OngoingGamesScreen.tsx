@@ -40,6 +40,7 @@ const OngoingGamesScreen = () => {
           game_id: el.game_id,
           game_type: el.game_type,
           is_staked: el.is_staked,
+          game_name: el.game_name,
           total_money_staked: el.total_money_staked,
           game_image_url: getGameImageUrl(el.game_type),
           usernames_playing: [...el.usernames_playing!]

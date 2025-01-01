@@ -34,6 +34,11 @@ type GameState = {
     chess_state: string,
 }
 
+type MatchState = {
+  opponent_user_id: string,
+  opponent_username: string
+}
+
 // type SpectatorState = {
 //     game_id: string,
 //     game_name: string,
@@ -77,6 +82,11 @@ type UserAction = {
     
     //Game states function
     updateChessState: (state: string) => void
+  }
+
+  type MatchAction = {
+    updateOpponentUserId: (opponent_user_id: string) => void
+    updateOpponentUsername: (opponent_username: string) => void
   }
 
 
@@ -158,6 +168,13 @@ export const useGameStore = create<GameState & GameAction> ((set) => ({
     updateChessState: (chess_state) => set((state) => ({...state, chess_state: chess_state }))
   }))
 
+
+  export const useMatchStore = create<MatchState & MatchAction> ((set) => ({
+    opponent_user_id: '',
+    opponent_username: '',
+    updateOpponentUserId: (opponent_user_id) => set((state) => ({...state, opponent_user_id: opponent_user_id})),
+    updateOpponentUsername: (opponent_username) => set((state) => ({...state, opponent_username: opponent_username}))
+  }))
 
 // export const useSpectatorStore = create<SpectatorState & SpectatorAction> ((set) => ({
 //   game_id: '',

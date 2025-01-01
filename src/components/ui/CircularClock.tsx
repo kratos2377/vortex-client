@@ -12,9 +12,8 @@ interface CircularClockProps  {
   setCurrentScreen: React.Dispatch<React.SetStateAction<string>>
 }
 const CircularClock: React.FC<CircularClockProps> = ({setCircularClock , setCurrentScreen}) => {
-      const currentTime = new Date();
-      currentTime.setTime(currentTime.getSeconds() + 300)
-
+    
+      const [time , setTime] = useState(new Date())
       const [isComplete, setIsComplete] = useState(false);
       const {user_details} = useUserStore()
       const [requestSent , setRequestSent] = useState(false)
@@ -23,8 +22,6 @@ const CircularClock: React.FC<CircularClockProps> = ({setCircularClock , setCurr
         const [alertType , setAlertType] = useState<"error" | "success">("success")
         const [alertMessage , setAlertMessage] = useState("")
 
-      const [time , setTime] = useState(currentTime)
-
       const {
         totalSeconds,
         seconds,
@@ -32,17 +29,19 @@ const CircularClock: React.FC<CircularClockProps> = ({setCircularClock , setCurr
         pause
       } = useTimer({ autoStart: true , expiryTimestamp: time , onExpire: () => {
         //Remove Circular clock screen
-        setIsComplete(true)
+        //setIsComplete(true)
       } });
     
       // Timer configuration
-      const totalTime = 5 * 60;
+      const totalTime = 300;
       const radius = 120;
       const strokeWidth = 20;
       const circumference = 2 * Math.PI * radius;
     
       // Calculate progress
-      const progress = ((300 - seconds) / totalTime) * 100;
+      const progress = ((300 - totalSeconds) / totalTime) * 100;
+
+      
     
 
 
@@ -95,14 +94,13 @@ const CircularClock: React.FC<CircularClockProps> = ({setCircularClock , setCurr
 
 
       useEffect(() => {
-          let new_time = new Date()
-          new_time.setTime(new_time.getSeconds() + 300)
+          const new_time = new Date()
+          new_time.setSeconds(new_time.getSeconds() + 300)
           restart(new_time)
       } , [])
 
-
       return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 p-4">
+        <div className="flex flex-col items-center justify-center p-5">
       {isAlert ? alertType === "success" ? <SuccessAlert message={alertMessage} /> : <ErrorAlert message={alertMessage}/> : <div></div>}
         <motion.div 
           className="bg-white rounded-2xl shadow-2xl p-8 text-center w-full max-w-md"
@@ -148,12 +146,12 @@ const CircularClock: React.FC<CircularClockProps> = ({setCircularClock , setCurr
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <motion.div 
                 className="text-5xl font-bold text-gray-800"
-                key={seconds}
+                key={totalSeconds}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.3 }}
               >
-                {formatTime(seconds)}
+                {formatTime(totalSeconds)}
               </motion.div>
               {isComplete && (
                 <motion.div
