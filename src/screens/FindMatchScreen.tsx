@@ -10,6 +10,7 @@ import { Color } from '../types/chess_types/constants'
 import { useNavigate } from 'react-router-dom'
 import RedirectingToMatchModal from '../components/screens/RedirectingToMatchModal'
 import { socket } from '../socket/socket'
+import CircularClockModal from '../components/ui/CircularClockModal'
 
 const FindMatchScreen = ({ setCurrentScreen } : { setCurrentScreen:  React.Dispatch<React.SetStateAction<string>> }) => {
 
@@ -73,7 +74,10 @@ const FindMatchScreen = ({ setCurrentScreen } : { setCurrentScreen:  React.Dispa
       new_time.setTime(new_time.getSeconds() + 300)
       setTime(new_time)
 
+      document.getElementById("find_a_match_circular_modal")!.close()
       setStartClock(true)
+
+
 
       setTimeout(() => {
       setIsAlert(false)
@@ -94,10 +98,13 @@ const FindMatchScreen = ({ setCurrentScreen } : { setCurrentScreen:  React.Dispa
       if(msg.index == 1) {
              setPlayerColor(Color.BLACK)
       }
+      document.getElementById("find_a_match_circular_modal")!.close()
+      
       setStartClock(false)
       setMatchFound(true)
-      
+
       document.getElementById("redirecting_to_match_modal")!.showModal()
+      
     })
 
     userChannel?.on("match-found-detail-for-users" , (msg) => {
@@ -187,7 +194,7 @@ const FindMatchScreen = ({ setCurrentScreen } : { setCurrentScreen:  React.Dispa
       
    {startClock ? <div className='flex flex-col justify-center align-center items-center'>
        
-<CircularClock setCircularClock={setStartClock} setCurrentScreen={setCurrentScreen}/>
+<CircularClockModal setCircularClock={setStartClock} setCurrentScreen={setCurrentScreen}/>
 
     </div> :       <div className="fixed inset-0 flex items-center justify-center self-center z-50">
     <RedirectingToMatchModal/> 

@@ -82,6 +82,7 @@ export const OngoingGameCard = ({
 
         spec_chann_new.join().receive("ok" , () => {
           gameStore.updateIsSpectator(true)
+          gameStore.updateGameId(game_id)
 
           setSpectatorChannel(spec_chann_new)
 
