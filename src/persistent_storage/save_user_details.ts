@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 // const store = new Store('vortex.bin');
 
 const id = uuidv4()
-const store = new Store("vortex.user.bin")
+const store = new Store( id + "." + "vortex.user.bin")
 
 export const saveUserDetails = async (user_id: string , user_token: string) => {
     
