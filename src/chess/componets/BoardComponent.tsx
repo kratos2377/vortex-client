@@ -106,6 +106,10 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
           event_type: "normal",
           game_id: game_id
         }
+
+        console.log("GAME EVENT WE ARE SENDING IS")
+        console.log(gameEvent)
+
         chann?.push("game-event" , gameEvent)
       }
 
