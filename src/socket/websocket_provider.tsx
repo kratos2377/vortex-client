@@ -96,6 +96,24 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
  
     })
 
+    useEffect(() => {
+
+      if(spectatorChannel !== null && spectatorChannel !== undefined) {
+
+        spectatorChannel.on("game_current_state" , (msg) => {
+          console.log("Game current state is")
+          console.log(msg)
+        })
+
+      }
+
+
+      if(spectatorChannel !== null && spectatorChannel !== undefined) {
+        spectatorChannel.off("game_current_state")
+      }
+
+    })
+
 
   
     return (
