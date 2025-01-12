@@ -243,7 +243,7 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
       update();
       validateCheck();
       passTurn();
-      setPawnTransformUtils(initialState);
+      //setPawnTransformUtils(initialState);
             
           } else {
             console.log("invalid event")
