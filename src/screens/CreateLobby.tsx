@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react'
 import { ErrorAlert, SuccessAlert } from '../components/ui/AlertMessage';
-import { useGameStore, useUserStore } from '../state/UserAndGameState';
+import { useChessMainStore, useGameStore, useUserStore } from '../state/UserAndGameState';
 import { getUserTokenFromStore } from '../persistent_storage/save_user_details';
 import { create_lobby_call } from '../helper_functions/apiCall';
 import { useNavigate } from 'react-router-dom';
@@ -15,6 +15,7 @@ const CreateLobby = ( { setCurrentScreen } : { setCurrentScreen:  React.Dispatch
   const {setChannel} = useContext(WebSocketContext)
   const [isOpen , setIsOpen] = useState(true)
   const [selectedGame, setSelectedGame] = useState('chess');
+   const {restart} = useChessMainStore()
   const [selectedType, setSelectedType] = useState('');
   const [isAlert, setIsAlert] = useState(false)
   const [alertMessage, setAlertMessage] = useState("")
@@ -79,6 +80,7 @@ const CreateLobby = ( { setCurrentScreen } : { setCurrentScreen:  React.Dispatch
       } , 3000)
 
     } else {
+      restart()
 
       let new_chann = socket.channel("game:chess:" + val.game_id);
 

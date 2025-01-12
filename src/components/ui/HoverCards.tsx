@@ -4,7 +4,7 @@ import { useContext, useRef, useState } from "react";
 import { cn } from "../../utils/cn";
 import { IconCurrencySolana } from "@tabler/icons-react";
 import GeneralPurposeModal from "../screens/GeneralPurposeModal";
-import { useGameStore } from "../../state/UserAndGameState";
+import { useChessMainStore, useGameStore } from "../../state/UserAndGameState";
 import { get_game_details } from "../../helper_functions/apiCall";
 import { getUserTokenFromStore } from "../../persistent_storage/save_user_details";
 import { useNavigate } from "react-router-dom";
@@ -39,6 +39,7 @@ export const OngoingGameCard = ({
   const [generalTitle, setGeneralTitle] = useState("")
   const [generalMessage , setGeneralMessage] = useState("")
   const gridRef = useRef<any>(null);
+    const {restart} = useChessMainStore()
   const { scrollYProgress } = useScroll({
     container: gridRef, // remove this if your container is not fixed height
     offset: ["start start", "end start"], // remove this if your container is not fixed height
@@ -77,7 +78,7 @@ export const OngoingGameCard = ({
 
     } else {
       
-
+      restart()
 
         console.log("Setting spec channel for game_id=" + game_id)
         let spec_chann_new = socket.channel("spectate:chess:" + game_id , {} )

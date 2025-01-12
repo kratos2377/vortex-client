@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { cn } from "../../utils/cn";
 import { IconCheck, IconX } from "@tabler/icons-react";
 import { GameInviteUserModel, MQTTPayload } from "../../types/models";
-import { useGameStore, useUserStore } from "../../state/UserAndGameState";
+import { useChessMainStore, useGameStore, useUserStore } from "../../state/UserAndGameState";
 import { join_lobby_call, verify_game_status_call } from "../../helper_functions/apiCall";
 import { getUserTokenFromStore } from "../../persistent_storage/save_user_details";
 import { useNavigate } from "react-router-dom";
@@ -27,6 +27,7 @@ export const GameInvitesScroll = ({setIsAlert , setAlertMessage , setAlertType}:
       container: gridRef,
       offset: ["start start", "end start"], 
     });
+    const {restart} = useChessMainStore()
     const navigate = useNavigate()
     const [requestSent , setRequestSent] = useState(false)
     const {game_invites} = useUserStore()
@@ -84,6 +85,8 @@ export const GameInvitesScroll = ({setIsAlert , setAlertMessage , setAlertType}:
           setIsAlert(false)
         }, 3000)
       } else {
+
+        restart()
 
         let chann_new = socket.channel("game:chess:" + game_id , {})
 
