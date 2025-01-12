@@ -198,46 +198,46 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
       return;
     
     chann?.on("send-user-game-event" , (data) => {
-         
 
-          if (data.event_type === "normal") {
-            let game_move = JSON.parse(data.game_event)
-
-            let init_pos = JSON.parse(game_move.initial_cell) 
-            let target_pos = JSON.parse(game_move.target_cell ) 
-            let init_cell = board.getCell(init_pos.x , init_pos.y)
-            let target_cell = board.getCell(target_pos.x , target_pos.y)
- 
-    
-        isCheckFromSocketMove(init_cell , target_cell);
       
+         
+      if(data.user_id !== user_details.id) {
 
+        if (data.event_type === "normal") {
+          let game_move = JSON.parse(data.game_event)
 
-          } else if (data.event_type === "promotion") {
-            let game_move = JSON.parse(data.game_event)
-            let init_pos = JSON.parse(game_move.initial_cell) 
-            let target_pos = JSON.parse(game_move.target_cell ) 
-            let piece_name = getPieceNameFromPieceChar(game_move.promoted_to)
-   
+          let init_pos = JSON.parse(game_move.initial_cell) 
+          let target_pos = JSON.parse(game_move.target_cell ) 
+          let init_cell = board.getCell(init_pos.x , init_pos.y)
+          let target_cell = board.getCell(target_pos.x , target_pos.y)
 
-            let init_cell = board.getCell(init_pos.x , init_pos.y)
-            let target_cell = board.getCell(target_pos.x , target_pos.y)
-
-            console.log("RECIEVED TARGET CELL PIECE IS")
-            console.log(target_cell)
- 
- 
-      setTakenPieces(target_cell!.piece!);
-      pawnUtils.transform(init_cell!,target_cell,piece_name , player_color);
-      update();
-      validateCheck();
-      passTurn();
-      //setPawnTransformUtils(initialState);
-            
-          } else {
-            console.log("invalid event")
-          }
+  
+      isCheckFromSocketMove(init_cell , target_cell);
     
+
+
+        } else if (data.event_type === "promotion") {
+          let game_move = JSON.parse(data.game_event)
+          let init_pos = JSON.parse(game_move.initial_cell) 
+          let target_pos = JSON.parse(game_move.target_cell ) 
+          let piece_name = getPieceNameFromPieceChar(game_move.promoted_to)
+ 
+
+          let init_cell = board.getCell(init_pos.x , init_pos.y)
+          let target_cell = board.getCell(target_pos.x , target_pos.y)
+
+    setTakenPieces(target_cell!.piece!);
+    pawnUtils.transform(init_cell!,target_cell,piece_name , currentPlayer);
+    update();
+    validateCheck();
+    passTurn();
+    //setPawnTransformUtils(initialState);
+          
+        } else {
+          console.log("invalid event")
+        }
+  
+      }
 
     })
 
