@@ -24,6 +24,8 @@ const PawnTransform: FC<PawnTransformProps> = ({
   const { setTakenPieces } = useChessMainStore();
 
   const pawnTransform = (piece: { name: PieceNames; icon: PieceIcons }): void => {
+    console.log("Transformed target cell piece is")
+    console.log(pawntransformUtils!.targetCell)
     setTakenPieces(pawntransformUtils!.targetCell!.piece!);
     pawnUtils.transform(selectedCell!, pawntransformUtils.targetCell!, piece.name, currentPlayer);
     update();
