@@ -1,5 +1,5 @@
 import { FC, useContext, useEffect } from "react";
-import { Color, PieceIcons, PieceNames, getPieceCharFromPieceName } from "../models/Piece/types";
+import { Color, PieceChar, PieceIcons, PieceNames, getPieceCharFromPieceName } from "../models/Piece/types";
 import { PawnTransformProps } from "./types";
 import useBoardStore from "../../state/chess_store/board";
 import useChessGameStore from "../../state/chess_store/game";
@@ -35,7 +35,7 @@ const PawnTransform: FC<PawnTransformProps> = ({
       initial_cell: JSON.stringify({ x: selectedCell!.x, y: selectedCell!.y }),
       target_cell: JSON.stringify({ x: pawntransformUtils.targetCell!.x, y: pawntransformUtils.targetCell!.y }),
       promoted_to: getPieceCharFromPieceName(piece.name),
-      piece:  getPieceCharFromPieceName(piece.name)
+      piece:  PieceChar.PAWN
     }
 
     let gameEvent: GameEventPayload = {
