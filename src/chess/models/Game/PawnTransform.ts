@@ -14,6 +14,9 @@ export class PawnTransform {
   }
   public transform(selectedCell: Cell, target: Cell, chosenPiece: PieceNames, color: Color): void {
     selectedCell.piece = null;
+    console.log("TRANSFORMATION STARTED THE DETAILS ARE")
+    console.log(chosenPiece)
+    console.log(color)
     switch (chosenPiece) {
       case PieceNames.QUEEN:
         target.piece = new Queen(color, target);
