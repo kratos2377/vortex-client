@@ -208,19 +208,28 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
             let init_cell = board.getCell(init_pos.x , init_pos.y)
             let target_cell = board.getCell(target_pos.x , target_pos.y)
  
-      // if (target_cell.piece instanceof King) return;
+      if (target_cell.piece instanceof King) return;
 
-      // if (target_cell.availableToPassant) {
-      //   const pieceGetByPassant = pawnPassant.getPawnByPassant(target_cell, init_cell!, board);
-      //   setTakenPieces(pieceGetByPassant!);
-      // }
+      if (target_cell.availableToPassant) {
+        const pieceGetByPassant = pawnPassant.getPawnByPassant(target_cell, init_cell!, board);
+        setTakenPieces(pieceGetByPassant!);
+      }
 
-      // if (!colorInCheck && pawnUtils.isPawnOnLastLine(currentPlayer, init_cell!, target_cell))
-      //   setPawnTransformUtils({ ...pawnTransformUtils, visible: true, targetCell: target_cell });
+      if (!colorInCheck && pawnUtils.isPawnOnLastLine(currentPlayer, init_cell!, target_cell))
+        setPawnTransformUtils({ ...pawnTransformUtils, visible: true, targetCell: target_cell });
 
-      // else {
-      //   isCheckFromSocketMove(init_cell , target_cell);
-      // }
+      else {
+        isCheckFromSocketMove(init_cell , target_cell);
+      }
+
+      if(target_cell!.piece!) {
+        setTakenPieces(target_cell!.piece!);
+      }
+
+      update();
+      validateCheck();
+      passTurn();
+      setPawnTransformUtils(initialState);
 
       resetPassantCells();
 
@@ -235,19 +244,19 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
             let target_cell = board.getCell(target_pos.x , target_pos.y)
  
  
-      // if (target_cell.piece instanceof King) return;
+      if (target_cell.piece instanceof King) return;
 
-      // if (target_cell.availableToPassant) {
-      //   const pieceGetByPassant = pawnPassant.getPawnByPassant(target_cell, init_cell!, board);
-      //   setTakenPieces(pieceGetByPassant!);
-      // }
+      if (target_cell.availableToPassant) {
+        const pieceGetByPassant = pawnPassant.getPawnByPassant(target_cell, init_cell!, board);
+        setTakenPieces(pieceGetByPassant!);
+      }
 
       setTakenPieces(target_cell!.piece!);
       pawnUtils.transform(init_cell!,target_cell,piece_name , opposite(currentPlayer));
       update();
       validateCheck();
       passTurn();
-     setPawnTransformUtils(initialState);
+      setPawnTransformUtils(initialState);
 
       resetPassantCells();
             
