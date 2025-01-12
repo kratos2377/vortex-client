@@ -239,7 +239,7 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
  
  
       setTakenPieces(target_cell!.piece!);
-      pawnUtils.transform(init_cell!,target_cell,piece_name , opposite(currentPlayer));
+      pawnUtils.transform(init_cell!,target_cell,piece_name , currentPlayer);
       update();
       validateCheck();
       passTurn();
