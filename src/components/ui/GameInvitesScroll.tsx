@@ -107,7 +107,7 @@ export const GameInvitesScroll = ({setIsAlert , setAlertMessage , setAlertType}:
             updateGameId(game_id)
             updateGameName(game_name)
             updateGameType(game_type)
-            updateUserPlayerCountId(val.user_count_id)
+            updateUserPlayerCountId("2")
             setTimeout(() => {
               document.getElementById("redirecting_to_lobby_modal")!.close()
               navigate("/lobby/" + game_id + "/" + game_name + "/" + val.game_host_id)
