@@ -26,6 +26,10 @@ const ChessGame = () => {
   const { startGameFromFen } = useBoardStore();
   const gameStore = useGameStore()
   const {game_id, host_user_id} = useParams()
+
+  console.log("GAME ID FOR PLAYER IS")
+  console.log(game_id)
+
   const {user_details} = useUserStore()
 
 

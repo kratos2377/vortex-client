@@ -10,7 +10,7 @@ export type ChessNormalEvent = {
 export type ChessPromotionEvent = {
     initial_cell: string,
     target_cell: string,
-    promoted_to: PieceNames,
+    promoted_to: PieceChar,
     piece: PieceChar
 }
 
