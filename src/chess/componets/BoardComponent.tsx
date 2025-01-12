@@ -228,7 +228,7 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
  
  
       setTakenPieces(target_cell!.piece!);
-      pawnUtils.transform(init_cell!,target_cell,piece_name , opposite(player_color));
+      pawnUtils.transform(init_cell!,target_cell,piece_name , player_color);
       update();
       validateCheck();
       passTurn();
