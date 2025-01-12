@@ -94,7 +94,7 @@ const CreateLobby = ( { setCurrentScreen } : { setCurrentScreen:  React.Dispatch
         updateGameName("chess")
         updateGameType(selectedType)
         updateUserPlayerCountId("1")
-        setPlayerColor(Color.BLACK)
+        setPlayerColor(Color.WHITE)
         setRedirecting(true)
         setAlertMessage("Redirecting to Lobby Screen")
         setAlertType("success")
