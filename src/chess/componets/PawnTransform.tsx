@@ -18,7 +18,7 @@ const PawnTransform: FC<PawnTransformProps> = ({
   game_id
 }) => {
   const {chann} = useContext(WebSocketContext)
-  const { currentPlayer, passTurn } = usePlayerStore();
+  const { currentPlayer, passTurn , player_color } = usePlayerStore();
   const { pawnUtils, validateCheck } = useChessGameStore();
   const { selectedCell, update } = useBoardStore();
   const { setTakenPieces } = useChessMainStore();
@@ -27,7 +27,7 @@ const PawnTransform: FC<PawnTransformProps> = ({
     console.log("Transformed target cell piece is")
     console.log(pawntransformUtils!.targetCell)
     setTakenPieces(pawntransformUtils!.targetCell!.piece!);
-    pawnUtils.transform(selectedCell!, pawntransformUtils.targetCell!, piece.name, currentPlayer);
+    pawnUtils.transform(selectedCell!, pawntransformUtils.targetCell!, piece.name, player_color);
     update();
     validateCheck();
     passTurn();
