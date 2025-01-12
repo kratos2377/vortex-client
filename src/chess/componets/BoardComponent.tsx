@@ -14,7 +14,7 @@ import { rankCoordinates } from "../../state/chess_store/initial_states/rankCoor
 import { Color } from "../../types/chess_types/constants";
 import { ChessCoordinateStruct, GameEventPayload } from "../../types/ws_and_game_events";
 import { ChessNormalEvent, ChessPromotionEvent } from "../../types/game_event_model";
-import { PieceChar, getPieceCharFromPieceName } from "../models/Piece/types";
+import { PieceChar, getPieceCharFromPieceName, getPieceNameFromPieceChar } from "../models/Piece/types";
 import {  USER_GAME_MOVE } from "../../utils/mqtt_event_names";
 import { WebSocketContext } from "../../socket/websocket_provider";
 import GameOverModal from "./UI/GameOverModal";
@@ -107,8 +107,6 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
           game_id: game_id
         }
 
-        console.log("GAME EVENT WE ARE SENDING IS")
-        console.log(gameEvent)
 
         chann?.push("game-event" , gameEvent)
       }
@@ -230,7 +228,7 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
             let game_move = JSON.parse(data.game_event)
             let init_pos = JSON.parse(game_move.initial_cell) 
             let target_pos = JSON.parse(game_move.target_cell ) 
-            let piece_name = game_move.promoted_to
+            let piece_name = getPieceNameFromPieceChar(game_move.promoted_to)
    
 
             let init_cell = board.getCell(init_pos.x , init_pos.y)

@@ -56,3 +56,28 @@ export const getPieceCharFromPieceName = (name: PieceNames) => {
 
  return PieceChar.PIECE
 }
+
+export const getPieceNameFromPieceChar = (name: String) => {
+
+
+
+  if (name === PieceChar.KING)
+   return PieceNames.KING
+ 
+  if (name === PieceChar.KNIGHT)
+   return PieceNames.KNIGHT
+ 
+  if (name === PieceChar.PAWN)
+   return PieceNames.PAWN
+ 
+  if (name === PieceChar.QUEEN)
+   return PieceNames.QUEEN
+ 
+  if (name === PieceChar.ROOK)
+   return PieceNames.ROOK
+ 
+  if (name === PieceChar.BISHOP)
+   return PieceNames.BISHOP
+ 
+  return PieceNames.PIECE
+ }
