@@ -6,6 +6,8 @@ import { create_lobby_call } from '../helper_functions/apiCall';
 import { useNavigate } from 'react-router-dom';
 import { socket } from '../socket/socket';
 import { WebSocketContext } from '../socket/websocket_provider';
+import usePlayerStore from '../state/chess_store/player';
+import { Color } from '../types/chess_types/constants';
 
 
 
@@ -22,6 +24,7 @@ const CreateLobby = ( { setCurrentScreen } : { setCurrentScreen:  React.Dispatch
   const [requestSent, setRequestSent] = useState(false)
   const [redirecting, setRedirecting] = useState(false)
   const {user_details} = useUserStore()
+  const {setPlayerColor} = usePlayerStore()
   const {updateGameId, updateGameName, updateGameType , updateUserPlayerCountId , updateIsSpectator} = useGameStore()
   const handleGameChange = (event: any) => {
     setSelectedGame(event.target.value);
@@ -91,6 +94,7 @@ const CreateLobby = ( { setCurrentScreen } : { setCurrentScreen:  React.Dispatch
         updateGameName("chess")
         updateGameType(selectedType)
         updateUserPlayerCountId("1")
+        setPlayerColor(Color.BLACK)
         setRedirecting(true)
         setAlertMessage("Redirecting to Lobby Screen")
         setAlertType("success")

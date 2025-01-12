@@ -195,9 +195,9 @@ setTimeout(() => {
 
 
   useEffect(() => {
-    if (gameType==="chess" && gameStore.user_player_count_id !== "1") {
-      setPlayerColor(Color.BLACK)
-    }
+    // if (gameType==="chess" && gameStore.user_player_count_id !== "1") {
+    //   setPlayerColor(Color.BLACK)
+    // }
     getAllLobbyPlayers()
   } , [])
 

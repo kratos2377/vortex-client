@@ -26,6 +26,8 @@ const PawnTransform: FC<PawnTransformProps> = ({
   const pawnTransform = (piece: { name: PieceNames; icon: PieceIcons }): void => {
     console.log("Transformed target cell piece is")
     console.log(pawntransformUtils!.targetCell)
+    console.log("PLAYER COLOR IS")
+    console.log(player_color)
     setTakenPieces(pawntransformUtils!.targetCell!.piece!);
     pawnUtils.transform(selectedCell!, pawntransformUtils.targetCell!, piece.name, player_color);
     update();
