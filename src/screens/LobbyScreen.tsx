@@ -16,11 +16,7 @@ import { GAME_GENERAL_EVENT, MQTT_GAME_EVENTS, USER_JOINED_ROOM, USER_LEFT_ROOM,
 import { IconPokerChip, IconLogout } from '@tabler/icons-react';
 import LeaveSpectateRoomModal from '../components/screens/LeaveSpectateRoomModal';
 import StakeMoneyModal from '../components/screens/StakeMoneyModal';
-import { invoke } from '@tauri-apps/api/tauri';
 import { WebSocketContext } from '../socket/websocket_provider';
-import { socket } from '../socket/socket';
-import { Socket } from 'phoenix';
-
 
 
 const LobbyScreen = () => {
@@ -31,7 +27,6 @@ const LobbyScreen = () => {
   let {game_id , gameType , host_user_id} = useParams()
   let {user_details} = useUserStore()
   let gameStore = useGameStore()
-  const {setPlayerColor} = usePlayerStore()
   const [readyState, setReadyState] = useState(false)
   let [roomUsers , setLobbyUsers] = useState<UserGameRelation[]>([])
   const [updateStatusRequestSent, setUpdateRequestSent] = useState(false)
@@ -195,9 +190,9 @@ setTimeout(() => {
 
 
   useEffect(() => {
-    if (gameType==="chess" && gameStore.user_player_count_id !== "1") {
-      setPlayerColor(Color.BLACK)
-    }
+    // if (gameType==="chess" && gameStore.user_player_count_id !== "1") {
+    //   setPlayerColor(Color.BLACK)
+    // }
     getAllLobbyPlayers()
   } , [])
 

@@ -18,7 +18,7 @@ const PawnTransform: FC<PawnTransformProps> = ({
   game_id
 }) => {
   const {chann} = useContext(WebSocketContext)
-  const { currentPlayer, passTurn } = usePlayerStore();
+  const { currentPlayer, passTurn , player_color } = usePlayerStore();
   const { pawnUtils, validateCheck } = useChessGameStore();
   const { selectedCell, update } = useBoardStore();
   const { setTakenPieces } = useChessMainStore();

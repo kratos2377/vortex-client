@@ -10,6 +10,8 @@ import { getUserTokenFromStore } from "../../persistent_storage/save_user_detail
 import { useNavigate } from "react-router-dom";
 import { socket } from "../../socket/socket";
 import { WebSocketContext } from "../../socket/websocket_provider";
+import usePlayerStore from "../../state/chess_store/player";
+import { Color } from "../../types/chess_types/constants";
 
 
 
@@ -31,7 +33,7 @@ export const GameInvitesScroll = ({setIsAlert , setAlertMessage , setAlertType}:
     const navigate = useNavigate()
     const [requestSent , setRequestSent] = useState(false)
     const {game_invites} = useUserStore()
-   
+    const {setPlayerColor} = usePlayerStore()
     const translateFirst = useTransform(scrollYProgress, [0, 1], [0, -200]);
     const {user_details} = useUserStore()
     const [sortedUsers, setSortedUsers] = useState<GameInviteUserModel[]>([...game_invites]);
@@ -110,7 +112,8 @@ export const GameInvitesScroll = ({setIsAlert , setAlertMessage , setAlertType}:
             updateGameId(game_id)
             updateGameName(game_name)
             updateGameType(game_type)
-            updateUserPlayerCountId(val.user_count_id)
+             setPlayerColor(Color.BLACK)
+            updateUserPlayerCountId("2")
             setTimeout(() => {
               document.getElementById("redirecting_to_lobby_modal")!.close()
               navigate("/lobby/" + game_id + "/" + game_name + "/" + val.game_host_id)
