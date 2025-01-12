@@ -297,7 +297,7 @@ const MatchScreen = () => {
   {
     gameStore.isSpectator ? <></> :      <div className='self-center'>
    { updateStatusRequestSent ?  <span className="loading loading-spinner loading-md mr-1 ml-1"></span> :
-             <button className="btn btn-outline btn-success mr-1 ml-1" onClick={() => updatePlayerStatus("ready")} disabled={disableButton}>Ready!  <span>{seconds}</span></button> }
+             <button className="btn btn-outline btn-success mr-1 ml-1" onClick={() => updatePlayerStatus("ready")} disabled={disableButton}>Ready!  <span>{totalSeconds}</span></button> }
 
      </div>
   }
