@@ -12,6 +12,7 @@ import { MQTT_GAME_EVENTS } from "../../utils/mqtt_event_names";
 import { invoke } from "@tauri-apps/api/tauri";
 import { WebSocketContext } from "../../socket/websocket_provider";
 import { socket } from "../../socket/socket";
+import useBoardStore from "../../state/chess_store/board";
 
 export const OngoingGameCard = ({
   items,
@@ -50,6 +51,7 @@ export const OngoingGameCard = ({
   const [subscribeError , setSubscribeError] = useState(false)
 
   const {spectatorChannel , setSpectatorChannel} = useContext(WebSocketContext)
+  const {startGameFromFen} = useBoardStore()
 
   const startSpectatingGame = async (game_id: string ) => {
     setSubscribeError(false)
@@ -92,7 +94,8 @@ export const OngoingGameCard = ({
             navigate("/lobby/" + game_id + "/" +  "chess" + "/" + val.game.host_id)
           } else{
             //For now  its right but we will change it in future accoring to the chess state
-            gameStore.updateChessState(val.game.current_state)
+            gameStore.updateChessState(val.game.chess_state)
+            startGameFromFen(val.game.chess_state)
             
           document.getElementById("general_purpose_modal")!.close()
           navigate("/" +  "chess" + "/" + game_id + "/" + val.game.host_id)
