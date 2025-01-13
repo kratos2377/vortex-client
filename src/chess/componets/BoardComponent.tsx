@@ -18,6 +18,7 @@ import { PieceChar, getPieceCharFromPieceName, getPieceNameFromPieceChar } from 
 import {  USER_GAME_MOVE } from "../../utils/mqtt_event_names";
 import { WebSocketContext } from "../../socket/websocket_provider";
 import GameOverModal from "./UI/GameOverModal";
+import { of } from "rxjs";
 
 
 interface BoardComponentProps {
@@ -279,10 +280,16 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
 
     })
 
+
+    chann?.on("send-user-default-win-because-user-left" , (data) => {
+
+    })
+
     return () => {
       chann?.off("send-user-game-event")
       chann?.off("checkmate")
       chann?.off("game-over")
+      chann?.off("send-user-default-win-because-user-left")
     };
 
   })
@@ -371,11 +378,16 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
       document.getElementById("game_over_modal")!.showModal()
 
     })
+
+    spectatorChannel?.on("send-spectator-default-win-because-user-left" , (data) => {
+
+    })
   
   
     return () => {
       spectatorChannel?.off("user-game-move")
       spectatorChannel?.off("game-over-for-spectators")
+      spectatorChannel?.off("send-spectator-default-win-because-user-left")
     }
   
   })
