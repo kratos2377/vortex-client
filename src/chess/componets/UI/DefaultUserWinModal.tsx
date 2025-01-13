@@ -73,6 +73,12 @@ const DefaultUserWinModal: React.FC<DefaultUserWinModalProps> = ({ user_id_who_l
           </div>
 
 
+          <button type="submit" className="btn btn-outline btn-success" onClick={() => {
+            document.getElementById("default_user_win_modal")!.close()
+            navigator("/home")
+          }} >Redirect to HomeScreen</button>
+
+
     </div>
 
    </div>

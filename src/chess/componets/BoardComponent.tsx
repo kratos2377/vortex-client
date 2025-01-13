@@ -19,6 +19,7 @@ import {  USER_GAME_MOVE } from "../../utils/mqtt_event_names";
 import { WebSocketContext } from "../../socket/websocket_provider";
 import GameOverModal from "./UI/GameOverModal";
 import { of } from "rxjs";
+import DefaultUserWinModal from "./UI/DefaultUserWinModal";
 
 
 interface BoardComponentProps {
@@ -56,6 +57,13 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
   const [winner_user_id , setWinnerUserId] = useState("")
   const [loser_username , setLoserUsername] = useState("")
   const [loser_user_id , setLoserUserId] = useState("")
+
+
+  //Default User Win States
+  const [user_username_who_won , setUserUsernameWhoWon] = useState("")
+  const [user_id_who_won , setUserIdWhoWon] = useState("")
+  const [user_id_who_left , setUserIdWhoLeft] = useState("")
+  const [user_username_who_left , setUserUsernameWhoLeft] = useState("")
 
 
   const clickHandler = (cell: Cell): void => {
@@ -283,6 +291,18 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
 
     chann?.on("send-user-default-win-because-user-left" , (data) => {
 
+      setUserIdWhoLeft(data.user_id_who_left)
+      setUserIdWhoWon(data.user_id_who_won)
+
+      setUserUsernameWhoLeft(data.user_username_who_left)
+      setUserUsernameWhoWon(data.user_username_who_won)
+
+
+      setTimeout(() => {
+
+        document.getElementById("default_user_win_modal")!.showModal()
+      } , 1000)
+      
     })
 
     return () => {
@@ -381,6 +401,17 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
 
     spectatorChannel?.on("send-spectator-default-win-because-user-left" , (data) => {
 
+      setUserIdWhoLeft(data.user_id_who_left)
+      setUserIdWhoWon(data.user_id_who_won)
+
+      setUserUsernameWhoLeft(data.user_username_who_left)
+      setUserUsernameWhoWon(data.user_username_who_won)
+
+
+      setTimeout(() => {
+
+        document.getElementById("default_user_win_modal")!.showModal()
+      } , 1000)
     })
   
   
@@ -457,6 +488,8 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
 
 
             <GameOverModal winner_username={winner_username} winner_user_id={winner_user_id} loser_username={loser_username} loser_user_id={loser_user_id} game_id={game_id} user_id={user_details.id}/>
+
+          <DefaultUserWinModal user_id_who_left={user_id_who_left} user_username_who_left={user_username_who_left} user_id_who_won={user_id_who_won} user_username_who_won={user_username_who_won} game_id={game_id} user_id={user_id} />
 
     </>
   );
