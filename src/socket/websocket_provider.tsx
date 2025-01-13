@@ -2,7 +2,7 @@ import { Channel } from "phoenix"
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { socket } from "./socket";
-import { useUserStore } from "../state/UserAndGameState";
+import { useChessMainStore, useUserStore } from "../state/UserAndGameState";
 import { FriendRequestModel, GameInviteUserModel } from "../types/models";
 
 
@@ -35,6 +35,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
     const [userChannel , setUserChannel] = useState<S>(null);
     const [spectatorChannel , setSpectatorChannel] = useState<S>(null);
     const {addGameInviteModel , addFriendRequestModel} = useUserStore()
+    const {setBlackTimeLeft , setWhiteTimeLeft} = useChessMainStore()
     // useEffect(() => {
     //   if (!conn  && !isConnecting.current) {
     //     isConnecting.current = true;
@@ -102,7 +103,12 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
 
         spectatorChannel.on("game_current_state" , (msg) => {
           console.log("Game current state is")
-          console.log(msg)
+          let parsed_data = JSON.parse(msg.data)
+
+          setBlackTimeLeft(parsed_data.time_left_for_black_player)
+          setWhiteTimeLeft(parsed_data.time_left_for_white_player)
+        
+          
         })
 
       }
