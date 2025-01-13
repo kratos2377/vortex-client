@@ -97,28 +97,28 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
  
     })
 
-    useEffect(() => {
+    // useEffect(() => {
 
-      if(spectatorChannel !== null && spectatorChannel !== undefined) {
+    //   if(spectatorChannel !== null && spectatorChannel !== undefined) {
 
-        spectatorChannel.on("game_current_state" , (msg) => {
-          console.log("Game current state is")
-          let parsed_data = JSON.parse(msg.data)
+    //     spectatorChannel.on("game_current_state" , (msg) => {
+    //       console.log("Game current state is")
+    //       let parsed_data = JSON.parse(msg.data)
 
-          setBlackTimeLeft(parsed_data.time_left_for_black_player)
-          setWhiteTimeLeft(parsed_data.time_left_for_white_player)
+    //       setBlackTimeLeft(parsed_data.time_left_for_black_player)
+    //       setWhiteTimeLeft(parsed_data.time_left_for_white_player)
         
           
-        })
+    //     })
 
-      }
+    //   }
 
 
-      if(spectatorChannel !== null && spectatorChannel !== undefined) {
-        spectatorChannel.off("game_current_state")
-      }
+    //   if(spectatorChannel !== null && spectatorChannel !== undefined) {
+    //     spectatorChannel.off("game_current_state")
+    //   }
 
-    })
+    // })
 
 
   

@@ -39,7 +39,7 @@ export const OngoingGameCard = ({
   const [generalTitle, setGeneralTitle] = useState("")
   const [generalMessage , setGeneralMessage] = useState("")
   const gridRef = useRef<any>(null);
-    const {restart} = useChessMainStore()
+    const {restart , setBlackTimeLeft , setWhiteTimeLeft} = useChessMainStore()
   const { scrollYProgress } = useScroll({
     container: gridRef, // remove this if your container is not fixed height
     offset: ["start start", "end start"], // remove this if your container is not fixed height
@@ -88,6 +88,18 @@ export const OngoingGameCard = ({
           gameStore.updateGameId(game_id)
 
           setSpectatorChannel(spec_chann_new)
+
+
+          spec_chann_new.on("game_current_state" , (msg) => {
+            console.log("Game current state is")
+            let parsed_data = JSON.parse(msg.data)
+            console.log(parsed_data)
+            setBlackTimeLeft(parsed_data.time_left_for_black_player)
+            setWhiteTimeLeft(parsed_data.time_left_for_white_player)
+          
+            
+          })
+  
 
           if(val.game.description === "LOBBY") {
             
