@@ -10,7 +10,7 @@ const useEntryAnimate = (delay: number) => {
   const gameStatus = useChessMainStore.getState().status
 
   const isGameActive = [
-    "IN PROGRESS",
+    "IN-PROGRESS",
     "INITIALIZING",
     "READY",
     "OVER",

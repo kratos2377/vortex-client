@@ -31,13 +31,13 @@ const Timer = ({
   const pause$ = useMemo(() => new BehaviorSubject(true), []);
   
   useEffect(() => {
-    if (status === "IN PROGRESS") {
+    if (status === "IN-PROGRESS") {
       pause$.next(currentTurn !== player);
     }
   }, [player, currentTurn , status, currentTurn]);
   
   useEffect(() => {
-    if (status !== "IN PROGRESS") {
+    if (status !== "IN-PROGRESS") {
       return;
     }
     
@@ -50,7 +50,7 @@ const Timer = ({
         tap((val) => {
           setTimeRemaining(val);
         }),
-        takeWhile((val) => val > 0 && status === "IN PROGRESS")
+        takeWhile((val) => val > 0 && status === "IN-PROGRESS")
       ).subscribe(
         (val) => null,
         (err) => console.log(err),

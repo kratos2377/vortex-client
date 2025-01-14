@@ -8,7 +8,7 @@ const Cockpit = () => {
   const showCockpit = useEntryAnimate(500);
   const { status } = useChessMainStore()
   const isGameActive = [
-    "IN PROGRESS",
+    "IN-PROGRESS",
     "INITIALIZING",
     "READY",
     "GAME OVER",

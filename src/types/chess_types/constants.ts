@@ -7,7 +7,7 @@ export enum Color {
   
   export enum ChessStates {
     STARTING = "STARTING",
-    IN_PROGRESS = "IN PROGRESS",
+    IN_PROGRESS = "IN-PROGRESS",
     OVER = "OVER",
     READY = "READY",
     NOT_STARTED = "NOT STARTED"

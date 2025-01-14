@@ -102,7 +102,7 @@ const ChessGame = () => {
 
   useEffect(() => {
     //restart()
-    setGameCurrentStatus("IN PROGRESS")
+    setGameCurrentStatus("IN-PROGRESS")
 
     setLoading(false)
   } , [])
