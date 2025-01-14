@@ -13,6 +13,7 @@ import { invoke } from "@tauri-apps/api/tauri";
 import { WebSocketContext } from "../../socket/websocket_provider";
 import { socket } from "../../socket/socket";
 import useBoardStore from "../../state/chess_store/board";
+import { Color } from "../../types/chess_types/constants";
 
 export const OngoingGameCard = ({
   items,
@@ -39,7 +40,7 @@ export const OngoingGameCard = ({
   const [generalTitle, setGeneralTitle] = useState("")
   const [generalMessage , setGeneralMessage] = useState("")
   const gridRef = useRef<any>(null);
-    const {restart , setBlackTimeLeft , setWhiteTimeLeft} = useChessMainStore()
+    const {restart , setBlackTimeLeft , setWhiteTimeLeft , setCurrentTurn} = useChessMainStore()
   const { scrollYProgress } = useScroll({
     container: gridRef, // remove this if your container is not fixed height
     offset: ["start start", "end start"], // remove this if your container is not fixed height
@@ -96,6 +97,7 @@ export const OngoingGameCard = ({
             console.log(parsed_data)
             setBlackTimeLeft(parsed_data.time_left_for_black_player)
             setWhiteTimeLeft(parsed_data.time_left_for_white_player)
+            setCurrentTurn(parsed_data.current_turn === "white" ? Color.WHITE : Color.BLACK)
           
             
           })

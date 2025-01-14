@@ -140,5 +140,5 @@
   
 
   .qr_code {
-    @apply relative flex justify-end items-start
+    @apply flex flex-col justify-end items-start top-[50px] right-[50px];
   }

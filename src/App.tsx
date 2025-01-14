@@ -3,7 +3,7 @@ import Loading from "./screens/Loading";
 import { invoke } from '@tauri-apps/api/tauri'
 import { deleteUserDetailsFromStore, getUserTokenFromStore } from "./persistent_storage/save_user_details"
 import { useNavigate } from "react-router-dom";
-import { useUserStore } from "./state/UserAndGameState";
+import { useGameStore, useUserStore } from "./state/UserAndGameState";
 import { UserModel } from "./types/models";
 import { Socket } from "phoenix";
 
@@ -14,6 +14,7 @@ import { Socket } from "phoenix";
 function App() {
   const navigate = useNavigate();
   const {updateUserDetails} = useUserStore()
+  const {updateIsSpectator} = useGameStore()
 
   useEffect(() => {
 
@@ -27,7 +28,7 @@ function App() {
         await invoke('verify_token_request', { payload: JSON.stringify( { token: userToken})  }).then(async (message) => {
           let recv_msg = JSON.parse(message as string)
             if(!recv_msg.result.success) {
-         
+              
               navigate("/auth")
             } else {
               let user_mod: UserModel = {

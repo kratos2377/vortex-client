@@ -16,8 +16,7 @@ const Cockpit = () => {
 
   return isGameActive ? (
     <div
-    className={`h-2/5 py-2 ml-2
-      max-h-full w-full flex flex-col justify-between border border-gray-300 opacity-1  }`}
+    className={`h-[50vh] w-[25vh] flex flex-col items-center justify-center`}
     >
       <WrappedTimer player={Color.BLACK} />
       <WrappedTimer player={Color.WHITE} />

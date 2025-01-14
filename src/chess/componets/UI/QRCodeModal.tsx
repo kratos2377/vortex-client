@@ -3,10 +3,11 @@ import { ErrorAlert, SuccessAlert } from '../../../components/ui/AlertMessage'
 import { invoke } from '@tauri-apps/api/tauri'
 import { result } from 'lodash'
 import { useGameStore, useUserStore } from '../../../state/UserAndGameState'
+import { IconX } from '@tabler/icons-react'
 
 const QRCodeModal = () => {
 
-
+    const [imageSrc , setImageSrc] = useState("")
       const [isAlert , setIsAlert] = useState(false)
         const [alertMessage , setAlertMessage] = useState("")
         const [alertType , setAlertType] = useState<"success" | "error">("success")
@@ -36,19 +37,16 @@ const QRCodeModal = () => {
 
             setGeneratingQr(true)
             let game_room_data = {
-                user_betting_on: user_betting_on_id,
-                bet_type: bet_type, //win or lose
-                game_id: game_id,
-                user_who_is_betting: user_details.id
-            }
-            let res = await invoke('generate_qr_for_bet', {game_room_data: game_room_data})
+              user_betting_on: user_betting_on_id,
+              bet_type: bet_type, //win or lose
+              game_id: game_id,
+              user_who_is_betting: user_details.id
+          }
+            let res = await invoke('generate_qr_for_bet', {gameRoomData: JSON.stringify(game_room_data)})
 
-            console.log("QR Res data is")
-            console.log(res)
 
-            // document.getElementById('qr-img')!.src = URL.createObjectURL(
-            //     new Blob([...res], { type: 'image/png' } /* (1) */)
-            //   );
+
+            setImageSrc('data:image/jpeg;base64,' + res)
               
             setGeneratingQr(false)
 
@@ -77,11 +75,19 @@ const QRCodeModal = () => {
  
    {isAlert ? alertType==="success" ? <SuccessAlert message={alertMessage} /> : <ErrorAlert message={alertMessage} /> : <div></div>}
 
-
+    <div className='flex flex-row justify-end'>
+      <button onClick={() => {
+        setImageSrc("")
+          document.getElementById("qr_bet_modal")!.close()
+      }}>
+        <IconX/>
+      </button>
+    </div>
 
     <div>
 
     <div className="mb-4">
+
         <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-2">Choose the user to bet on:</label>
         <select
           id="type"
@@ -113,10 +119,12 @@ const QRCodeModal = () => {
 
 
         {
-        generating_qr ? <span>Generating QR: <span className="loading loading-dots loading-lg"></span></span>  :     <div className='flex flex-row space-x-2 h-1/2 justify-center mt-1'>
+        generating_qr ? <span>Generating QR: <span className="loading loading-dots loading-lg"></span></span>  :    
+        
+        <div className='flex flex-row space-x-2 h-1/2 justify-center mt-1'>
 
         
-
+              <img src={imageSrc}  />
 
         </div>
     }

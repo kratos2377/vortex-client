@@ -9,8 +9,6 @@ import UserHomeScreen from "./screens/UserHomeScreen";
 import VerifyUserScreen from "./screens/VerifyUserScreen";
 import InvalidLobbyScreen from "./screens/InvalidLobbyScreen";
 import ChessGame from "./chess";
-import ScribbleGame from "./scribble";
-import PokerGame from "./poker";
 import { WebSocketProvider } from "./socket/websocket_provider";
 import MatchScreen from "./screens/MatchScreen";
 

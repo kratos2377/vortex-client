@@ -48,7 +48,7 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
 
   const {user_details} = useUserStore()
   const gameStore = useGameStore()
-  const { currentTurn , setGameCondition, setTakenPieces, setCastlingBtn, setCurrentTurn , setMovesHistory, setGameCurrentStatus } = useChessMainStore();
+  const { currentTurn , setGameCondition, setTakenPieces, setCastlingBtn, setCurrentTurn , setMovesHistory, setGameCurrentStatus , restart } = useChessMainStore();
   const [pawnTransformUtils, setPawnTransformUtils] = useState<IPawnTransformUtils>(initialState);
   const [passantAvailable, setPassantAvailable] = useState<boolean>(false);
   const [firstRender, setFirstRender] = useState<boolean>(true);
@@ -301,7 +301,7 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
       setTimeout(() => {
 
         document.getElementById("default_user_win_modal")!.showModal()
-      } , 1000)
+      } , 300)
       
     })
 
@@ -411,7 +411,7 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
       setTimeout(() => {
 
         document.getElementById("default_user_win_modal")!.showModal()
-      } , 1000)
+      } , 500)
     })
   
   
@@ -443,6 +443,7 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
   }
 
   useEffect(() => {
+    restart()
     useChessGameStore.subscribe( (state) => state.colorInCheckMate , checkMateSocketPublisher)
   } , [])
 

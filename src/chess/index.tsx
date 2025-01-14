@@ -12,6 +12,7 @@ import { MQTTPayload } from '../types/models'
 import GeneralPurposeModal from '../components/screens/GeneralPurposeModal'
 import { IconQrcode } from '@tabler/icons-react'
 import { WebSocketContext } from '../socket/websocket_provider'
+import QRCodeModal from './componets/UI/QRCodeModal'
 
 
 const ChessGame = () => {
@@ -26,9 +27,6 @@ const ChessGame = () => {
   const { startGameFromFen } = useBoardStore();
   const gameStore = useGameStore()
   const {game_id, host_user_id} = useParams()
-
-  console.log("GAME ID FOR PLAYER IS")
-  console.log(game_id)
 
   const {user_details} = useUserStore()
 
@@ -117,24 +115,40 @@ const ChessGame = () => {
       loading ? <div className='h-screen w-screen flex justify-center'>
         <span className="loading loading-dots loading-lg"></span>
       </div> :    <div className="chess_app">
+
+
+
       {/* <GameInformation /> */}
 
-        <><div className='w-11/12 p-5 flex flex-row justify-center'>
+        <><div className='w-[100vh] p-2 flex flex-row justify-center'>
         <GameInformation />
               <BoardComponent game_id={game_id!} user_id={user_details.id}/>
-            </div><div className='flex flex-col w-1/12 mx-10 justify-between'>
-                <Cockpit />
-              </div></>
+    
+      
+            <Cockpit />
+
+            </div>
+        </>
+
+
+
+        <div className='absolute top-5 right-5'>
+                <button className='justify-start' onClick={() => 
+
+        document.getElementById("qr_bet_modal")!.showModal()
+
+        }>
+        <IconQrcode/>
+        </button>
+        </div>
+
     
               <GeneralPurposeModal message={generalPurposeMessage} title={generalPurposeTitle}/>
 
-          {
-            gameStore.isSpectator ?               <div className='qr_code'>
-            <button onClick={() => console.log("Generate QR and show it on screen for user to bet")}>
-            <IconQrcode/>
-            </button>
-          </div> : <></>
-          }
+
+          
+
+          <QRCodeModal/>
     </div>
     }
     </>
