@@ -1,22 +1,18 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import  ChessLogo  from "../assets/chess.svg";
-import  ScribbleLogo from "../assets/scribble.svg";
 import { useNavigate, useParams } from 'react-router-dom';
 import { useGameStore, useUserStore } from '../state/UserAndGameState';
 import OnlineFriendInviteModal from '../components/screens/OnlineFriendInviteModal';
 import { ErrorAlert, SuccessAlert } from '../components/ui/AlertMessage';
 import { getUserTokenFromStore } from '../persistent_storage/save_user_details';
 import { destroy_lobby_and_game, get_lobby_players, get_user_turn_mappings, leave_lobby_call, start_game, update_player_status } from '../helper_functions/apiCall';
-import { MQTTPayload, PlayerTurnMappingModel, TurnModel, UserGameRelation } from '../types/models';
+import { PlayerTurnMappingModel, TurnModel, UserGameRelation } from '../types/models';
 import GeneralPurposeModal from '../components/screens/GeneralPurposeModal';
-import usePlayerStore from '../state/chess_store/player';
-import { Color } from '../types/chess_types/constants';
-import { listen } from '@tauri-apps/api/event';
-import { GAME_GENERAL_EVENT, MQTT_GAME_EVENTS, USER_JOINED_ROOM, USER_LEFT_ROOM, USER_STATUS_EVENT } from '../utils/mqtt_event_names';
-import { IconPokerChip, IconLogout } from '@tabler/icons-react';
+import { IconLogout } from '@tabler/icons-react';
 import LeaveSpectateRoomModal from '../components/screens/LeaveSpectateRoomModal';
-import StakeMoneyModal from '../components/screens/StakeMoneyModal';
 import { WebSocketContext } from '../socket/websocket_provider';
+import QRCodeModal from '../chess/componets/UI/QRCodeModal';
+import StakeMoneyModal from '../components/screens/StakeMoneyModal';
 
 
 const LobbyScreen = () => {
@@ -32,6 +28,7 @@ const LobbyScreen = () => {
   const [updateStatusRequestSent, setUpdateRequestSent] = useState(false)
   const [lobbyRequestSent , setLobbyRequestSent] = useState(false)
   const [disableButton ,setDisableButton] = useState(false)
+  const [enableStakeButton , setEnableStakeButton] = useState(false)
   //General purpose states
   const [generalPurposeMessage, setGeneralPurposeMessage] = useState("")
   const [generalPurposeTitle, setGeneralPurposeTitle] = useState("")
@@ -40,6 +37,8 @@ const LobbyScreen = () => {
   const [isAlert , setIsAlert] = useState(false)
   const [alertType,setAlertType] = useState<"success" | "error">("success")
   const [alertMessage, setAlertMessage] = useState("")
+
+  
 
 
   const startTheGame = async () => {
@@ -138,7 +137,8 @@ setIsAlert(false)
           username: el.username,
           game_id: el.game_id,
           player_type: el.player_type,
-          player_status: el.player_status
+          player_status: el.player_status,
+          has_staked: false
         }
         return model
       })
@@ -227,7 +227,8 @@ setTimeout(() => {
         username: parsed_payload.username,
         game_id: parsed_payload.game_id,
         player_type: "player",
-        player_status: 'not-ready'
+        player_status: 'not-ready',
+        has_staked: false
       }
       setLobbyUsers( (prevState) => [...prevState , new_user])
      })
@@ -293,6 +294,20 @@ setTimeout(() => {
       gameStore.updatePlayerTurnModel(new_player_turn)
      })
 
+
+     chann?.on("player-staking-available-user" , async (msg) => {
+        setEnableStakeButton(true)
+     })
+
+     chann?.on("player-stake-complete-user" , async (msg) => {
+      setEnableStakeButton(false)
+      })
+
+      chann?.on("user-game-bet-event-user" , async (msg) => {
+        const updatedUsers = roomUsers.map((user) => user.user_id === msg.user_betting_on ? {...user, has_staked: true} : user)
+          setLobbyUsers([...updatedUsers])
+      })
+
      return () => {
       chann?.off("user-left-room")
       chann?.off("new-user-joined")
@@ -302,6 +317,9 @@ setTimeout(() => {
       chann?.off("start-game-for-all")
       chann?.off("error-event-occured")
       chann?.off("fetch-user-turn-mappings")
+      chann?.off("player-staking-available-user")
+      chann?.off("player-stake-complete-user")
+      chann?.off("user-game-bet-event-user")
      }
   })
 
@@ -321,7 +339,8 @@ setTimeout(() => {
           username: payload.username,
           game_id: payload.game_id,
           player_type: "player",
-          player_status: 'not-ready'
+          player_status: 'not-ready',
+          has_staked: false
         }
         setLobbyUsers( (prevState) => {
           let new_ar = [...prevState]
@@ -451,6 +470,7 @@ setTimeout(() => {
               <h2 className="card-title">{val.username}</h2>
               {val.user_id === host_user_id ? <h3 className="">(Host)</h3> : <div></div>}
               {val.player_status === "ready" ? <h3 className='text-green-700'>Ready!</h3> : <h3 className='text-red-700'>Not Ready</h3>}
+              {gameStore.game_type === "staked" ? val.has_staked ? <h3 className='text-green-700'>Staked!</h3> : <h3 className='text-red-700'>Not Staked</h3>  : <></>}
             </div>
           </div>
           ))
@@ -463,6 +483,8 @@ setTimeout(() => {
     {user_details.id === host_user_id ?  <button className="btn btn-outline btn-success mr-1" disabled={disableButton} onClick={startTheGame}>Start the Game</button> : <div></div>}
    { updateStatusRequestSent ?  <span className="loading loading-spinner loading-md mr-1 ml-1"></span> :
         !readyState ?        <button className="btn btn-outline btn-success mr-1 ml-1" onClick={() => updatePlayerStatus("ready")} disabled={disableButton}>Ready!</button> :        <button className="btn btn-outline btn-error mr-1 ml-1" onClick={() => updatePlayerStatus("not-ready")} disabled={disableButton}>Not Ready</button> }
+   
+   {gameStore.game_type === "staked" ?   <button className="btn btn-outline btn-success mr-1" disabled={enableStakeButton} onClick={() => document.getElementById("stake_money_modal")!.showModal()}>Stake in the game</button> : <></>}
     <button className="btn btn-outline btn-info mr-1 ml-1" onClick={() => document.getElementById("online_friend_invite_modal")!.showModal()} disabled={disableButton}>Invite Friends</button>
      <button className="btn btn-outline btn-error ml-1" onClick={leaveLobby} disabled={disableButton}>Leave Lobby</button>
      </div>
@@ -472,6 +494,7 @@ setTimeout(() => {
 
     <OnlineFriendInviteModal/>
 <LeaveSpectateRoomModal game_id={game_id!}/>
+<StakeMoneyModal/>
     <GeneralPurposeModal message={generalPurposeMessage} title={generalPurposeTitle} />
     </>
   )

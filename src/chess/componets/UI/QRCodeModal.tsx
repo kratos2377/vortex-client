@@ -38,7 +38,7 @@ const QRCodeModal = () => {
             setGeneratingQr(true)
             let game_room_data = {
               user_betting_on: user_betting_on_id,
-              bet_type: bet_type, //win or lose
+              bet_type: bet_type, //win or lose // by default keeping it win for now
               game_id: game_id,
               user_who_is_betting: user_details.id
           }
@@ -103,7 +103,7 @@ const QRCodeModal = () => {
       </div>
 
 
-      <div className="mb-4">
+      {/* <div className="mb-4">
         <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-2">Choose Bet Type:</label>
         <select
           id="type"
@@ -115,7 +115,7 @@ const QRCodeModal = () => {
           <option value="win">Win</option>
           <option value="lose">Lose</option>
         </select>
-      </div>
+      </div> */}
 
 
         {

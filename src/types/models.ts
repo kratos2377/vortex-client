@@ -16,6 +16,7 @@ export type UserGameRelation = {
      game_id: string,
      player_type: string,
      player_status: string,
+     has_staked: boolean
 }
 
 export type GameModel = {
