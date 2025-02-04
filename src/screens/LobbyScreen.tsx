@@ -11,8 +11,8 @@ import GeneralPurposeModal from '../components/screens/GeneralPurposeModal';
 import { IconLogout } from '@tabler/icons-react';
 import LeaveSpectateRoomModal from '../components/screens/LeaveSpectateRoomModal';
 import { WebSocketContext } from '../socket/websocket_provider';
-import QRCodeModal from '../chess/componets/UI/QRCodeModal';
 import StakeMoneyModal from '../components/screens/StakeMoneyModal';
+import {  useTimer } from 'react-timer-hook';
 
 
 const LobbyScreen = () => {
@@ -24,6 +24,7 @@ const LobbyScreen = () => {
   let {user_details} = useUserStore()
   let gameStore = useGameStore()
   const [readyState, setReadyState] = useState(false)
+  const [time , setTime] = useState(new Date())
   let [roomUsers , setLobbyUsers] = useState<UserGameRelation[]>([])
   const [updateStatusRequestSent, setUpdateRequestSent] = useState(false)
   const [lobbyRequestSent , setLobbyRequestSent] = useState(false)
@@ -38,6 +39,18 @@ const LobbyScreen = () => {
   const [alertType,setAlertType] = useState<"success" | "error">("success")
   const [alertMessage, setAlertMessage] = useState("")
 
+
+          const {
+            totalSeconds,
+            seconds,
+            restart: timeRestart
+          } = useTimer({ autoStart: false , expiryTimestamp: time , onExpire: () => {
+            //Remove Circular clock screen
+           // replayMatchAgainCall()
+           setEnableStakeButton(false)
+           document.getElementById("stake_money_modal")!.close()
+          } });
+  
   
 
 
@@ -296,6 +309,9 @@ setTimeout(() => {
 
 
      chann?.on("player-staking-available-user" , async (msg) => {
+      let new_time = new Date()
+      new_time.setTime(new_time.getSeconds() + 120)
+      timeRestart(new_time)
         setEnableStakeButton(true)
      })
 
@@ -306,6 +322,21 @@ setTimeout(() => {
       chann?.on("user-game-bet-event-user" , async (msg) => {
         const updatedUsers = roomUsers.map((user) => user.user_id === msg.user_betting_on ? {...user, has_staked: true} : user)
           setLobbyUsers([...updatedUsers])
+      })
+
+      chann?.on("player-did-not-staked-within-time-user" , async (msg) => {
+
+        setGeneralPurposeMessage("Players did not staked in time. Game is invalid now")
+        setGeneralPurposeTitle("Player Staking Failed")
+        document.getElementById("general_purpose_modal")!.showModal()
+  
+        setTimeout(() => {
+          
+        document.getElementById("general_purpose_modal")!.close()
+          navigate("/home")
+      } , 2000)
+
+
       })
 
      return () => {
@@ -320,6 +351,7 @@ setTimeout(() => {
       chann?.off("player-staking-available-user")
       chann?.off("player-stake-complete-user")
       chann?.off("user-game-bet-event-user")
+      chann?.off("player-did-not-staked-within-time-user")
      }
   })
 
@@ -484,7 +516,7 @@ setTimeout(() => {
    { updateStatusRequestSent ?  <span className="loading loading-spinner loading-md mr-1 ml-1"></span> :
         !readyState ?        <button className="btn btn-outline btn-success mr-1 ml-1" onClick={() => updatePlayerStatus("ready")} disabled={disableButton}>Ready!</button> :        <button className="btn btn-outline btn-error mr-1 ml-1" onClick={() => updatePlayerStatus("not-ready")} disabled={disableButton}>Not Ready</button> }
    
-   {gameStore.game_type === "staked" ?   <button className="btn btn-outline btn-success mr-1" disabled={enableStakeButton} onClick={() => document.getElementById("stake_money_modal")!.showModal()}>Stake in the game</button> : <></>}
+   {gameStore.game_type === "staked" ?   <button className="btn btn-outline btn-success mr-1" disabled={enableStakeButton} onClick={() => document.getElementById("stake_money_modal")!.showModal()}>Stake in the game <span className='ml-2'>{totalSeconds}</span></button> : <></>}
     <button className="btn btn-outline btn-info mr-1 ml-1" onClick={() => document.getElementById("online_friend_invite_modal")!.showModal()} disabled={disableButton}>Invite Friends</button>
      <button className="btn btn-outline btn-error ml-1" onClick={leaveLobby} disabled={disableButton}>Leave Lobby</button>
      </div>
