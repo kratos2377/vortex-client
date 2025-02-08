@@ -29,7 +29,7 @@ const LobbyScreen = () => {
   const [updateStatusRequestSent, setUpdateRequestSent] = useState(false)
   const [lobbyRequestSent , setLobbyRequestSent] = useState(false)
   const [disableButton ,setDisableButton] = useState(false)
-  const [enableStakeButton , setEnableStakeButton] = useState(false)
+  const [disbaleStakeButton , setDisbaleStakeButton] = useState(true)
   //General purpose states
   const [generalPurposeMessage, setGeneralPurposeMessage] = useState("")
   const [generalPurposeTitle, setGeneralPurposeTitle] = useState("")
@@ -47,7 +47,7 @@ const LobbyScreen = () => {
           } = useTimer({ autoStart: false , expiryTimestamp: time , onExpire: () => {
             //Remove Circular clock screen
            // replayMatchAgainCall()
-           setEnableStakeButton(false)
+           setDisbaleStakeButton(true)
            document.getElementById("stake_money_modal")!.close()
           } });
   
@@ -312,11 +312,11 @@ setTimeout(() => {
       let new_time = new Date()
       new_time.setTime(new_time.getSeconds() + 120)
       timeRestart(new_time)
-        setEnableStakeButton(true)
+        setDisbaleStakeButton(false)
      })
 
      chann?.on("player-stake-complete-user" , async (msg) => {
-      setEnableStakeButton(false)
+      setDisbaleStakeButton(true)
       })
 
       chann?.on("user-game-bet-event-user" , async (msg) => {
@@ -516,7 +516,7 @@ setTimeout(() => {
    { updateStatusRequestSent ?  <span className="loading loading-spinner loading-md mr-1 ml-1"></span> :
         !readyState ?        <button className="btn btn-outline btn-success mr-1 ml-1" onClick={() => updatePlayerStatus("ready")} disabled={disableButton}>Ready!</button> :        <button className="btn btn-outline btn-error mr-1 ml-1" onClick={() => updatePlayerStatus("not-ready")} disabled={disableButton}>Not Ready</button> }
    
-   {gameStore.game_type === "staked" ?   <button className="btn btn-outline btn-success mr-1" disabled={enableStakeButton} onClick={() => document.getElementById("stake_money_modal")!.showModal()}>Stake in the game <span className='ml-2'>{totalSeconds}</span></button> : <></>}
+   {gameStore.game_type === "staked" ?   <button className="btn btn-outline btn-success mr-1" disabled={disbaleStakeButton} onClick={() => document.getElementById("stake_money_modal")!.showModal()}>Stake in the game <span className='ml-2'>{seconds}</span></button> : <></>}
     <button className="btn btn-outline btn-info mr-1 ml-1" onClick={() => document.getElementById("online_friend_invite_modal")!.showModal()} disabled={disableButton}>Invite Friends</button>
      <button className="btn btn-outline btn-error ml-1" onClick={leaveLobby} disabled={disableButton}>Leave Lobby</button>
      </div>
