@@ -516,7 +516,7 @@ setTimeout(() => {
    { updateStatusRequestSent ?  <span className="loading loading-spinner loading-md mr-1 ml-1"></span> :
         !readyState ?        <button className="btn btn-outline btn-success mr-1 ml-1" onClick={() => updatePlayerStatus("ready")} disabled={disableButton}>Ready!</button> :        <button className="btn btn-outline btn-error mr-1 ml-1" onClick={() => updatePlayerStatus("not-ready")} disabled={disableButton}>Not Ready</button> }
    
-   {gameStore.game_type === "staked" ?   <button className="btn btn-outline btn-success mr-1" disabled={disbaleStakeButton} onClick={() => document.getElementById("stake_money_modal")!.showModal()}>Stake in the game <span className='ml-2'>{seconds}</span></button> : <></>}
+   {gameStore.game_type === "staked" ?   <button className="btn btn-outline btn-success mr-1" disabled={disbaleStakeButton} onClick={() => document.getElementById("stake_money_modal")!.showModal()}>Stake in the game <span className='ml-2'>{totalSeconds}</span></button> : <></>}
     <button className="btn btn-outline btn-info mr-1 ml-1" onClick={() => document.getElementById("online_friend_invite_modal")!.showModal()} disabled={disableButton}>Invite Friends</button>
      <button className="btn btn-outline btn-error ml-1" onClick={leaveLobby} disabled={disableButton}>Leave Lobby</button>
      </div>
