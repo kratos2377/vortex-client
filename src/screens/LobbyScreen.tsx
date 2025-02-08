@@ -47,8 +47,8 @@ const LobbyScreen = () => {
           } = useTimer({ autoStart: false , expiryTimestamp: time , onExpire: () => {
             //Remove Circular clock screen
            // replayMatchAgainCall()
-           setDisbaleStakeButton(true)
-           document.getElementById("stake_money_modal")!.close()
+          //  setDisbaleStakeButton(true)
+          //  document.getElementById("stake_money_modal")!.close()
           } });
   
   
