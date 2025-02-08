@@ -66,7 +66,7 @@ const LobbyScreen = () => {
     let val = await start_game(start_game_payload , user_token)
 
     if (!val.status) {
-      chann?.push("error-event", {game_id: game_id , error_message: val.error_message} )
+     // chann?.push("error-event", {game_id: game_id , error_message: val.error_message} )
       setAlertMessage(val.error_message)
       setAlertType("error")
       setIsAlert(true)
@@ -79,7 +79,7 @@ const LobbyScreen = () => {
       let turn_mapping_call = await get_user_turn_mappings( JSON.stringify({game_id: game_id}),user_token) 
 
       if (!turn_mapping_call.status) {
-        chann?.push("error-event", {game_id: game_id , error_message: val.error_message} )
+     //   chann?.push("error-event", {game_id: game_id , error_message: val.error_message} )
         setAlertMessage(val.error_message)
         setAlertType("error")
         setIsAlert(true)
