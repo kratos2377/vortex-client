@@ -109,8 +109,8 @@ export const OngoingGameCard = ({
             navigate("/lobby/" + game_id + "/" +  "chess" + "/" + val.game.host_id)
           } else{
             //For now  its right but we will change it in future accoring to the chess state
-            gameStore.updateChessState(val.game.chess_state)
-            startGameFromFen(val.game.chess_state)
+            gameStore.updateChessState(val.chess_state)
+            startGameFromFen(val.chess_state)
             
           document.getElementById("general_purpose_modal")!.close()
           navigate("/" +  "chess" + "/" + game_id + "/" + val.game.host_id)

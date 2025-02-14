@@ -375,7 +375,7 @@ export const get_game_details = async (payload: string, token: string) => {
     if(!recv_msg.result.success) {
       return { "error_message": recv_msg.error_message, "status": false  }
     } else {
-      return {"status": true, "game": recv_msg.game}
+      return {"status": true, "game": recv_msg.game, "chess_state": recv_msg.chess_state}
     }
   });
 
