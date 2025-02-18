@@ -2,9 +2,7 @@
 
 - [ ] Stop showing socket joining and not connected messages again and again
 
-
-
-
 - [ ] Add same Logic for Matched Users As well and finish it
 
 - [ ] FOr some API calls if we get an error the UI state does not change and the user only sees the loading state
+- [ ] Add Notification Toast 
