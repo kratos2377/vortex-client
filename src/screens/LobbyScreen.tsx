@@ -260,7 +260,8 @@ setTimeout(() => {
       document.getElementById("general_purpose_modal")!.showModal()
 
       setTimeout(() => {
-        
+        chann.leave()
+        setChannel(null)
       document.getElementById("general_purpose_modal")!.close()
         navigate("/home")
     } , 2000)
@@ -448,7 +449,8 @@ setTimeout(() => {
         document.getElementById("general_purpose_modal")!.showModal()
   
         setTimeout(() => {
-          
+          spectatorChannel.leave()
+          setSpectatorChannel(null)
         document.getElementById("general_purpose_modal")!.close()
           navigate("/home")
       } , 2000)

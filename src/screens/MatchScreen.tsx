@@ -156,7 +156,8 @@ const MatchScreen = () => {
               }).receive("error" , (msg) => {
                 console.log(`Error while leaving channel: ${msg}`)
               })
-    
+              
+              spectatorChannel.leave()
               setSpectatorChannel(null)
     
     

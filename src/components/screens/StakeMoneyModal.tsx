@@ -29,7 +29,8 @@ const StakeMoneyModal = () => {
                 user_betting_on: user_details.id,
                 bet_type: "win", //win or lose // by default keeping it win for now
                 game_id: game_id,
-                user_who_is_betting: user_details.id
+                user_who_is_betting: user_details.id,
+                is_player: true
             }
               let res = await invoke('generate_qr_for_bet', {gameRoomData: JSON.stringify(game_room_data)})
   

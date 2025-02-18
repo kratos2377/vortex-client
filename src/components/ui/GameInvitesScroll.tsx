@@ -35,7 +35,7 @@ export const GameInvitesScroll = ({setIsAlert , setAlertMessage , setAlertType}:
     const {game_invites} = useUserStore()
     const {setPlayerColor} = usePlayerStore()
     const translateFirst = useTransform(scrollYProgress, [0, 1], [0, -200]);
-    const {user_details} = useUserStore()
+    const {user_details , removeGameInviteModel , addGameInviteModel} = useUserStore()
     const [sortedUsers, setSortedUsers] = useState<GameInviteUserModel[]>([...game_invites]);
     const {updateGameId, updateGameName, updateGameType , updateUserPlayerCountId , updateIsSpectator} = useGameStore()
 
@@ -142,8 +142,7 @@ export const GameInvitesScroll = ({setIsAlert , setAlertMessage , setAlertType}:
     // Game Fix
     const removeGameInvite = async (invite_id: string) => {
       setRequestSent(true)
-        let new_array = sortedUsers.filter((el) => el.game_id !== invite_id)
-        setSortedUsers([...new_array])
+        removeGameInviteModel(invite_id)
         setRequestSent(false)
     }
 

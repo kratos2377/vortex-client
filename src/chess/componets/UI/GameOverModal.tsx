@@ -8,6 +8,7 @@ import { useChessMainStore, useGameStore } from '../../../state/UserAndGameState
 import useChessGameStore from '../../../state/chess_store/game'
 import { useNavigate } from 'react-router-dom'
 import { Color } from '../../models/Piece/types'
+import StakeMoneyModal from '../../../components/screens/StakeMoneyModal'
 
 
 interface GameOverModalProps {
@@ -21,7 +22,7 @@ interface GameOverModalProps {
 
 const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_user_id , loser_username , loser_user_id , game_id , user_id}) => {
 
-    const {chann , spectatorChannel} = useContext(WebSocketContext)
+    const {chann , spectatorChannel , setChannel , setSpectatorChannel} = useContext(WebSocketContext)
 
       const navigator = useNavigate()
           const currentTime = new Date();
@@ -47,6 +48,7 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
     const [won_user_replay , setWonUserReplay] = useState(false)
     const [replay_req_success , setReplayReqSuccess] = useState(false)
     const [leave_req_sent , setLeaveReqSent] = useState(false)
+    const [stakingAvailable , setStakingAvailable] = useState(false)
 
 
     const replayMatchAgainCall = async () => {
@@ -103,7 +105,7 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
 
 
         chann?.on("replay-false-event" , (msg) => {
-
+    
           setLeaveReqSent(true)
           setAlertMessage("Redirecting to Homescreen")
           setAlertType("success")
@@ -111,6 +113,8 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
   
   
           setTimeout(() => {
+            chann.leave()
+            setChannel(null)
             setIsAlert(false)
             document.getElementById('game_over_modal')!.close()
             navigator("/home")
@@ -128,12 +132,17 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
             setWonUserReplay(true)
           }
         })
+
+        chann?.on("player-staking-available" , async (msg) => {
+            setStakingAvailable(true)
+        })
         
 
         return () => {
           chann?.off("start-the-replay-match-for-users")
           chann?.off("replay-false-event")
           chann?.off("replay-accepted-by-user")
+          chann?.off("player-staking-available")
         }
 
     })
@@ -157,7 +166,8 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
 
 
         spectatorChannel?.on("replay-false-event-for-spectators" , (msg) => {
-
+          spectatorChannel.leave()
+          setSpectatorChannel(null)
           setLeaveReqSent(true)
           setAlertMessage("Redirecting to Homescreen")
           setAlertType("success")
@@ -235,31 +245,48 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
 
     </div>
 
-   {
-     requestSent ? <span className="loading loading-dots loading-lg"></span> :     
-     <div className="modal-action">
-       <div className='flex flex-row justify-end mt-2'>
-        <button type="submit" className="btn btn-outline btn-success" onClick={replayMatchAgainCall} disabled={replay_req_success || leave_req_sent} >Replay Match  <span>{seconds}</span></button>
-       <button type="button" className="ml-2 btn btn-outline btn-error" onClick={() => {
-        setLeaveReqSent(true)
-        chann?.push("replay-false" , {game_id: game_id , user_id: user_id})
-        setAlertMessage("Redirecting to Homescreen")
-        setAlertType("success")
-        setIsAlert(true)
+{
+  !gameStore.isSpectator ?    
+    requestSent ? <span className="loading loading-dots loading-lg"></span> :     
+    <div className="modal-action">
+      <div className='flex flex-row justify-end mt-2'>
 
 
-        setTimeout(() => {
-          setIsAlert(false)
-          document.getElementById('game_over_modal')!.close()
-          navigator("/home")
-        } , 2000)
+     {
+       gameStore.game_type === "staked" ? 
+       <button type="submit" className="btn btn-outline btn-success" disabled={!stakingAvailable}
+       onClick={() => 
+         document.getElementById("stake_money_modal")!.showModal()
+       }
+       
+       >Stake</button> : <></>
+     }
 
-       }}  disabled={replay_req_success || leave_req_sent}>Leave</button>
-       </div>
-    </div>
-   }
+       <button type="submit" className="btn btn-outline btn-success" onClick={replayMatchAgainCall} disabled={replay_req_success || leave_req_sent} >Replay Match  <span>{seconds}</span></button>
+      <button type="button" className="ml-2 btn btn-outline btn-error" onClick={() => {
+       setLeaveReqSent(true)
+       chann?.push("replay-false" , {game_id: game_id , user_id: user_id})
+       setAlertMessage("Redirecting to Homescreen")
+       setAlertType("success")
+       setIsAlert(true)
+
+
+       setTimeout(() => {
+        chann?.leave()
+         setChannel(null)
+         setIsAlert(false)
+         document.getElementById('game_over_modal')!.close()
+         navigator("/home")
+       } , 2000)
+
+      }}  disabled={replay_req_success || leave_req_sent}>Leave</button>
+      </div>
+   </div> : <></>
+  
+}
    </div>
    </dialog>
+   <StakeMoneyModal/>
    </>
   )
 }
