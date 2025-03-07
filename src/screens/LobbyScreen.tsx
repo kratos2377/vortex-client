@@ -458,6 +458,28 @@ setTimeout(() => {
 
       
 
+       spectatorChannel?.on("user-game-bet-spectator-event" , async (msg) => {
+        const updatedUsers = roomUsers.map((user) => user.user_id === msg.user_betting_on ? {...user, has_staked: true} : user)
+          setLobbyUsers([...updatedUsers])
+      })
+
+
+      
+      spectatorChannel?.on("player-did-not-staked-within-time-spectator" , async (msg) => {
+
+        setGeneralPurposeMessage("Players did not staked in time. Game is invalid now")
+        setGeneralPurposeTitle("Player Staking Failed")
+        document.getElementById("general_purpose_modal")!.showModal()
+  
+        setTimeout(() => {
+          
+        document.getElementById("general_purpose_modal")!.close()
+          navigate("/home")
+      } , 2000)
+
+
+      })
+
       return () => {
         spectatorChannel?.off("user-joined-room")
         spectatorChannel?.off("some-user-left")
@@ -466,6 +488,8 @@ setTimeout(() => {
         spectatorChannel?.off("start-game-for-spectators")
         spectatorChannel?.off("remove-all-users-for-spectators")
         spectatorChannel?.off("verifying-game-for-spectators")
+        spectatorChannel?.off("user-game-bet-spectator-event")
+        spectatorChannel?.off("player-did-not-staked-within-time-spectator")
       }
    
     

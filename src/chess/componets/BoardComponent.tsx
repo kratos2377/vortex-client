@@ -20,6 +20,8 @@ import { WebSocketContext } from "../../socket/websocket_provider";
 import GameOverModal from "./UI/GameOverModal";
 import { of } from "rxjs";
 import DefaultUserWinModal from "./UI/DefaultUserWinModal";
+import GameOverStalemateModal from "./UI/GameOverStalemateModal";
+import { useNavigate } from "react-router-dom";
 
 
 interface BoardComponentProps {
@@ -45,7 +47,7 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
     colorInCheckMate,
   } = useChessGameStore();
 
-
+const navigate = useNavigate();
   const {user_details} = useUserStore()
   const gameStore = useGameStore()
   const { currentTurn , setGameCondition, setTakenPieces, setCastlingBtn, setCurrentTurn , setMovesHistory, setGameCurrentStatus , restart } = useChessMainStore();
@@ -65,6 +67,9 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
   const [user_id_who_left , setUserIdWhoLeft] = useState("")
   const [user_username_who_left , setUserUsernameWhoLeft] = useState("")
 
+  //General purpose states
+  const [generalPurposeMessage, setGeneralPurposeMessage] = useState("")
+  const [generalPurposeTitle, setGeneralPurposeTitle] = useState("")
 
   const clickHandler = (cell: Cell): void => {
     if (gameStore.isSpectator) 
@@ -275,6 +280,31 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
 
     })
 
+
+    chann?.on("stalemate", (data) => {
+      if(data.color_in_stalemate === player_color) {
+
+        chann.push("stalemate-accepted" , {
+          color_in_stalemate: data.color_in_stalemate,
+          player_one_username: data.player_one_username,
+          player_one_user_id: data.player_one_user_id,
+          player_two_username: user_details.username,
+          player_two_user_id: user_details.id,
+          game_id: game_id
+        } )
+
+        setWinnerUsername(data.player_one_username)
+      setWinnerUserId(data.player_one_user_id)
+      setLoserUsername(data.player_two_username)
+      setLoserUserId(data.player_two_user_id)
+      setGameCurrentStatus("GAME-OVER")
+
+      document.getElementById("game_over_stalemate_modal")!.showModal()
+
+      }
+
+    })
+
     chann?.on("game-over" , (data) => {
 
 
@@ -287,6 +317,21 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
       document.getElementById("game_over_modal")!.showModal()
 
     })
+
+
+    chann?.on("game-over-stalemate" , (data) => {
+
+
+      setWinnerUsername(data.player_one_username)
+      setWinnerUserId(data.player_one_user_id)
+      setLoserUsername(data.player_two_username)
+      setLoserUserId(data.player_two_user_id)
+      setGameCurrentStatus("GAME-OVER")
+
+      document.getElementById("game_over_stalemate_modal")!.showModal()
+
+    })
+
 
 
     chann?.on("send-user-default-win-because-user-left" , (data) => {
@@ -305,11 +350,40 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
       
     })
 
+
+    chann?.on("game-over-time-for-users" , (data) => {
+      setWinnerUsername(data.winner_username)
+      setWinnerUserId(data.winner_user_id)
+      setLoserUsername(data.loser_username)
+      setLoserUserId(data.loser_user_id)
+      setGameCurrentStatus("GAME-OVER")
+
+      document.getElementById("game_over_modal")!.showModal()
+    })
+
+
+    chann?.on("player-did-not-staked-within-time-user" , async (msg) => {
+      document.getElementById("game_over_stalemate_modal")!.close()
+      document.getElementById("game_over_modal")!.close()
+      setGeneralPurposeMessage("Players did not staked in time. Game is invalid now")
+      setGeneralPurposeTitle("Player Staking Failed")
+      document.getElementById("general_purpose_modal")!.showModal()
+
+      setTimeout(() => {
+        
+      document.getElementById("general_purpose_modal")!.close()
+        navigate("/home")
+    } , 2000)
+    })
+
     return () => {
       chann?.off("send-user-game-event")
       chann?.off("checkmate")
       chann?.off("game-over")
+      chann?.off("game-over-stalemate")
       chann?.off("send-user-default-win-because-user-left")
+      chann?.off("game-over-time-for-users")
+      chann?.off("player-did-not-staked-within-time-user")
     };
 
   })
@@ -414,11 +488,53 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
       } , 500)
     })
   
+
+    spectatorChannel?.on("game-over-stalemate-for-spectators" , (data) => {
+
+
+      setWinnerUsername(data.player_one_username)
+      setWinnerUserId(data.player_one_user_id)
+      setLoserUsername(data.player_two_username)
+      setLoserUserId(data.player_two_user_id)
+      setGameCurrentStatus("GAME-OVER")
+
+      document.getElementById("game_over_stalemate_modal")!.showModal()
+
+    })
+
+
+    spectatorChannel?.on("game-over-time-for-spectators" , (data) => {
+      setWinnerUsername(data.winner_username)
+      setWinnerUserId(data.winner_user_id)
+      setLoserUsername(data.loser_username)
+      setLoserUserId(data.loser_user_id)
+      setGameCurrentStatus("GAME-OVER")
+
+      document.getElementById("game_over_modal")!.showModal()
+    })
+
+
+    spectatorChannel?.on("player-did-not-staked-within-time-spectator" , async (msg) => {
+      document.getElementById("game_over_stalemate_modal")!.close()
+      document.getElementById("game_over_modal")!.close()
+      setGeneralPurposeMessage("Players did not staked in time. Game is invalid now")
+      setGeneralPurposeTitle("Player Staking Failed")
+      document.getElementById("general_purpose_modal")!.showModal()
+
+      setTimeout(() => {
+        
+      document.getElementById("general_purpose_modal")!.close()
+        navigate("/home")
+    } , 2000)
+    })
   
     return () => {
       spectatorChannel?.off("user-game-move")
       spectatorChannel?.off("game-over-for-spectators")
+      spectatorChannel?.off("game-over-stalemate-for-spectators")
+      spectatorChannel?.off("game-over-time-for-spectators")
       spectatorChannel?.off("send-spectator-default-win-because-user-left")
+      spectatorChannel?.off("player-did-not-staked-within-time-spectator")
     }
   
   })
@@ -442,9 +558,28 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
 
   }
 
+
+  
+  const checkStalemateSocketPublisher =  (stalemateColor: Color | null) => {
+
+    if(gameStore.isSpectator)
+      return;
+
+    if(stalemateColor !== null && stalemateColor !== player_color) {
+
+        chann?.push("stalemate-move" , {
+          color_in_stalemate: stalemateColor,
+          player_one_username: user_details.username,
+          player_one_user_id: user_details.id,
+        })
+
+    }
+
+  }
   useEffect(() => {
     restart()
     useChessGameStore.subscribe( (state) => state.colorInCheckMate , checkMateSocketPublisher)
+    useChessGameStore.subscribe( (state) => state.colorInStaleMate , checkStalemateSocketPublisher)
   } , [])
 
 
@@ -490,6 +625,7 @@ const BoardComponent = ({game_id , user_id}:BoardComponentProps) => {
 
             <GameOverModal winner_username={winner_username} winner_user_id={winner_user_id} loser_username={loser_username} loser_user_id={loser_user_id} game_id={game_id} user_id={user_details.id}/>
 
+          <GameOverStalemateModal player_one_username={winner_username} player_one_user_id={winner_user_id} player_two_username={loser_username} player_two_user_id={loser_user_id} game_id={game_id} user_id={user_details.id}/>
           <DefaultUserWinModal user_id_who_left={user_id_who_left} user_username_who_left={user_username_who_left} user_id_who_won={user_id_who_won} user_username_who_won={user_username_who_won} game_id={game_id} user_id={user_id} />
 
     </>

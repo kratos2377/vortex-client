@@ -11,16 +11,16 @@ import { Color } from '../../models/Piece/types'
 import StakeMoneyModal from '../../../components/screens/StakeMoneyModal'
 
 
-interface GameOverModalProps {
-    winner_username: string,
-    winner_user_id: string,
-    loser_username: string,
-    loser_user_id: string,
+interface GameOverStalemateModalProps {
+    player_one_username: string,
+    player_one_user_id: string,
+    player_two_username: string,
+    player_two_user_id: string,
     game_id: string,
     user_id: string,
 }
 
-const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_user_id , loser_username , loser_user_id , game_id , user_id}) => {
+const GameOverStalemateModal: React.FC<GameOverStalemateModalProps> = ({ player_one_username , player_one_user_id , player_two_username , player_two_user_id , game_id , user_id}) => {
 
     const {chann , spectatorChannel , setChannel , setSpectatorChannel} = useContext(WebSocketContext)
 
@@ -51,7 +51,6 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
     const [stakingAvailable , setStakingAvailable] = useState(false)
     const [won_user_staked , setWonUserStaked] = useState(false)
     const [lost_player_staked , setLostPlayerStaked] = useState(false)
-    
 
     const replayMatchAgainCall = async () => {
 
@@ -126,11 +125,11 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
 
 
         chann?.on("replay-accepted-by-user" , (data) => {
-          if(loser_user_id === data.user_id) {
+          if(player_two_user_id === data.user_id) {
             setLostUserReplay(true)
           }
 
-          if(winner_user_id === data.user_id) {
+          if(player_one_user_id === data.user_id) {
             setWonUserReplay(true)
           }
         })
@@ -140,19 +139,21 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
         })
 
         chann?.on("player-stake-complete-user" , async (msg) => {
-          setStakingAvailable(false)
-          })
+            setStakingAvailable(false)
+            })
 
 
+            
           chann?.on("user-game-bet-event-user" , async (msg) => {
 
-            if (msg.user_betting_on === loser_user_id) {
+            if (msg.user_betting_on === player_two_user_id) {
               setLostPlayerStaked(true)
-            } else if(msg.user_betting_on === winner_user_id) {
+            } else if(msg.user_betting_on === player_one_user_id) {
               setWonUserStaked(true)
             }
 
           })
+        
         
 
         return () => {
@@ -202,11 +203,11 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
         })
 
         spectatorChannel?.on("replay-accepted-by-user-for-spectators" , (data) => {
-          if(loser_user_id === data.user_id) {
+          if(player_two_user_id === data.user_id) {
             setLostUserReplay(true)
           }
 
-          if(winner_user_id === data.user_id) {
+          if(player_one_user_id === data.user_id) {
             setWonUserReplay(true)
           }
         })
@@ -214,15 +215,15 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
 
         spectatorChannel?.on("user-game-bet-spectator-event" , async (msg) => {
 
-          if (msg.user_betting_on === loser_user_id) {
-            setLostPlayerStaked(true)
-          } else if(msg.user_betting_on === winner_user_id) {
-            setWonUserStaked(true)
-          }
+            if (msg.user_betting_on === player_two_user_id) {
+              setLostPlayerStaked(true)
+            } else if(msg.user_betting_on === player_one_user_id) {
+              setWonUserStaked(true)
+            }
 
-        })
+          })
         
-
+        
 
         return () => {
           spectatorChannel?.off("start-the-replay-match-for-spectators")
@@ -242,9 +243,8 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
 
   return (
      <>
-       <dialog id="game_over_modal" className="modal modal-bottom sm:modal-middle">
+       <dialog id="game_over_stalemate_modal" className="modal modal-bottom sm:modal-middle">
    <div className="modal-box">
-   <h3>{winner_username} won!</h3>
    {isAlert ? alertType==="success" ? <SuccessAlert message={alertMessage} /> : <ErrorAlert message={alertMessage} /> : <div></div>}
 
     <div className='flex flex-row space-x-2 h-1/2 justify-center mt-1'>
@@ -253,10 +253,10 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
         <div key={"winner-card-" + Math.floor(Math.random() * 1000)}  className="card w-30 bg-base-90 shadow-xl">
             <div>Won</div>
             <figure className="self-center avatar w-20 rounded-full ring ring-black ring-offset-base-100 ring-offset-2 mt-5">
-            <img src={`https://robohash.org/${winner_username}`} alt={`${winner_username}`}/>
+            <img src={`https://robohash.org/${player_one_username}`} alt={`${player_one_username}`}/>
             </figure>
             <div className="card-body items-center text-center">
-              <h2 className="card-title">{winner_username}</h2>
+              <h2 className="card-title">{player_one_username}</h2>
               {won_user_replay ? <h3 className='text-green-700'>Ready!</h3> : <h3 className='text-red-700'>Not Ready</h3>}
 
               {gameStore.game_type === "staked" ? 
@@ -268,11 +268,12 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
           <div key={"loser-card-" + Math.floor(Math.random() * 1000)}  className="card w-30 bg-base-90 shadow-xl">
             <div>Lost </div>
             <figure className="self-center avatar w-20 rounded-full ring ring-black ring-offset-base-100 ring-offset-2 mt-5">
-            <img src={`https://robohash.org/${loser_username}`} alt={`${loser_username}`}/>
+            <img src={`https://robohash.org/${player_two_username}`} alt={`${player_two_username}`}/>
             </figure>
             <div className="card-body items-center text-center">
-              <h2 className="card-title">{loser_username}</h2>
+              <h2 className="card-title">{player_two_username}</h2>
               {lost_user_replay ? <h3 className='text-green-700'>Ready!</h3> : <h3 className='text-red-700'>Not Ready</h3>}
+
               {gameStore.game_type === "staked" ? 
               lost_player_staked ? <h3 className='text-green-700'>Staked!</h3> : <h3 className='text-red-700'>Not Staked Yet</h3> : <></>}
             </div>
@@ -327,4 +328,4 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
   )
 }
 
-export default GameOverModal
+export default GameOverStalemateModal

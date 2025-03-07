@@ -35,7 +35,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
     const [userChannel , setUserChannel] = useState<S>(null);
     const [spectatorChannel , setSpectatorChannel] = useState<S>(null);
     const {addGameInviteModel , addFriendRequestModel} = useUserStore()
-    const {setBlackTimeLeft , setWhiteTimeLeft} = useChessMainStore()
+   // const {setBlackTimeLeft , setWhiteTimeLeft} = useChessMainStore()
     // useEffect(() => {
     //   if (!conn  && !isConnecting.current) {
     //     isConnecting.current = true;
