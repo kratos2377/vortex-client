@@ -75,35 +75,11 @@ const LobbyScreen = () => {
         setIsAlert(false)
       } , 4000)
     } else {
-    //  chann.push("get-turn-mappings" , {game_id: game_id}))
-      let turn_mapping_call = await get_user_turn_mappings( JSON.stringify({game_id: game_id}),user_token) 
 
-      if (!turn_mapping_call.status) {
-     //   chann?.push("error-event", {game_id: game_id , error_message: val.error_message} )
-        setAlertMessage(val.error_message)
-        setAlertType("error")
-        setIsAlert(true)
-        document.getElementById("general_purpose_modal")!.close()
-        setTimeout(() => {
-          setIsAlert(false)
-        } , 4000)
-      } else {
-        let new_player_turn: PlayerTurnMappingModel ={
-          game_id: game_id!,
-          turn_mappings: turn_mapping_call.user_turns.turn_mappings.map((el: string) => {
-            let new_mapping_model: TurnModel = {
-              count_id: el.count_id,
-              user_id: el.user_id,
-              username: el.username
-            }
-            return new_mapping_model
-          })
-        }
-        gameStore.updatePlayerTurnModel(new_player_turn)
         chann?.push("start-game-event" , {admin_id: host_user_id , game_id: game_id, game_name: gameStore.game_name})
         document.getElementById("general_purpose_modal")!.close()
         navigate("/" + gameStore.game_name + "/" + game_id  + "/" + host_user_id)
-      }
+    //  }
 
      
     }
@@ -291,24 +267,6 @@ setTimeout(() => {
      })
 
 
-     chann?.on("fetch-user-turn-mappings", async (msg) => {
-      let user_token = await getUserTokenFromStore()
-      let turn_mapping_call = await get_user_turn_mappings( JSON.stringify({game_id: game_id}),user_token) 
-      let new_player_turn: PlayerTurnMappingModel ={
-        game_id: game_id!,
-        turn_mappings: turn_mapping_call.user_turns.turn_mappings.map((el: string) => {
-          let new_mapping_model: TurnModel = {
-            count_id: el.count_id,
-            user_id: el.user_id,
-            username: el.username
-          }
-          return new_mapping_model
-        })
-      }
-      gameStore.updatePlayerTurnModel(new_player_turn)
-     })
-
-
      chann?.on("player-staking-available-user" , async (msg) => {
       let new_time = new Date()
       new_time.setTime(new_time.getSeconds() + 120)
@@ -348,7 +306,6 @@ setTimeout(() => {
       chann?.off("verifying-game")
       chann?.off("start-game-for-all")
       chann?.off("error-event-occured")
-      chann?.off("fetch-user-turn-mappings")
       chann?.off("player-staking-available-user")
       chann?.off("player-stake-complete-user")
       chann?.off("user-game-bet-event-user")
@@ -552,7 +509,7 @@ setTimeout(() => {
 
     <OnlineFriendInviteModal/>
 <LeaveSpectateRoomModal game_id={game_id!}/>
-<StakeMoneyModal/>
+<StakeMoneyModal is_replay={false}/>
     <GeneralPurposeModal message={generalPurposeMessage} title={generalPurposeTitle} />
     </>
   )

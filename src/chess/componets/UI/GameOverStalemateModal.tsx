@@ -323,7 +323,7 @@ const GameOverStalemateModal: React.FC<GameOverStalemateModalProps> = ({ player_
 }
    </div>
    </dialog>
-   <StakeMoneyModal/>
+   <StakeMoneyModal is_replay={true}/>
    </>
   )
 }

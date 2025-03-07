@@ -7,7 +7,12 @@ import { useGameStore, useUserStore } from '../../state/UserAndGameState'
 import { IconX } from '@tabler/icons-react'
 import { invoke } from '@tauri-apps/api/tauri'
 
-const StakeMoneyModal = () => {
+
+interface StakeMoneyModalProps {
+  is_replay: boolean
+}
+
+const StakeMoneyModal: React.FC<StakeMoneyModalProps> = ({is_replay}) => {
     const [requestSent, setRequestSent] = useState(false)
     
     //Alert states
@@ -30,7 +35,8 @@ const StakeMoneyModal = () => {
                 bet_type: "win", //win or lose // by default keeping it win for now
                 game_id: game_id,
                 user_who_is_betting: user_details.id,
-                is_player: true
+                is_player: true,
+                is_replay: is_replay
             }
               let res = await invoke('generate_qr_for_bet', {gameRoomData: JSON.stringify(game_room_data)})
   

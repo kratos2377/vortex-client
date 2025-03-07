@@ -153,7 +153,7 @@ export const useGameStore = create<GameState & GameAction> ((set) => ({
     player_turns_order: null,
     current_player_turn: '',
     isSpectator: false,
-    total_players: 0,
+    total_players: 2,
     index_turn: 0,
     chess_state: '',
     updateGameId: (game_id) => set((state) => ({...state, game_id: game_id})),

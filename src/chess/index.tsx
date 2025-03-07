@@ -24,7 +24,6 @@ const ChessGame = () => {
   const navigate = useNavigate()
   const {restart , setGameCurrentStatus} = useChessMainStore()
   const [loading, setLoading] = useState(true)
-  const { startGameFromFen } = useBoardStore();
   const gameStore = useGameStore()
   const {game_id, host_user_id} = useParams()
 
