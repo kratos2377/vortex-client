@@ -113,7 +113,7 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
           setAlertType("success")
           setIsAlert(true)
   
-  
+          gameStore.resetGameState()
           setTimeout(() => {
             chann.leave()
             setChannel(null)
@@ -191,7 +191,7 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
           setAlertMessage("Redirecting to Homescreen")
           setAlertType("success")
           setIsAlert(true)
-  
+          gameStore.resetGameState()
   
           setTimeout(() => {
             setIsAlert(false)
@@ -305,7 +305,7 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
        setAlertMessage("Redirecting to Homescreen")
        setAlertType("success")
        setIsAlert(true)
-
+       gameStore.resetGameState()
 
        setTimeout(() => {
         chann?.leave()

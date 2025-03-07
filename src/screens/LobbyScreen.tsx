@@ -112,6 +112,7 @@ setIsAlert(false)
   }
 
   const getAllLobbyPlayers = async () => {
+    gameStore.resetPlayerTurnModel()
     setLobbyRequestSent(true)
     let user_token = await getUserTokenFromStore()
     let payload = JSON.stringify({game_id: game_id, host_user_id: host_user_id})
@@ -131,6 +132,19 @@ setIsAlert(false)
         }
         return model
       })
+
+      let turn_models = val.lobby_users.map((el: UserGameRelation , ind: number) => {
+        let model: TurnModel ={
+          count_id: ind,
+          user_id: el.user_id,
+          username: el.username,
+        }
+        gameStore.updatePlayerTurnModel(model)
+        return model
+      })
+
+
+
       setLobbyUsers([...parse_models])
     }
 
@@ -204,13 +218,14 @@ setTimeout(() => {
     chann?.on("user-left-room" , (msg) => {
       let parsed_payload = msg
       let update_users = roomUsers.filter((el) => el.user_id !== parsed_payload.user_id)
+      
+      gameStore.removeGamePlayer(parsed_payload.user_id)
       setLobbyUsers([...update_users])
      })
 
      chann?.on("new-user-joined", (msg) => {
-      console.log("New uSer Joined Socket Payload is")
-      console.log(msg)
       let parsed_payload = msg
+      gameStore.updatePlayerTurnModel({count_id: 2 , user_id: parsed_payload.user_id, username: parsed_payload.username })
       let new_user: UserGameRelation = {
         user_id: parsed_payload.user_id,
         username: parsed_payload.username,
@@ -321,8 +336,8 @@ setTimeout(() => {
 
 
       spectatorChannel?.on("user-joined-room" , (payload ) => {
-        console.log("Recieved new user joined room call")
-        console
+
+        gameStore.updatePlayerTurnModel({count_id: 2 , user_id: payload.user_id, username: payload.username })
 
         let new_user: UserGameRelation = {
           user_id: payload.user_id,

@@ -14,6 +14,7 @@ import { WebSocketContext } from "../../socket/websocket_provider";
 import { socket } from "../../socket/socket";
 import useBoardStore from "../../state/chess_store/board";
 import { Color } from "../../types/chess_types/constants";
+import { TurnModel } from "../../types/models";
 
 export const OngoingGameCard = ({
   items,
@@ -98,7 +99,16 @@ export const OngoingGameCard = ({
             setBlackTimeLeft(parsed_data.time_left_for_black_player)
             setWhiteTimeLeft(parsed_data.time_left_for_white_player)
             setCurrentTurn(parsed_data.current_turn === "white" ? Color.WHITE : Color.BLACK)
-          
+            
+            let turn_models = parsed_data.turn_map.map((el) => {
+              let model: TurnModel ={
+                count_id: el.count_id,
+                user_id: el.user_id,
+                username: el.username,
+              }
+              gameStore.updatePlayerTurnModel(model)
+              return model
+            })
             
           })
   

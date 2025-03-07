@@ -4,6 +4,7 @@ import { MQTT_GAME_EVENTS } from '../../utils/mqtt_event_names'
 import { invoke } from '@tauri-apps/api/tauri'
 import { useNavigate } from 'react-router-dom'
 import { WebSocketContext } from '../../socket/websocket_provider'
+import { useGameStore } from '../../state/UserAndGameState'
 
 interface LeaveSpectateRoomModalProps {
   game_id: string,
@@ -13,6 +14,7 @@ const LeaveSpectateRoomModal = ({game_id}: LeaveSpectateRoomModalProps) => {
   const {spectatorChannel , setSpectatorChannel} = useContext(WebSocketContext)
     const [requestSent, setRequestSent] = useState(false)
     const navigate = useNavigate()
+    const gameStore = useGameStore()
     //Alert states
     const [isAlert, setIsAlert] = useState(false)
     const [alertType, setAlertType] = useState<"success" | "error">("success")
@@ -28,7 +30,7 @@ const LeaveSpectateRoomModal = ({game_id}: LeaveSpectateRoomModalProps) => {
         setSpectatorChannel(null)
       }
      
-
+      gameStore.resetGameState()
       setTimeout(() => {
         setRequestSent(false)
         navigate("/home")

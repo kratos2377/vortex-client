@@ -5,7 +5,7 @@ import  ChessLogo  from "../assets/chess.svg";
 import  ScribbleLogo from "../assets/scribble.svg";
 import { useGameStore, useUserStore } from '../state/UserAndGameState';
 import usePlayerStore from '../state/chess_store/player';
-import { UserGameRelation } from '../types/models';
+import { TurnModel, UserGameRelation } from '../types/models';
 import { IconLogout, IconPokerChip } from '@tabler/icons-react';
 import { ErrorAlert, SuccessAlert } from '../components/ui/AlertMessage';
 import StakeMoneyModal from '../components/screens/StakeMoneyModal';
@@ -216,6 +216,7 @@ const MatchScreen = () => {
     }
 
     const getAllLobbyPlayers = async () => {
+      gameStore.resetPlayerTurnModel()
         setLobbyRequestSent(true)
         let user_token = await getUserTokenFromStore()
         let payload = JSON.stringify({game_id: game_id, host_user_id: "random-host-id"})
@@ -230,10 +231,24 @@ const MatchScreen = () => {
               username: el.username,
               game_id: el.game_id,
               player_type: el.player_type,
-              player_status: el.player_status
+              player_status: el.player_status,
+              has_staked: false
             }
             return model
           })
+
+          let turn_models = val.lobby_users.map((el: UserGameRelation , ind: number) => {
+            let model: TurnModel ={
+              count_id: ind,
+              user_id: el.user_id,
+              username: el.username,
+            }
+            gameStore.updatePlayerTurnModel(model)
+            return model
+          })
+          
+          
+
           setLobbyUsers([...parse_models])
 
           if(!gameStore.isSpectator) {

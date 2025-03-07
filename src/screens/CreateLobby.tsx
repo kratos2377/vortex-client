@@ -26,7 +26,7 @@ const CreateLobby = ( { setCurrentScreen } : { setCurrentScreen:  React.Dispatch
   const [redirecting, setRedirecting] = useState(false)
   const {user_details} = useUserStore()
   const {setPlayerColor} = usePlayerStore()
-  const {updateGameId, updateGameName, updateGameType , updateUserPlayerCountId , updateIsSpectator} = useGameStore()
+  const {updateGameId, updateGameName, updateGameType , updateUserPlayerCountId , updateIsSpectator , updatePlayerTurnModel} = useGameStore()
   const handleGameChange = (event: any) => {
     setSelectedGame(event.target.value);
   };
@@ -104,6 +104,9 @@ const CreateLobby = ( { setCurrentScreen } : { setCurrentScreen:  React.Dispatch
         setRequestSent(false)
 
         setChannel(new_chann)
+
+        updatePlayerTurnModel({count_id: 1 , user_id: user_details.id , username: user_details.username})
+        
   
         setTimeout(() => {
           setIsAlert(false)

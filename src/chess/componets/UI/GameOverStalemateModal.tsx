@@ -111,7 +111,7 @@ const GameOverStalemateModal: React.FC<GameOverStalemateModalProps> = ({ player_
           setAlertMessage("Redirecting to Homescreen")
           setAlertType("success")
           setIsAlert(true)
-  
+          gameStore.resetGameState()
   
           setTimeout(() => {
             chann.leave()
@@ -193,7 +193,7 @@ const GameOverStalemateModal: React.FC<GameOverStalemateModalProps> = ({ player_
           setAlertType("success")
           setIsAlert(true)
   
-  
+          gameStore.resetGameState()
           setTimeout(() => {
             setIsAlert(false)
             document.getElementById('game_over_modal')!.close()
@@ -306,7 +306,7 @@ const GameOverStalemateModal: React.FC<GameOverStalemateModalProps> = ({ player_
        setAlertMessage("Redirecting to Homescreen")
        setAlertType("success")
        setIsAlert(true)
-
+       gameStore.resetGameState()
 
        setTimeout(() => {
         chann?.leave()

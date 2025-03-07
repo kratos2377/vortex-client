@@ -48,7 +48,6 @@ export type GameInviteUserModel = {
 export type PlayerModel = {
     player_user_id: string,
     player_username: string,
-    player_turn_count: string,
 
 }
 

@@ -37,26 +37,7 @@ export const GameInvitesScroll = ({setIsAlert , setAlertMessage , setAlertType}:
     const translateFirst = useTransform(scrollYProgress, [0, 1], [0, -200]);
     const {user_details , removeGameInviteModel , addGameInviteModel} = useUserStore()
     const [sortedUsers, setSortedUsers] = useState<GameInviteUserModel[]>([...game_invites]);
-    const {updateGameId, updateGameName, updateGameType , updateUserPlayerCountId , updateIsSpectator} = useGameStore()
-
-    // const startGameInviteListener = async () => {
-    //   const unlisten =  listen<MQTTPayload>(GAME_INVITE_EVENT, (event) => {
-    //       let parsed_payload = JSON.parse(event.payload.message) 
-    //       let model: GameInviteUserModel = {
-    //         game_id: parsed_payload.game_id,
-    //         user_id: parsed_payload.user_who_send_request_id,
-    //         username: parsed_payload.user_who_send_request_username,
-    //         game_name: parsed_payload.game_name,
-    //         game_type: parsed_payload.game_type
-    //       }
-    //       setSortedUsers([model, ...sortedUsers])
-    //       addGameInviteModel(model)
-    // });
-
-    // return () => {
-    //   unlisten.then(f => f())
-    // }
-    // }
+    const {updateGameId, updateGameName, updateGameType , updateUserPlayerCountId , updateIsSpectator , updatePlayerTurnModel} = useGameStore()
 
 
     const updateGameInvites = (invites: GameInviteUserModel[]) => {
