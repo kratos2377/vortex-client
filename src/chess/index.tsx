@@ -79,8 +79,8 @@ const ChessGame = () => {
         setGeneralPurposeMessage("Host Left. Redirecting to home screen")
         setGeneralPurposeTitle("Redirecting")
         document.getElementById("general_purpose_modal")!.showModal()
-      let payload = JSON.stringify({topic_name: MQTT_GAME_EVENTS + game_id});
-      await invoke('unsubscribe_to_game_topic', {payload:  payload})
+      // let payload = JSON.stringify({topic_name: MQTT_GAME_EVENTS + game_id});
+      // await invoke('unsubscribe_to_game_topic', {payload:  payload})
     setTimeout(() => {
       
       document.getElementById("general_purpose_modal")!.close()
