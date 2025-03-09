@@ -55,7 +55,7 @@ const DefaultUserWinModal: React.FC<DefaultUserWinModalProps> = ({ user_id_who_l
       </div>
 
 
-          <div className='mt-2'>
+          <div className='my-3 mx-1'>
                 It looks like {user_username_who_left} got disconnected/left. If the game was staked all the spectators will be given their money back if they placed a bet.
                 The winner will get the original staked amount.
           </div>

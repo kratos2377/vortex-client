@@ -336,6 +336,10 @@ const navigate = useNavigate();
 
     chann?.on("send-user-default-win-because-user-left" , (data) => {
 
+
+      console.log("DEFAULT USER WIN DATA RECEIVED")
+      console.log(data)
+
       setUserIdWhoLeft(data.user_id_who_left)
       setUserIdWhoWon(data.user_id_who_won)
 

@@ -5,8 +5,6 @@ import { invoke } from "@tauri-apps/api/tauri"
 
 export const login_call = async (payload: string) => {
     let val = await invoke('login_request', { payload: payload  }).then((message) => {
-      console.log("MSG IS")
-      console.log(message)
         let recv_msg = JSON.parse(message as string)
         
           if(!recv_msg.result.success) {
@@ -309,9 +307,9 @@ export const get_lobby_players = async (payload: string, token: string) => {
     logMessage("get_lobby_players", recv_msg)
 
     if(!recv_msg.result.success) {
-      return { "error_message": recv_msg.error_message, "status": false  }
+      return { error_message: recv_msg.error_message, status: false  }
     } else {
-      return {"status": true, "lobby_users": recv_msg.lobby_users}
+      return { status: true, lobby_users: recv_msg.lobby_users}
     }
   });
 
@@ -325,9 +323,9 @@ export const destroy_lobby_and_game = async (payload: string, token: string) => 
     logMessage("destroy_lobby_and_game", recv_msg)
 
     if(!recv_msg.result.success) {
-      return { "error_message": recv_msg.error_message, "status": false  }
+      return { error_message: recv_msg.error_message, status: false  }
     } else {
-      return {"status": true}
+      return { status: true}
     }
   });
 
@@ -341,9 +339,9 @@ export const start_game = async (payload: string, token: string) => {
     logMessage("start_game", recv_msg)
 
     if(!recv_msg.result.success) {
-      return { "error_message": recv_msg.error_message, "status": false  }
+      return { error_message: recv_msg.error_message, status: false  }
     } else {
-      return {"status": true}
+      return {status: true}
     }
   });
 
@@ -357,9 +355,9 @@ export const get_user_turn_mappings = async (payload: string, token: string) => 
     logMessage("get_user_turn_mappings", recv_msg)
 
     if(!recv_msg.result.success) {
-      return { "error_message": recv_msg.error_message, "status": false  }
+      return { error_message: recv_msg.error_message, status: false  }
     } else {
-      return {"status": true, "user_turns": recv_msg.user_turns}
+      return {status: true, user_turns: recv_msg.user_turns}
     }
   });
 
@@ -373,9 +371,9 @@ export const get_game_details = async (payload: string, token: string) => {
     logMessage("get_game_details", recv_msg)
 
     if(!recv_msg.result.success) {
-      return { "error_message": recv_msg.error_message, "status": false  }
+      return { error_message: recv_msg.error_message, status: false  }
     } else {
-      return {"status": true, "game": recv_msg.game, "chess_state": recv_msg.chess_state}
+      return {status: true, game: recv_msg.game, chess_state: recv_msg.chess_state}
     }
   });
 
@@ -390,9 +388,9 @@ export const create_match_making_ticket = async (payload: string, token: string)
     logMessage("create_match_making_ticket", recv_msg)
 
     if(!recv_msg.result.success) {
-      return { "error_message": recv_msg.error_message, "status": false  }
+      return { error_message: recv_msg.error_message, status: false  }
     } else {
-      return {"status": true}
+      return {status: true}
     }
   });
 
@@ -407,9 +405,9 @@ export const delete_match_making_ticket = async (payload: string, token: string)
     logMessage("delete_match_making_ticket", recv_msg)
 
     if(!recv_msg.result.success) {
-      return { "error_message": recv_msg.error_message, "status": false  }
+      return { error_message: recv_msg.error_message, status: false  }
     } else {
-      return {"status": true}
+      return {status: true}
     }
   });
 
@@ -423,9 +421,9 @@ export const replay_game = async (payload: string, token: string) => {
     logMessage("replay_game", recv_msg)
 
     if(!recv_msg.result.success) {
-      return { "error_message": recv_msg.error_message, "status": false  }
+      return { error_message: recv_msg.error_message, status: false  }
     } else {
-      return {"status": true}
+      return {status: true}
     }
   });
 

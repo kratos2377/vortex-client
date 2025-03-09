@@ -10,9 +10,11 @@ import { invoke } from '@tauri-apps/api/tauri'
 import { listen } from '@tauri-apps/api/event'
 import { MQTTPayload } from '../types/models'
 import GeneralPurposeModal from '../components/screens/GeneralPurposeModal'
-import { IconQrcode } from '@tabler/icons-react'
+import { IconLogout, IconQrcode } from '@tabler/icons-react'
 import { WebSocketContext } from '../socket/websocket_provider'
 import QRCodeModal from './componets/UI/QRCodeModal'
+import LeaveSpectateRoomModal from '../components/screens/LeaveSpectateRoomModal'
+import { Color } from './models/Piece/types'
 
 
 const ChessGame = () => {
@@ -22,7 +24,7 @@ const ChessGame = () => {
   const [generalPurposeMessage, setGeneralPurposeMessage] = useState("")
   const [generalPurposeTitle, setGeneralPurposeTitle] = useState("")
   const navigate = useNavigate()
-  const {restart , setGameCurrentStatus} = useChessMainStore()
+  const {restart , setGameCurrentStatus , currentTurn} = useChessMainStore()
   const [loading, setLoading] = useState(true)
   const gameStore = useGameStore()
   const {game_id, host_user_id} = useParams()
@@ -119,8 +121,26 @@ const ChessGame = () => {
 
       {/* <GameInformation /> */}
 
-        <><div className='w-[100vh] p-2 flex flex-row justify-center'>
+        <>
+        
+        {
+                gameStore.isSpectator ?         <div className='absolute top-5 left-5'>
+                <button className='justify-start' onClick={() => 
+
+      document.getElementById("leave_spectate_modal")!.showModal()
+
+        }>
+        <IconLogout />
+        </button>
+        </div> : <></>
+        }
+        
+        
+        <div className='w-[100vh] p-2 flex flex-row justify-center'>
         <GameInformation />
+        <div className="m-3">
+          {currentTurn === Color.WHITE ? "White's Turn" : "Black's Turn"}
+        </div>
               <BoardComponent game_id={game_id!} user_id={user_details.id}/>
     
       
@@ -131,7 +151,8 @@ const ChessGame = () => {
 
 
 
-        <div className='absolute top-5 right-5'>
+        {
+                gameStore.isSpectator ?         <div className='absolute top-5 right-5'>
                 <button className='justify-start' onClick={() => 
 
         document.getElementById("qr_bet_modal")!.showModal()
@@ -139,7 +160,8 @@ const ChessGame = () => {
         }>
         <IconQrcode/>
         </button>
-        </div>
+        </div> : <></>
+        }
 
     
               <GeneralPurposeModal message={generalPurposeMessage} title={generalPurposeTitle}/>
@@ -148,6 +170,8 @@ const ChessGame = () => {
           
 
           <QRCodeModal/>
+
+          <LeaveSpectateRoomModal game_id={gameStore.game_id}/>
     </div>
     }
     </>
