@@ -15,6 +15,7 @@ import { WebSocketContext } from '../socket/websocket_provider'
 import QRCodeModal from './componets/UI/QRCodeModal'
 import LeaveSpectateRoomModal from '../components/screens/LeaveSpectateRoomModal'
 import { Color } from './models/Piece/types'
+import PlayersInfoCockPit from './componets/UI/PlayersInfoCockpit'
 
 
 const ChessGame = () => {
@@ -117,7 +118,9 @@ const ChessGame = () => {
         <span className="loading loading-dots loading-lg"></span>
       </div> :    <div className="chess_app">
 
-
+      <div className="mt-5">
+          {currentTurn === Color.WHITE ? "White's Turn" : "Black's Turn"}
+        </div>
 
       {/* <GameInformation /> */}
 
@@ -138,9 +141,8 @@ const ChessGame = () => {
         
         <div className='w-[100vh] p-2 flex flex-row justify-center'>
         <GameInformation />
-        <div className="m-3">
-          {currentTurn === Color.WHITE ? "White's Turn" : "Black's Turn"}
-        </div>
+
+          <PlayersInfoCockPit/>
               <BoardComponent game_id={game_id!} user_id={user_details.id}/>
     
       
