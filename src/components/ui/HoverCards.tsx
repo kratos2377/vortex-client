@@ -116,7 +116,13 @@ export const OngoingGameCard = ({
           if(val.game.description === "LOBBY") {
             
           document.getElementById("general_purpose_modal")!.close()
-            navigate("/lobby/" + game_id + "/" +  "chess" + "/" + val.game.host_id)
+         
+            if (val.game.is_match) {
+              navigate("/match/" + game_id + "/chess")
+            } else {
+              navigate("/lobby/" + game_id + "/" +  "chess" + "/" + val.game.host_id)
+            }
+
           } else{
             //For now  its right but we will change it in future accoring to the chess state
             console.log("Chess state received is")

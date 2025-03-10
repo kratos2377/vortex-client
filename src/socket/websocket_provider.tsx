@@ -70,8 +70,6 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
           })
 
           userChannel.on("friend-request-event", (msg) => {
-            console.log("Friend Request Event Recieved")
-            console.log(msg)
 
             let model: FriendRequestModel = {
               friend_request_id: msg.friend_request_id,

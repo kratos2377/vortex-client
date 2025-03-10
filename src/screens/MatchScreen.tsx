@@ -37,6 +37,7 @@ const MatchScreen = () => {
   const [isAlert , setIsAlert] = useState(false)
   const [alertType,setAlertType] = useState<"success" | "error">("success")
   const [alertMessage, setAlertMessage] = useState("")
+  const [disbaleStakeButton , setDisbaleStakeButton] = useState(true)
 
   //time
       const {
@@ -80,6 +81,39 @@ const MatchScreen = () => {
           navigate("/" + gameType + "/" + game_id + "/" + "random_host_id")
          })
     
+
+
+
+     chann?.on("player-staking-available-user" , async (msg) => {
+      let new_time = new Date()
+      new_time.setTime(new_time.getSeconds() + 120)
+      restart(new_time)
+        setDisbaleStakeButton(false)
+     })
+
+     chann?.on("player-stake-complete-user" , async (msg) => {
+      setDisbaleStakeButton(true)
+      })
+
+      chann?.on("user-game-bet-event-user" , async (msg) => {
+        const updatedUsers = roomUsers.map((user) => user.user_id === msg.user_betting_on ? {...user, has_staked: true} : user)
+          setLobbyUsers([...updatedUsers])
+      })
+
+      chann?.on("player-did-not-staked-within-time-user" , async (msg) => {
+
+        setGeneralPurposeMessage("Players did not staked in time. Game is invalid now")
+        setGeneralPurposeTitle("Player Staking Failed")
+        document.getElementById("general_purpose_modal")!.showModal()
+  
+        setTimeout(() => {
+          
+        document.getElementById("general_purpose_modal")!.close()
+          navigate("/home")
+      } , 2000)
+
+    })
+
     
         
     
@@ -87,6 +121,10 @@ const MatchScreen = () => {
           chann?.off("user-status-update")
           chann?.off("error-event-occured")
           chann?.off("start-the-match-for-users")
+          chann?.off("player-staking-available-user")
+          chann?.off("player-stake-complete-user")
+          chann?.off("user-game-bet-event-user")
+          chann?.off("player-did-not-staked-within-time-user")
          }
 
   } )
@@ -173,6 +211,29 @@ const MatchScreen = () => {
           spectatorChannel?.on("start-the-match-for-spectators" , () => {
             navigate("/" + gameType + "/" + game_id + "/" + "random_host_id")
           })
+
+
+          spectatorChannel?.on("user-game-bet-spectator-event" , async (msg) => {
+            const updatedUsers = roomUsers.map((user) => user.user_id === msg.user_betting_on ? {...user, has_staked: true} : user)
+              setLobbyUsers([...updatedUsers])
+          })
+    
+    
+          
+          spectatorChannel?.on("player-did-not-staked-within-time-spectator" , async (msg) => {
+    
+            setGeneralPurposeMessage("Players did not staked in time. Game is invalid now")
+            setGeneralPurposeTitle("Player Staking Failed")
+            document.getElementById("general_purpose_modal")!.showModal()
+      
+            setTimeout(() => {
+              
+            document.getElementById("general_purpose_modal")!.close()
+              navigate("/home")
+          } , 2000)
+    
+    
+          })
     
           return () => {
             spectatorChannel?.off("user-joined-room")
@@ -180,6 +241,8 @@ const MatchScreen = () => {
             spectatorChannel?.off("user-status-event")
             spectatorChannel?.off("game-general-event")
             spectatorChannel?.off("start-the-match-for-spectators")
+            spectatorChannel?.off("user-game-bet-spectator-event")
+            spectatorChannel?.off("player-did-not-staked-within-time-spectator")
           }
 
 
@@ -302,6 +365,7 @@ const MatchScreen = () => {
             <div className="card-body items-center text-center">
               <h2 className="card-title">{val.username}</h2>
               {val.player_status === "ready" ? <h3 className='text-green'>Ready!</h3> : <h3 className='text-red'>Not Ready</h3>}
+              {gameStore.game_type === "staked" ? val.has_staked ? <h3 className='text-green-700'>Staked!</h3> : <h3 className='text-red-700'>Not Staked</h3>  : <></>}
             </div>
           </div>
           ))
@@ -315,6 +379,8 @@ const MatchScreen = () => {
    { updateStatusRequestSent ?  <span className="loading loading-spinner loading-md mr-1 ml-1"></span> :
              <button className="btn btn-outline btn-success mr-1 ml-1" onClick={() => updatePlayerStatus("ready")} disabled={disableButton}>Ready!  <span>{totalSeconds}</span></button> }
 
+{gameStore.game_type === "staked" ?   <button className="btn btn-outline btn-success mr-1" disabled={disbaleStakeButton} onClick={() => document.getElementById("stake_money_modal")!.showModal()}>Stake in the game <span className='ml-2'>{totalSeconds}</span></button> : <></>}
+
      </div>
   }
   </div>
@@ -322,6 +388,7 @@ const MatchScreen = () => {
 
 <LeaveSpectateRoomModal game_id={game_id!}/>
     <GeneralPurposeModal message={generalPurposeMessage} title={generalPurposeTitle} />
+    <StakeMoneyModal is_replay={false} is_match={true}/>
     </>
   )
 }

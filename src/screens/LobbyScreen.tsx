@@ -524,7 +524,7 @@ setTimeout(() => {
 
     <OnlineFriendInviteModal/>
 <LeaveSpectateRoomModal game_id={game_id!}/>
-<StakeMoneyModal is_replay={false}/>
+<StakeMoneyModal is_replay={false} is_match={false}/>
     <GeneralPurposeModal message={generalPurposeMessage} title={generalPurposeTitle} />
     </>
   )

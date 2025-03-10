@@ -10,9 +10,10 @@ import { invoke } from '@tauri-apps/api/tauri'
 
 interface StakeMoneyModalProps {
   is_replay: boolean
+  is_match: boolean
 }
 
-const StakeMoneyModal: React.FC<StakeMoneyModalProps> = ({is_replay}) => {
+const StakeMoneyModal: React.FC<StakeMoneyModalProps> = ({is_replay , is_match}) => {
     const [requestSent, setRequestSent] = useState(false)
     
     //Alert states
@@ -36,7 +37,8 @@ const StakeMoneyModal: React.FC<StakeMoneyModalProps> = ({is_replay}) => {
                 game_id: game_id,
                 user_who_is_betting: user_details.id,
                 is_player: true,
-                is_replay: is_replay
+                is_replay: is_replay,
+                is_match: is_match
             }
               let res = await invoke('generate_qr_for_bet', {gameRoomData: JSON.stringify(game_room_data)})
   

@@ -132,7 +132,7 @@ const FindMatchScreen = ({ setCurrentScreen } : { setCurrentScreen:  React.Dispa
           updateGameId(msg.game_id)
           updateGameName("chess")
           //will update this accordingly
-          updateGameType("normal")
+          updateGameType(msg.game_type)
           updateUserPlayerCountId(msg.index + 1)
           
          setTimeout(() => {
