@@ -28,6 +28,11 @@ const LobbyScreen = () => {
   let [roomUsers , setLobbyUsers] = useState<UserGameRelation[]>([])
   const [updateStatusRequestSent, setUpdateRequestSent] = useState(false)
   const [lobbyRequestSent , setLobbyRequestSent] = useState(false)
+
+  //Disbale Button states
+  const [disableUpdateStatusButton , setDisableUpdateStatusButton] = useState(false)
+  const [disableInviteFriendsButton, setDisableInviteFriendsButton] = useState(false)
+  const [disableLeaveLobbyButton , setDisableLeaveLobbyButton] = useState(false)
   const [disableButton ,setDisableButton] = useState(false)
   const [disbaleStakeButton , setDisbaleStakeButton] = useState(true)
   //General purpose states
@@ -313,6 +318,20 @@ setTimeout(() => {
 
       })
 
+
+      chann?.on("send-user-left-event" , (data) => {
+        setGeneralPurposeMessage("A Player left the lobby")
+        setGeneralPurposeTitle("A Player left the lobby. Redirecting to HomeScreen")
+        document.getElementById("general_purpose_modal")!.showModal()
+  
+        setTimeout(() => {
+          
+        document.getElementById("general_purpose_modal")!.close()
+          navigate("/home")
+      } , 2000)
+      })
+  
+
      return () => {
       chann?.off("user-left-room")
       chann?.off("new-user-joined")
@@ -325,6 +344,7 @@ setTimeout(() => {
       chann?.off("player-stake-complete-user")
       chann?.off("user-game-bet-event-user")
       chann?.off("player-did-not-staked-within-time-user")
+      chann?.off("send-user-left-event")
      }
   })
 
@@ -452,6 +472,20 @@ setTimeout(() => {
 
       })
 
+
+      spectatorChannel?.on("send-spectator-left-event" , (data) => {
+        setGeneralPurposeMessage("A Player left the lobby")
+        setGeneralPurposeTitle("A Player left the lobby. Redirecting to HomeScreen")
+        document.getElementById("general_purpose_modal")!.showModal()
+  
+        setTimeout(() => {
+          
+        document.getElementById("general_purpose_modal")!.close()
+          navigate("/home")
+      } , 2000)
+      })
+  
+
       return () => {
         spectatorChannel?.off("user-joined-room")
         spectatorChannel?.off("some-user-left")
@@ -462,6 +496,7 @@ setTimeout(() => {
         spectatorChannel?.off("verifying-game-for-spectators")
         spectatorChannel?.off("user-game-bet-spectator-event")
         spectatorChannel?.off("player-did-not-staked-within-time-spectator")
+        spectatorChannel?.off("send-spectator-left-event")
       }
    
     
@@ -512,11 +547,11 @@ setTimeout(() => {
     gameStore.isSpectator ? <></> :      <div className='mt-3 self-center'>
     {user_details.id === host_user_id ?  <button className="btn btn-outline btn-success mr-1" disabled={disableButton} onClick={startTheGame}>Start the Game</button> : <div></div>}
    { updateStatusRequestSent ?  <span className="loading loading-spinner loading-md mr-1 ml-1"></span> :
-        !readyState ?        <button className="btn btn-outline btn-success mr-1 ml-1" onClick={() => updatePlayerStatus("ready")} disabled={disableButton}>Ready!</button> :        <button className="btn btn-outline btn-error mr-1 ml-1" onClick={() => updatePlayerStatus("not-ready")} disabled={disableButton}>Not Ready</button> }
+        !readyState ?        <button className="btn btn-outline btn-success mr-1 ml-1" onClick={() => updatePlayerStatus("ready")} disabled={disableUpdateStatusButton}>Ready!</button> :        <button className="btn btn-outline btn-error mr-1 ml-1" onClick={() => updatePlayerStatus("not-ready")} disabled={disableUpdateStatusButton}>Not Ready</button> }
    
    {gameStore.game_type === "staked" ?   <button className="btn btn-outline btn-success mr-1" disabled={disbaleStakeButton} onClick={() => document.getElementById("stake_money_modal")!.showModal()}>Stake in the game <span className='ml-2'>{totalSeconds}</span></button> : <></>}
-    <button className="btn btn-outline btn-info mr-1 ml-1" onClick={() => document.getElementById("online_friend_invite_modal")!.showModal()} disabled={disableButton}>Invite Friends</button>
-     <button className="btn btn-outline btn-error ml-1" onClick={leaveLobby} disabled={disableButton}>Leave Lobby</button>
+    <button className="btn btn-outline btn-info mr-1 ml-1" onClick={() => document.getElementById("online_friend_invite_modal")!.showModal()} disabled={disableInviteFriendsButton}>Invite Friends</button>
+     <button className="btn btn-outline btn-error ml-1" onClick={leaveLobby} disabled={disableLeaveLobbyButton}>Leave Lobby</button>
      </div>
   }
   </div>

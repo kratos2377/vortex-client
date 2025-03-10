@@ -114,6 +114,19 @@ const MatchScreen = () => {
 
     })
 
+
+    chann?.on("send-user-left-event" , (data) => {
+      setGeneralPurposeMessage("A Player left the lobby")
+      setGeneralPurposeTitle("A Player left the lobby. Redirecting to HomeScreen")
+      document.getElementById("general_purpose_modal")!.showModal()
+
+      setTimeout(() => {
+        
+      document.getElementById("general_purpose_modal")!.close()
+        navigate("/home")
+    } , 2000)
+    })
+
     
         
     
@@ -125,6 +138,7 @@ const MatchScreen = () => {
           chann?.off("player-stake-complete-user")
           chann?.off("user-game-bet-event-user")
           chann?.off("player-did-not-staked-within-time-user")
+          chann?.off("send-user-left-event")
          }
 
   } )
@@ -234,6 +248,20 @@ const MatchScreen = () => {
     
     
           })
+
+
+          spectatorChannel?.on("send-spectator-left-event" , (data) => {
+            setGeneralPurposeMessage("A Player left the lobby")
+            setGeneralPurposeTitle("A Player left the lobby. Redirecting to HomeScreen")
+            document.getElementById("general_purpose_modal")!.showModal()
+      
+            setTimeout(() => {
+              
+            document.getElementById("general_purpose_modal")!.close()
+              navigate("/home")
+          } , 2000)
+          })
+      
     
           return () => {
             spectatorChannel?.off("user-joined-room")
@@ -243,6 +271,7 @@ const MatchScreen = () => {
             spectatorChannel?.off("start-the-match-for-spectators")
             spectatorChannel?.off("user-game-bet-spectator-event")
             spectatorChannel?.off("player-did-not-staked-within-time-spectator")
+            spectatorChannel?.off("send-spectator-left-event")
           }
 
 
