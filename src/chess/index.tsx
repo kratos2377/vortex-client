@@ -118,7 +118,7 @@ const ChessGame = () => {
         <span className="loading loading-dots loading-lg"></span>
       </div> :    <div className="chess_app">
 
-      <div className="mt-5">
+      <div className="absolute top-8">
           {currentTurn === Color.WHITE ? "White's Turn" : "Black's Turn"}
         </div>
 
