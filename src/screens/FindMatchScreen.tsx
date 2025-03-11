@@ -73,9 +73,11 @@ const FindMatchScreen = ({ setCurrentScreen } : { setCurrentScreen:  React.Dispa
       const new_time = new Date()
       new_time.setTime(new_time.getSeconds() + 300)
       setTime(new_time)
-
-      document.getElementById("find_a_match_circular_modal")!.showModal()
       setStartClock(true)
+      setTimeout(() => {
+       
+      document.getElementById("find_a_match_circular_modal")!.close()
+      } , 200)
 
 
 
