@@ -129,6 +129,18 @@ const MatchScreen = () => {
     } , 2000)
     })
 
+
+    chann?.on("start-the-match-error-for-users" , (data) => {
+      setGeneralPurposeMessage("Some error occured while starting the match")
+      setGeneralPurposeTitle("Error Occured. Redirecting to HomeScreen")
+      document.getElementById("general_purpose_modal")!.showModal()
+
+      setTimeout(() => {
+        
+      document.getElementById("general_purpose_modal")!.close()
+        navigate("/home")
+    } , 2000)
+    })
     
         
     
@@ -136,6 +148,7 @@ const MatchScreen = () => {
           chann?.off("user-status-update")
           chann?.off("error-event-occured")
           chann?.off("start-the-match-for-users")
+          chann?.off("start-the-match-error-for-users")
           chann?.off("player-staking-available-user")
           chann?.off("player-stake-complete-user")
           chann?.off("user-game-bet-event-user")
@@ -263,6 +276,20 @@ const MatchScreen = () => {
               navigate("/home")
           } , 2000)
           })
+
+
+          spectatorChannel?.on("start-the-match-error-for-spectators" , (data) => {
+            setGeneralPurposeMessage("Some error occured while starting the match")
+            setGeneralPurposeTitle("Error Occured. Redirecting to HomeScreen")
+            document.getElementById("general_purpose_modal")!.showModal()
+      
+            setTimeout(() => {
+              
+            document.getElementById("general_purpose_modal")!.close()
+              navigate("/home")
+          } , 2000)
+          })
+          
       
     
           return () => {
@@ -271,6 +298,7 @@ const MatchScreen = () => {
             spectatorChannel?.off("user-status-event")
             spectatorChannel?.off("game-general-event")
             spectatorChannel?.off("start-the-match-for-spectators")
+            spectatorChannel?.off("start-the-match-error-for-spectators")
             spectatorChannel?.off("user-game-bet-spectator-event")
             spectatorChannel?.off("player-did-not-staked-within-time-spectator")
             spectatorChannel?.off("send-spectator-left-event")
