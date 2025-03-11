@@ -28,7 +28,7 @@ const ChessGame = () => {
   const {restart , setGameCurrentStatus , currentTurn} = useChessMainStore()
   const [loading, setLoading] = useState(true)
   const gameStore = useGameStore()
-  const {game_id, host_user_id} = useParams()
+  const {game_id} = useParams()
 
   const {user_details} = useUserStore()
 
@@ -103,9 +103,8 @@ const ChessGame = () => {
 
 
   useEffect(() => {
-    //restart()
+    restart()
     setGameCurrentStatus("IN-PROGRESS")
-
     setLoading(false)
   } , [])
 

@@ -78,7 +78,9 @@ const MatchScreen = () => {
     
 
          chann?.on("start-the-match-for-users" , () => {
-          navigate("/" + gameType + "/" + game_id + "/" + "random_host_id")
+
+
+          navigate("/chess/" + game_id + "/random_host_id")
          })
     
 
