@@ -581,7 +581,7 @@ const navigate = useNavigate();
 
   }
   useEffect(() => {
-    restart()
+   // restart()
     useChessGameStore.subscribe( (state) => state.colorInCheckMate , checkMateSocketPublisher)
     useChessGameStore.subscribe( (state) => state.colorInStaleMate , checkStalemateSocketPublisher)
   } , [])
