@@ -111,6 +111,10 @@ setIsAlert(false)
    
       setLobbyUsers([...updatedUsers])
       setReadyState(!readyState)
+
+      if(gameStore.game_type === "staked") {
+        setDisableUpdateStatusButton(true)
+      }
     }
 
     setUpdateRequestSent(false)
@@ -296,6 +300,9 @@ setTimeout(() => {
 
      chann?.on("player-stake-complete-user" , async (msg) => {
       setDisbaleStakeButton(true)
+      setDisableInviteFriendsButton(true)
+      setDisableLeaveLobbyButton(true)
+      
       })
 
       chann?.on("user-game-bet-event-user" , async (msg) => {
