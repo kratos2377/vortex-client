@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import React from 'react'
+import { useUserStore } from '../../state/UserAndGameState';
 
 const transition = {
   type: "spring",
@@ -26,8 +27,20 @@ export const MenuItem = ({
   children?: React.ReactNode;
   
 }) => {
+  const {changeIsMatchmaking , is_matchmaking_in_progress} = useUserStore()
   return (
-    <div onMouseEnter={() => setActive(item) } onClick={() => setCurrentScreen(screen_name)} className="relative ">
+    <div onMouseEnter={() => setActive(item) } onClick={() => {
+      if(screen_name === "find-match") {
+
+        if(!is_matchmaking_in_progress) {
+          setCurrentScreen(screen_name)
+        }
+
+      } else {
+        changeIsMatchmaking(false)
+        setCurrentScreen(screen_name)
+      }
+    }} className="relative ">
       <motion.p
         transition={{ duration: 0.3 }}
         className="cursor-pointer text-black hover:opacity-[0.9] dark:text-white"

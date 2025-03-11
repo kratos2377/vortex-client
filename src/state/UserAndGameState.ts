@@ -11,6 +11,7 @@ import { FriendRequestModel, GameInviteUserModel, PlayerModel, PlayerTurnMapping
 type UserState  = {
     user_id: string,
     score: number,
+    is_matchmaking_in_progress: boolean,
     token: string,
     in_game: boolean,
     user_details: UserModel,
@@ -64,6 +65,7 @@ type UserAction = {
     addFriendRequestModel: (friend_req: FriendRequestModel) => void
     removeFriendRequestModel: (friend_req_id: string) => void
     update_in_game_status: (status: boolean) => void
+    changeIsMatchmaking: (matchmaking_status: boolean) => void
     resetUserModelState: () => void
   }
 
@@ -108,6 +110,7 @@ type UserAction = {
 
 export const useUserStore = create<UserState & UserAction>()(subscribeWithSelector((set) => ({
     user_id: '',
+    is_matchmaking_in_progress: false,
     in_game: false,
     user_details: {
       username: '',
@@ -133,10 +136,12 @@ export const useUserStore = create<UserState & UserAction>()(subscribeWithSelect
     removeFriendRequestModel: (friend_req_id) => set((state)  => ({...state, friend_invites: state.friend_invites.filter((ele) => ele.friend_request_id !== friend_req_id)})),
     changeUserUsername: (username) => set((state) => ({...state, user_details: {...state.user_details , username: username}})),
     update_in_game_status: (status) => set((state) => ({...state, in_game: status})),
+    changeIsMatchmaking: (matchmaking_status) => set((state) => ({...state , is_matchmaking_in_progress: matchmaking_status})),
     resetUserModelState: () => set((state) => ({...state, user_details:  {
       username: '',
       email: '',
       first_name: '',
+      is_matchmaking_in_progress: false,
       last_name: '',
       id: '',
       score: 0,

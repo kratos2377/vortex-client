@@ -12,10 +12,10 @@ interface CircularClockProps  {
   setCurrentScreen: React.Dispatch<React.SetStateAction<string>>
 }
 const CircularClock: React.FC<CircularClockProps> = ({setCircularClock , setCurrentScreen}) => {
-    
+      
       const [time , setTime] = useState(new Date())
       const [isComplete, setIsComplete] = useState(false);
-      const {user_details} = useUserStore()
+      const {user_details , changeIsMatchmaking} = useUserStore()
       const [requestSent , setRequestSent] = useState(false)
 
         const [isAlert , setIsAlert] = useState(false)
@@ -72,6 +72,7 @@ const CircularClock: React.FC<CircularClockProps> = ({setCircularClock , setCurr
               } , 2000)
               
           } else {
+            changeIsMatchmaking(false)
 
             pause()
             setAlertMessage("Redirecting to Ongoing GameScreen")

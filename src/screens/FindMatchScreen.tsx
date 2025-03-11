@@ -26,7 +26,7 @@ const FindMatchScreen = ({ setCurrentScreen } : { setCurrentScreen:  React.Dispa
   const [startClock , setStartClock] = useState(false)
   const [time , setTime] = useState(new Date())
   const [selectedType, setSelectedType] = useState('normal');
-  const {user_details} = useUserStore()
+  const {user_details , changeIsMatchmaking} = useUserStore()
   const [matchFound , setMatchFound] = useState(false)
   const {setPlayerColor} = usePlayerStore()
   const navigate = useNavigate()
@@ -37,6 +37,7 @@ const FindMatchScreen = ({ setCurrentScreen } : { setCurrentScreen:  React.Dispa
   };
 
   const handleCreateMatchTicket = async () => {
+    changeIsMatchmaking(true)
     resetGameState()
     setRequestSent(true)
     
@@ -56,7 +57,7 @@ const FindMatchScreen = ({ setCurrentScreen } : { setCurrentScreen:  React.Dispa
 
       setRequestSent(false)
       setIsAlert(true)
-
+      changeIsMatchmaking(false)
       setTimeout(() => {
         setIsAlert(false)
       }, 2000)
@@ -125,7 +126,7 @@ const FindMatchScreen = ({ setCurrentScreen } : { setCurrentScreen:  React.Dispa
 
          updateOpponentUserId(msg.opponent_details.user_id)
          updateOpponentUsername(msg.opponent_details.username)
-    
+         changeIsMatchmaking(false)
    
          let chann_new = socket.channel("game:chess:" + msg.game_id , {})
    
@@ -170,7 +171,7 @@ const FindMatchScreen = ({ setCurrentScreen } : { setCurrentScreen:  React.Dispa
 
 
     userChannel?.on("match-game-error-for-users" , (msg) => {
-
+      changeIsMatchmaking(false)
       setAlertType("error")
       setAlertMessage("Some Error Occured While making the game model for the match")
       setIsAlert(true)
