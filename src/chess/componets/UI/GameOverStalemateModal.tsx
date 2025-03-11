@@ -41,7 +41,7 @@ const GameOverStalemateModal: React.FC<GameOverStalemateModalProps> = ({ player_
     const [isAlert , setIsAlert] = useState(false)
     const [alertMessage , setAlertMessage] = useState("")
     const gameStore = useGameStore()
-    const {restart , setGameCurrentStatus , setCurrentTurn} = useChessMainStore()
+    const {restart , setGameCurrentStatus , setCurrentTurn , setWhiteTimeLeft , setBlackTimeLeft} = useChessMainStore()
     const [alertType , setAlertType] = useState<"success" | "error">("success")
     const [requestSent , setRequestSent] = useState(false)
     const [lost_user_replay , setLostUserReplay] = useState(false)
@@ -99,6 +99,8 @@ const GameOverStalemateModal: React.FC<GameOverStalemateModalProps> = ({ player_
 
         chann?.on("start-the-replay-match-for-users" , (msg) => {
             restart()
+            setWhiteTimeLeft(900)
+            setBlackTimeLeft(900)
             setGameCurrentStatus("IN-PROGRESS")
             setCurrentTurn(Color.WHITE)
             document.getElementById('game_over_modal')!.close()
@@ -179,6 +181,8 @@ const GameOverStalemateModal: React.FC<GameOverStalemateModalProps> = ({ player_
 
         spectatorChannel?.on("start-the-replay-match-for-spectators" , (msg) => {
              restart()
+             setWhiteTimeLeft(900)
+             setBlackTimeLeft(900)
              setGameCurrentStatus("IN-PROGRESS")
              setCurrentTurn(Color.WHITE)
              document.getElementById('game_over_modal')!.close()
@@ -235,6 +239,7 @@ const GameOverStalemateModal: React.FC<GameOverStalemateModalProps> = ({ player_
 
 
     useEffect(() => {
+      setReplayReqSuccess(false)
       const new_time = new Date()
       new_time.setTime(new_time.getSeconds() + 20)
       timeRestart(new_time)

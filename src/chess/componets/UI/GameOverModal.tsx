@@ -41,7 +41,7 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
     const [isAlert , setIsAlert] = useState(false)
     const [alertMessage , setAlertMessage] = useState("")
     const gameStore = useGameStore()
-    const {restart , setGameCurrentStatus , setCurrentTurn} = useChessMainStore()
+    const {restart , setGameCurrentStatus , setCurrentTurn , setBlackTimeLeft , setWhiteTimeLeft} = useChessMainStore()
     const [alertType , setAlertType] = useState<"success" | "error">("success")
     const [requestSent , setRequestSent] = useState(false)
     const [lost_user_replay , setLostUserReplay] = useState(false)
@@ -61,6 +61,7 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
             let payload = JSON.stringify({user_id: user_id , game_id: game_id , status: "ready"})
             let res = await replay_game(payload ,token)
 
+            
 
             if (!res.status) {
 
@@ -100,8 +101,11 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
 
         chann?.on("start-the-replay-match-for-users" , (msg) => {
             restart()
+            setWhiteTimeLeft(900)
+            setBlackTimeLeft(900)
             setGameCurrentStatus("IN-PROGRESS")
             setCurrentTurn(Color.WHITE)
+            
             document.getElementById('game_over_modal')!.close()
         })
 
@@ -178,6 +182,8 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
 
         spectatorChannel?.on("start-the-replay-match-for-spectators" , (msg) => {
              restart()
+             setWhiteTimeLeft(900)
+             setBlackTimeLeft(900)
              setGameCurrentStatus("IN-PROGRESS")
              setCurrentTurn(Color.WHITE)
              document.getElementById('game_over_modal')!.close()
@@ -234,6 +240,7 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
 
 
     useEffect(() => {
+      setReplayReqSuccess(false)
       const new_time = new Date()
       new_time.setTime(new_time.getSeconds() + 20)
       timeRestart(new_time)
