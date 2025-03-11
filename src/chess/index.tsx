@@ -103,7 +103,9 @@ const ChessGame = () => {
 
 
   useEffect(() => {
+    if (!gameStore.isSpectator) {
     restart()
+    }
     setGameCurrentStatus("IN-PROGRESS")
     setLoading(false)
   } , [])
@@ -153,7 +155,7 @@ const ChessGame = () => {
 
 
         {
-                gameStore.isSpectator ?         <div className='absolute top-5 right-5'>
+                gameStore.isSpectator && gameStore.game_type === "staked" ?         <div className='absolute top-5 right-5'>
                 <button className='justify-start' onClick={() => 
 
         document.getElementById("qr_bet_modal")!.showModal()
