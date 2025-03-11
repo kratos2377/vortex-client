@@ -16,7 +16,7 @@ const FindMatchScreen = ({ setCurrentScreen } : { setCurrentScreen:  React.Dispa
 
 
   const {userChannel , setChannel} = useContext(WebSocketContext)
-  const {updateGameId, updateGameName, updateGameType , updateUserPlayerCountId , updateIsSpectator} = useGameStore()
+  const {updateGameId, updateGameName, updateGameType , updateUserPlayerCountId , updateIsSpectator , resetGameState} = useGameStore()
   const [isOpen , setIsOpen] = useState(true)
   const [isAlert , setIsAlert] = useState(false)
   const [alertType , setAlertType] = useState<"error" | "success">("success")
@@ -37,6 +37,7 @@ const FindMatchScreen = ({ setCurrentScreen } : { setCurrentScreen:  React.Dispa
   };
 
   const handleCreateMatchTicket = async () => {
+    resetGameState()
     setRequestSent(true)
     
     setIsAlert(false)

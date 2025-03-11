@@ -26,7 +26,7 @@ const CreateLobby = ( { setCurrentScreen } : { setCurrentScreen:  React.Dispatch
   const [redirecting, setRedirecting] = useState(false)
   const {user_details} = useUserStore()
   const {setPlayerColor} = usePlayerStore()
-  const {updateGameId, updateGameName, updateGameType , updateUserPlayerCountId , updateIsSpectator , updatePlayerTurnModel} = useGameStore()
+  const {updateGameId, updateGameName, updateGameType , updateUserPlayerCountId , updateIsSpectator , updatePlayerTurnModel , resetGameState} = useGameStore()
   const handleGameChange = (event: any) => {
     setSelectedGame(event.target.value);
   };
@@ -84,6 +84,7 @@ const CreateLobby = ( { setCurrentScreen } : { setCurrentScreen:  React.Dispatch
 
     } else {
       restart()
+      resetGameState()
 
       let new_chann = socket.channel("game:chess:" + val.game_id);
 

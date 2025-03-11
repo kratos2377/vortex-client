@@ -37,7 +37,7 @@ export const GameInvitesScroll = ({setIsAlert , setAlertMessage , setAlertType}:
     const translateFirst = useTransform(scrollYProgress, [0, 1], [0, -200]);
     const {user_details , removeGameInviteModel , addGameInviteModel} = useUserStore()
     const [sortedUsers, setSortedUsers] = useState<GameInviteUserModel[]>([...game_invites]);
-    const {updateGameId, updateGameName, updateGameType , updateUserPlayerCountId , updateIsSpectator , updatePlayerTurnModel} = useGameStore()
+    const {updateGameId, updateGameName, updateGameType , updateUserPlayerCountId , updateIsSpectator , updatePlayerTurnModel , resetGameState} = useGameStore()
 
 
     const updateGameInvites = (invites: GameInviteUserModel[]) => {
@@ -70,6 +70,7 @@ export const GameInvitesScroll = ({setIsAlert , setAlertMessage , setAlertType}:
       } else {
 
         restart()
+        resetGameState()
 
         let chann_new = socket.channel("game:chess:" + game_id , {})
 
