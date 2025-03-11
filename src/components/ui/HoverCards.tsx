@@ -129,8 +129,10 @@ export const OngoingGameCard = ({
             console.log(val.chess_state)
             startGameFromFen(val.chess_state)
             
-          document.getElementById("general_purpose_modal")!.close()
+            setTimeout(() => {
+              document.getElementById("general_purpose_modal")!.close()
           navigate("/" +  "chess" + "/" + game_id + "/" + val.game.host_id)
+            } , 100)
           }
         }).receive("error" , () => {
 

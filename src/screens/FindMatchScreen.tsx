@@ -105,7 +105,9 @@ const FindMatchScreen = ({ setCurrentScreen } : { setCurrentScreen:  React.Dispa
       setStartClock(false)
       setMatchFound(true)
 
+     setTimeout(() => {
       document.getElementById("redirecting_to_match_modal")!.showModal()
+     } , 100)
       
     })
 

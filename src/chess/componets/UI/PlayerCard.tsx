@@ -6,7 +6,7 @@ const PlayerCard = ({ username , color}: {username: String, color: Color}) => {
   const displayName = username?.trim() ? username : "Player";
   
   return (
-    <div className="flex w-[10vh] h-[10vh] flex-col items-center bg-gray-800 rounded-lg p-4 shadow-md my-2">
+    <div className="flex w-30 h-30 flex-col items-center bg-gray-800 rounded-lg p-4 shadow-md my-3">
       {/* Avatar */}
       <div className="w-20 h-20 rounded-full overflow-hidden bg-gray-700 mb-2">
 

@@ -17,7 +17,7 @@ const PlayersInfoCockPit = () => {
 
   return isGameActive ? (
     <div
-    className={`h-[20vh] w-[20vh] flex flex-col items-center justify-center`}
+    className={`h-[50vh] w-[25vh] flex flex-col items-center justify-center`}
     >
       <PlayerCard username={player_turns_order[1].username} color={Color.BLACK}/>
       <PlayerCard  username={player_turns_order[0].username} color={Color.WHITE}/>
