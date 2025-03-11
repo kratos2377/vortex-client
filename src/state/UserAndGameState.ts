@@ -188,7 +188,7 @@ export const useGameStore = create<GameState & GameAction> ((set) => ({
     resetPlayerTurnModel: () => set((state) => ({...state , player_turns_order: []})),
     updateChessState: (chess_state) => set((state) => ({...state, chess_state: chess_state })),
     addMultiplePlayers: (players) => set((state) => ({...state, game_players: [...players] })),
-    resetGameState: () => set((state) => ({...state, user_details:  {
+    resetGameState: () => set((state) => ({
       game_id: '',
       game_name: '',
       game_type: '',
@@ -200,7 +200,7 @@ export const useGameStore = create<GameState & GameAction> ((set) => ({
       total_players: 0,
       index_turn: 0,
       chess_state: ''
-    }}))
+    }))
   }))
 
 
