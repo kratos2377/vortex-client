@@ -101,11 +101,15 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
 
         chann?.on("start-the-replay-match-for-users" , (msg) => {
             restart()
+            setWonUserReplay(false)
+            setWonUserStaked(false)
+            setLostPlayerStaked(false)
+            setLostUserReplay(false)
             setWhiteTimeLeft(900)
             setBlackTimeLeft(900)
             setGameCurrentStatus("IN-PROGRESS")
             setCurrentTurn(Color.WHITE)
-            
+            setReplayReqSuccess(false)
             document.getElementById('game_over_modal')!.close()
         })
 
@@ -182,6 +186,11 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
 
         spectatorChannel?.on("start-the-replay-match-for-spectators" , (msg) => {
              restart()
+             setReplayReqSuccess(false)
+             setWonUserReplay(false)
+             setWonUserStaked(false)
+             setLostPlayerStaked(false)
+             setLostUserReplay(false)
              setWhiteTimeLeft(900)
              setBlackTimeLeft(900)
              setGameCurrentStatus("IN-PROGRESS")
@@ -305,7 +314,7 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
        >Stake</button> : <></>
      }
 
-       <button type="submit" className="btn btn-outline btn-success" onClick={replayMatchAgainCall} disabled={replay_req_success || leave_req_sent} >Replay Match  <span>{seconds}</span></button>
+       <button type="submit" className="btn btn-outline btn-success" onClick={replayMatchAgainCall} disabled={replay_req_success || leave_req_sent} >Replay Match  <span>{totalSeconds}</span></button>
       <button type="button" className="ml-2 btn btn-outline btn-error" onClick={() => {
        setLeaveReqSent(true)
        chann?.push("replay-false" , {game_id: game_id , user_id: user_id})

@@ -99,10 +99,15 @@ const GameOverStalemateModal: React.FC<GameOverStalemateModalProps> = ({ player_
 
         chann?.on("start-the-replay-match-for-users" , (msg) => {
             restart()
+            setWonUserReplay(false)
+            setWonUserStaked(false)
+            setLostPlayerStaked(false)
+            setLostUserReplay(false)
             setWhiteTimeLeft(900)
             setBlackTimeLeft(900)
             setGameCurrentStatus("IN-PROGRESS")
             setCurrentTurn(Color.WHITE)
+            setReplayReqSuccess(false)
             document.getElementById('game_over_modal')!.close()
         })
 
@@ -181,10 +186,15 @@ const GameOverStalemateModal: React.FC<GameOverStalemateModalProps> = ({ player_
 
         spectatorChannel?.on("start-the-replay-match-for-spectators" , (msg) => {
              restart()
+             setWonUserReplay(false)
+             setWonUserStaked(false)
+             setLostPlayerStaked(false)
+             setLostUserReplay(false)
              setWhiteTimeLeft(900)
              setBlackTimeLeft(900)
              setGameCurrentStatus("IN-PROGRESS")
              setCurrentTurn(Color.WHITE)
+             setReplayReqSuccess(false)
              document.getElementById('game_over_modal')!.close()
         })
 
