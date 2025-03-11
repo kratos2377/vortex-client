@@ -249,7 +249,7 @@ const GameOverStalemateModal: React.FC<GameOverStalemateModalProps> = ({ player_
 
 
     useEffect(() => {
-      setReplayReqSuccess(false)
+   //   setReplayReqSuccess(false)
       const new_time = new Date()
       new_time.setTime(new_time.getSeconds() + 20)
       timeRestart(new_time)
@@ -336,6 +336,33 @@ const GameOverStalemateModal: React.FC<GameOverStalemateModalProps> = ({ player_
    </div> : <></>
   
 }
+
+{
+  gameStore.isSpectator ? <div className="modal-action"> 
+  
+  <button type="button" className="ml-2 btn btn-outline btn-success" onClick={() => {
+
+          spectatorChannel?.leave()
+          setSpectatorChannel(null)
+          setLeaveReqSent(true)
+          setAlertMessage("Redirecting to Homescreen")
+          setAlertType("success")
+          setIsAlert(true)
+          gameStore.resetGameState()
+
+       setTimeout(() => {
+        chann?.leave()
+         setChannel(null)
+         setIsAlert(false)
+         document.getElementById('game_over_modal')!.close()
+         navigator("/home")
+       } , 2000)
+
+      }}  >Redirect To HomeScreen</button>
+  
+  </div> : <></>
+}
+
    </div>
    </dialog>
    <StakeMoneyModal is_replay={true} is_match={false}/>

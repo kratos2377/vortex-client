@@ -101,6 +101,7 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
 
         chann?.on("start-the-replay-match-for-users" , (msg) => {
             restart()
+            setReplayReqSuccess(false)
             setWonUserReplay(false)
             setWonUserStaked(false)
             setLostPlayerStaked(false)
@@ -109,7 +110,6 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
             setBlackTimeLeft(900)
             setGameCurrentStatus("IN-PROGRESS")
             setCurrentTurn(Color.WHITE)
-            setReplayReqSuccess(false)
             document.getElementById('game_over_modal')!.close()
         })
 
@@ -335,6 +335,32 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
       </div>
    </div> : <></>
   
+}
+
+{
+  gameStore.isSpectator ? <div className="modal-action"> 
+  
+  <button type="button" className="ml-2 btn btn-outline btn-success" onClick={() => {
+
+          spectatorChannel?.leave()
+          setSpectatorChannel(null)
+          setLeaveReqSent(true)
+          setAlertMessage("Redirecting to Homescreen")
+          setAlertType("success")
+          setIsAlert(true)
+          gameStore.resetGameState()
+
+       setTimeout(() => {
+        chann?.leave()
+         setChannel(null)
+         setIsAlert(false)
+         document.getElementById('game_over_modal')!.close()
+         navigator("/home")
+       } , 2000)
+
+      }}  >Redirect To HomeScreen</button>
+  
+  </div> : <></>
 }
    </div>
    </dialog>
