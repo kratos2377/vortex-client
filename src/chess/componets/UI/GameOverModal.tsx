@@ -297,7 +297,7 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
 
      {
        gameStore.game_type === "staked" ? 
-       <button type="submit" className="btn btn-outline btn-success" disabled={!stakingAvailable}
+       <button type="submit" className="btn btn-outline btn-success mr-1" disabled={!stakingAvailable}
        onClick={() => 
          document.getElementById("stake_money_modal")!.showModal()
        }
