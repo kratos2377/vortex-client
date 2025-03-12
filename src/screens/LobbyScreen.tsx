@@ -296,6 +296,9 @@ setTimeout(() => {
       new_time.setTime(new_time.getSeconds() + 120)
       timeRestart(new_time)
         setDisbaleStakeButton(false)
+        setDisableLeaveLobbyButton(true)
+        setDisableInviteFriendsButton(true)
+        setUpdateRequestSent(true)
      })
 
      chann?.on("player-stake-complete-user" , async (msg) => {
