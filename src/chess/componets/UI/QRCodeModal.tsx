@@ -63,12 +63,6 @@ const QRCodeModal = () => {
 
 
         const handle_user_betting_on = (event: any) => {
-//                 setUserBettingOnUsername(event.target.value)
-
-//                 let user_betting_on = player_turns_order.find((el) => el.username === event.target.value)
-
-// console.log(`[QRCodeModal] User Betting On is: ${user_betting_on}`)
-
                 setUserBettingOnId(event.target.value)
         }
 
@@ -86,7 +80,6 @@ const QRCodeModal = () => {
 
     <div className='flex flex-row justify-end'>
       <button onClick={() => {
-        setImageSrc("")
           document.getElementById("qr_bet_modal")!.close()
       }}>
         <IconX/>

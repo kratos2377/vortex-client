@@ -65,7 +65,6 @@ const StakeMoneyModal: React.FC<StakeMoneyModalProps> = ({is_replay , is_match})
 
   <div className='flex flex-row justify-end'>
     <button onClick={() => {
-      setImageSrc("")
         document.getElementById("stake_money_modal")!.close()
     }}>
       <IconX/>
