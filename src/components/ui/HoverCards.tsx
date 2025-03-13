@@ -56,7 +56,7 @@ export const OngoingGameCard = ({
   const {spectatorChannel , setSpectatorChannel} = useContext(WebSocketContext)
   const {startGameFromFen} = useBoardStore()
 
-  const startSpectatingGame = async (game_id: string ) => {
+  const startSpectatingGame = async (game_id: string , is_staked: boolean ) => {
     setSubscribeError(false)
     setGeneralTitle("Verifying Details")
     setGeneralMessage("Redirecting To Spectating Screen")
@@ -113,6 +113,8 @@ export const OngoingGameCard = ({
             
           })
   
+
+          gameStore.updateGameType( is_staked ? "staked" : "normal")
 
           if(val.game.description === "LOBBY") {
             
@@ -192,7 +194,7 @@ export const OngoingGameCard = ({
             </div>
 
             <div className="w-30 h-15 mt-1 items-end">
-               <button className="btn btn-outline btn-error" onClick={() => startSpectatingGame(item.game_id)}>Spectate game</button>
+               <button className="btn btn-outline btn-error" onClick={() => startSpectatingGame(item.game_id , item.is_staked)}>Spectate game</button>
                </div>
 
             </div>
