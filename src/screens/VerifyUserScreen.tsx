@@ -38,7 +38,6 @@ const VerifyUserScreen = () => {
 
 
     const {
-      totalSeconds,
       seconds,
       minutes,
       restart,

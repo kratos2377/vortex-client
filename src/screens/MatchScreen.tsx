@@ -39,15 +39,30 @@ const MatchScreen = () => {
   const [alertMessage, setAlertMessage] = useState("")
   const [disbaleStakeButton , setDisbaleStakeButton] = useState(true)
 
-  //time
+  //time for ready status
+  const {
+        
+        seconds,
+        minutes,
+        restart,
+        pause
+      } = useTimer({ autoStart: true , expiryTimestamp: current_time , onExpire: () => {
+        //Remove Circular clock screen
+        setDisableButton(true)
+      } });
+
+
       const {
-            totalSeconds,
-            seconds,
-            restart
-          } = useTimer({ autoStart: true , expiryTimestamp: current_time , onExpire: () => {
-            //Remove Circular clock screen
-            
-          } });
+        start: stakeStart,
+        seconds: stakeSeconds,
+        minutes: stakeMinutes,
+        restart: stakeRestart,
+        pause: stakePause
+      } = useTimer({ autoStart: false , expiryTimestamp: current_time , onExpire: () => {
+        //Remove Circular clock screen
+        setDisbaleStakeButton(true)
+        
+      } });
 
 
   // User Player Events
@@ -88,8 +103,9 @@ const MatchScreen = () => {
 
      chann?.on("player-staking-available-user" , async (msg) => {
       let new_time = new Date()
-      new_time.setTime(new_time.getSeconds() + 120)
-      restart(new_time)
+      new_time.setTime(new_time.getSeconds() + 180)
+      stakeStart()
+      stakeRestart(new_time)
         setDisbaleStakeButton(false)
      })
 
@@ -98,6 +114,10 @@ const MatchScreen = () => {
       })
 
       chann?.on("user-game-bet-event-user" , async (msg) => {
+        if(msg.user_betting_on === user_details.id) {
+          stakePause()
+          setDisbaleStakeButton(true)
+        }
         const updatedUsers = roomUsers.map((user) => user.user_id === msg.user_betting_on ? {...user, has_staked: true} : user)
           setLobbyUsers([...updatedUsers])
       })
@@ -436,9 +456,9 @@ const MatchScreen = () => {
   {
     gameStore.isSpectator ? <></> :      <div className='self-center'>
    { updateStatusRequestSent ?  <span className="loading loading-spinner loading-md mr-1 ml-1"></span> :
-             <button className="btn btn-outline btn-success mr-1 ml-1" onClick={() => updatePlayerStatus("ready")} disabled={disableButton}>Ready!  <span>{totalSeconds}</span></button> }
+             <button className="btn btn-outline btn-success mr-1 ml-1" onClick={() => updatePlayerStatus("ready")} disabled={disableButton}>Ready!   <> <span>{minutes}</span>: {seconds < 10 ? <span>0:{seconds}</span> :  <span>{seconds}</span>} </></button> }
 
-{gameStore.game_type === "staked" ?   <button className="btn btn-outline btn-success mr-1" disabled={disbaleStakeButton} onClick={() => document.getElementById("stake_money_modal")!.showModal()}>Stake in the game <span className='ml-2'>{totalSeconds}</span></button> : <></>}
+{gameStore.game_type === "staked" ?   <button className="btn btn-outline btn-success mr-1" disabled={disbaleStakeButton} onClick={() => document.getElementById("stake_money_modal")!.showModal()}>Stake in the game <> <span>{stakeMinutes}</span>: {stakeSeconds < 10 ? <span>0:{stakeSeconds}</span> :  <span>{stakeSeconds}</span>} </></button> : <></>}
 
      </div>
   }

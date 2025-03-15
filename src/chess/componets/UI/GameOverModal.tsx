@@ -314,7 +314,7 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
        >Stake</button> : <></>
      }
 
-       <button type="submit" className="btn btn-outline btn-success" onClick={replayMatchAgainCall} disabled={replay_req_success || leave_req_sent} >Replay Match  <span>{totalSeconds}</span></button>
+       <button type="submit" className="btn btn-outline btn-success" onClick={replayMatchAgainCall} disabled={replay_req_success || leave_req_sent} >Replay Match  <span>{seconds}</span></button>
       <button type="button" className="ml-2 btn btn-outline btn-error" onClick={() => {
        setLeaveReqSent(true)
        chann?.push("replay-false" , {game_id: game_id , user_id: user_id})

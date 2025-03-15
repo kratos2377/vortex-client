@@ -45,18 +45,33 @@ const LobbyScreen = () => {
   const [alertMessage, setAlertMessage] = useState("")
 
 
-          const {
-            totalSeconds,
-            seconds,
-            restart: timeRestart
-          } = useTimer({ autoStart: false , expiryTimestamp: time , onExpire: () => {
-            //Remove Circular clock screen
-           // replayMatchAgainCall()
-          //  setDisbaleStakeButton(true)
-          //  document.getElementById("stake_money_modal")!.close()
-          } });
+  // Ready Status timer
+  const {
+    minutes,
+    seconds,
+    restart: timeRestart
+  } = useTimer({ autoStart: true , expiryTimestamp: time , onExpire: () => {
+    //Remove Circular clock screen
+    // replayMatchAgainCall()
+  //  setDisbaleStakeButton(true)
+  //  document.getElementById("stake_money_modal")!.close()
+  } });
   
   
+//Stake timer
+const {
+  pause: stakePause,
+  start: stakeStart,
+  minutes: stakeMinutes,
+  seconds: stakeSeconds,
+  restart: stakeTimeRestart
+} = useTimer({ autoStart: false , expiryTimestamp: time , onExpire: () => {
+  //Remove Circular clock screen
+  // replayMatchAgainCall()
+//  setDisbaleStakeButton(true)
+//  document.getElementById("stake_money_modal")!.close()
+} });
+
 
 
   const startTheGame = async () => {
@@ -299,6 +314,9 @@ setTimeout(() => {
         setDisableLeaveLobbyButton(true)
         setDisableInviteFriendsButton(true)
         setDisableUpdateStatusButton(true)
+
+        stakeStart()
+        stakeTimeRestart(new_time)
      })
 
      chann?.on("player-stake-complete-user" , async (msg) => {
@@ -309,6 +327,10 @@ setTimeout(() => {
       })
 
       chann?.on("user-game-bet-event-user" , async (msg) => {
+        if(msg.user_betting_on === user_details.id) {
+          stakePause()
+          setDisbaleStakeButton(true)
+        }
         const updatedUsers = roomUsers.map((user) => user.user_id === msg.user_betting_on ? {...user, has_staked: true} : user)
           setLobbyUsers([...updatedUsers])
       })
@@ -557,9 +579,9 @@ setTimeout(() => {
     gameStore.isSpectator ? <></> :      <div className='mt-3 self-center'>
     {user_details.id === host_user_id ?  <button className="btn btn-outline btn-success mr-1" disabled={disableButton} onClick={startTheGame}>Start the Game</button> : <div></div>}
    { updateStatusRequestSent ?  <span className="loading loading-spinner loading-md mr-1 ml-1"></span> :
-        !readyState ?        <button className="btn btn-outline btn-success mr-1 ml-1" onClick={() => updatePlayerStatus("ready")} disabled={disableUpdateStatusButton}>Ready!</button> :        <button className="btn btn-outline btn-error mr-1 ml-1" onClick={() => updatePlayerStatus("not-ready")} disabled={disableUpdateStatusButton}>Not Ready</button> }
+        !readyState ?        <button className="btn btn-outline btn-success mr-1 ml-1" onClick={() => updatePlayerStatus("ready")} disabled={disableUpdateStatusButton}>Ready! <> <span className='ml-2'>{minutes}</span>: {seconds < 10 ? <span>0:{seconds}</span> :  <span>{seconds}</span>} </> </button>  : <button className="btn btn-outline btn-error mr-1 ml-1" onClick={() => updatePlayerStatus("not-ready")} disabled={disableUpdateStatusButton}>Not Ready</button> }
    
-   {gameStore.game_type === "staked" ?   <button className="btn btn-outline btn-success mr-1" disabled={disbaleStakeButton} onClick={() => document.getElementById("stake_money_modal")!.showModal()}>Stake in the game <span className='ml-2'>{totalSeconds}</span></button> : <></>}
+   {gameStore.game_type === "staked" ?   <button className="btn btn-outline btn-success mr-1" disabled={disbaleStakeButton} onClick={() => document.getElementById("stake_money_modal")!.showModal()}>Stake in the game <> <span className='ml-2'>{stakeMinutes}</span>: {stakeSeconds < 10 ? <span>0:{stakeSeconds}</span> :  <span>{stakeSeconds}</span>} </></button> : <></>}
     <button className="btn btn-outline btn-info mr-1 ml-1" onClick={() => document.getElementById("online_friend_invite_modal")!.showModal()} disabled={disableInviteFriendsButton}>Invite Friends</button>
      <button className="btn btn-outline btn-error ml-1" onClick={leaveLobby} disabled={disableLeaveLobbyButton}>Leave Lobby</button>
      </div>
