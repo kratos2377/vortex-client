@@ -17,6 +17,7 @@ import { useTimer } from 'react-timer-hook';
 
 const MatchScreen = () => {
   const current_time = new Date()
+  current_time.setTime(current_time.getSeconds() + 60)
   const {chann , spectatorChannel , setSpectatorChannel} = useContext(WebSocketContext)
   const navigate = useNavigate()
   let {game_id , gameType} = useParams()
@@ -48,7 +49,12 @@ const MatchScreen = () => {
         pause
       } = useTimer({ autoStart: true , expiryTimestamp: current_time , onExpire: () => {
         //Remove Circular clock screen
-        setDisableButton(true)
+
+        if (gameStore.game_type === "staked") {
+          setDisableButton(true)
+        } else {
+          updatePlayerStatus("ready")
+        }
       } });
 
 

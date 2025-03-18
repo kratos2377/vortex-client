@@ -26,7 +26,7 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
 
       const navigator = useNavigate()
           const currentTime = new Date();
-          currentTime.setTime(currentTime.getSeconds() + 30)
+          currentTime.setTime(currentTime.getSeconds() + 60)
           const [time , setTime] = useState(currentTime)
     
           const {
@@ -36,6 +36,22 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
           } = useTimer({ autoStart: true , expiryTimestamp: time , onExpire: () => {
             //Remove Circular clock screen
            // replayMatchAgainCall()
+
+           setLeaveReqSent(true)
+           chann?.push("replay-false" , {game_id: game_id , user_id: user_id})
+           setAlertMessage("Redirecting to Homescreen")
+           setAlertType("success")
+           setIsAlert(true)
+           gameStore.resetGameState()
+    
+           setTimeout(() => {
+            chann?.leave()
+             setChannel(null)
+             setIsAlert(false)
+             document.getElementById('game_over_modal')!.close()
+             navigator("/home")
+           } , 2000)
+
           } });
 
     const [isAlert , setIsAlert] = useState(false)

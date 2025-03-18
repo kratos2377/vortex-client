@@ -16,7 +16,8 @@ import {  useTimer } from 'react-timer-hook';
 
 
 const LobbyScreen = () => {
-
+  const currentTime = new Date();
+  currentTime.setTime(currentTime.getSeconds() + 60)
   //const {currentLobbyUsers} = use
   const {setChannel, chann , spectatorChannel , setSpectatorChannel} = useContext(WebSocketContext)
   const navigate = useNavigate()
@@ -24,7 +25,8 @@ const LobbyScreen = () => {
   let {user_details} = useUserStore()
   let gameStore = useGameStore()
   const [readyState, setReadyState] = useState(false)
-  const [time , setTime] = useState(new Date())
+  const [time , setTime] = useState(currentTime)
+  
   let [roomUsers , setLobbyUsers] = useState<UserGameRelation[]>([])
   const [updateStatusRequestSent, setUpdateRequestSent] = useState(false)
   const [lobbyRequestSent , setLobbyRequestSent] = useState(false)
@@ -45,16 +47,20 @@ const LobbyScreen = () => {
   const [alertMessage, setAlertMessage] = useState("")
 
 
+  
   // Ready Status timer
   const {
     minutes,
     seconds,
     restart: timeRestart
   } = useTimer({ autoStart: true , expiryTimestamp: time , onExpire: () => {
-    //Remove Circular clock screen
-    // replayMatchAgainCall()
-  //  setDisbaleStakeButton(true)
-  //  document.getElementById("stake_money_modal")!.close()
+
+    if (gameStore.game_type === "staked") {
+      setDisableButton(true)
+    } else {
+      updatePlayerStatus("ready")
+    }
+
   } });
   
   
@@ -70,6 +76,7 @@ const {
   // replayMatchAgainCall()
 //  setDisbaleStakeButton(true)
 //  document.getElementById("stake_money_modal")!.close()
+setDisbaleStakeButton(true)
 } });
 
 
@@ -308,7 +315,7 @@ setTimeout(() => {
 
      chann?.on("player-staking-available-user" , async (msg) => {
       let new_time = new Date()
-      new_time.setTime(new_time.getSeconds() + 120)
+      new_time.setTime(new_time.getSeconds() + 190)
       timeRestart(new_time)
         setDisbaleStakeButton(false)
         setDisableLeaveLobbyButton(true)
