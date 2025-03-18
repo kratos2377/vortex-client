@@ -26,7 +26,7 @@ const GameOverStalemateModal: React.FC<GameOverStalemateModalProps> = ({ player_
 
       const navigator = useNavigate()
           const currentTime = new Date();
-          currentTime.setTime(currentTime.getSeconds() + 60)
+          currentTime.setSeconds(currentTime.getSeconds() + 60)
           const [time , setTime] = useState(currentTime)
     
           const {
@@ -267,7 +267,7 @@ const GameOverStalemateModal: React.FC<GameOverStalemateModalProps> = ({ player_
     useEffect(() => {
    //   setReplayReqSuccess(false)
       const new_time = new Date()
-      new_time.setTime(new_time.getSeconds() + 20)
+      new_time.setSeconds(new_time.getSeconds() + 60)
       timeRestart(new_time)
     } , [])
 

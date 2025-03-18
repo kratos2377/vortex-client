@@ -17,8 +17,9 @@ import {  useTimer } from 'react-timer-hook';
 
 const LobbyScreen = () => {
   const currentTime = new Date();
-  currentTime.setTime(currentTime.getSeconds() + 60)
-  //const {currentLobbyUsers} = use
+  currentTime.setSeconds(currentTime.getSeconds() + 60)
+
+
   const {setChannel, chann , spectatorChannel , setSpectatorChannel} = useContext(WebSocketContext)
   const navigate = useNavigate()
   let {game_id , gameType , host_user_id} = useParams()
@@ -50,10 +51,11 @@ const LobbyScreen = () => {
   
   // Ready Status timer
   const {
+    start,
     minutes,
     seconds,
     restart: timeRestart
-  } = useTimer({ autoStart: true , expiryTimestamp: time , onExpire: () => {
+  } = useTimer({ autoStart: false, expiryTimestamp: time , onExpire: () => {
 
     if (gameStore.game_type === "staked") {
       setDisableButton(true)
@@ -62,6 +64,11 @@ const LobbyScreen = () => {
     }
 
   } });
+
+
+  console.log("START TIME FOR LOBBY IS")
+  console.log(minutes)
+  console.log(seconds)
   
   
 //Stake timer
@@ -72,10 +79,6 @@ const {
   seconds: stakeSeconds,
   restart: stakeTimeRestart
 } = useTimer({ autoStart: false , expiryTimestamp: time , onExpire: () => {
-  //Remove Circular clock screen
-  // replayMatchAgainCall()
-//  setDisbaleStakeButton(true)
-//  document.getElementById("stake_money_modal")!.close()
 setDisbaleStakeButton(true)
 } });
 
@@ -221,16 +224,6 @@ setTimeout(() => {
     }
   }
 
-
-
-  useEffect(() => {
-    // if (gameType==="chess" && gameStore.user_player_count_id !== "1") {
-    //   setPlayerColor(Color.BLACK)
-    // }
-    getAllLobbyPlayers()
-  } , [])
-
-
   //Spectator calls (This needs to be fixed)
 
 
@@ -315,7 +308,7 @@ setTimeout(() => {
 
      chann?.on("player-staking-available-user" , async (msg) => {
       let new_time = new Date()
-      new_time.setTime(new_time.getSeconds() + 190)
+      new_time.setSeconds(new_time.getSeconds() + 190)
       timeRestart(new_time)
         setDisbaleStakeButton(false)
         setDisableLeaveLobbyButton(true)
@@ -437,33 +430,6 @@ setTimeout(() => {
       })
 
 
-      // spectatorChannel?.on("game-general-event" , async (payload) => {
-
-      //   if (payload.message === "start-game") {
-     
-      //     navigate("/" + gameType + "/" + game_id + "/" + host_user_id)
-      //   } else if (payload.message === "host-left") {
-      //     setGeneralPurposeMessage("Host Left. Redirecting to home screen")
-      //     setGeneralPurposeTitle("Redirecting")
-      //     document.getElementById("general_purpose_modal")!.showModal()
-       
-      //     spectatorChannel?.leave().receive("ok" , (msg) => {
-      //       console.log("Successfully left channel")
-      //     }).receive("error" , (msg) => {
-      //       console.log(`Error while leaving channel: ${msg}`)
-      //     })
-
-      //     setSpectatorChannel(null)
-
-
-      //  setTimeout(() => {
-        
-      //   document.getElementById("general_purpose_modal")!.close()
-      //   navigate("/home")
-      //  }, 1000)
-      //   }
-      
-      // })
 
       spectatorChannel?.on("start-game-for-spectators" , (msg) => {
         //document.getElementById("general_purpose_modal")!.close()
@@ -541,6 +507,13 @@ setTimeout(() => {
     
   })
 
+
+
+
+  useEffect(() => {
+    getAllLobbyPlayers()
+  } , [])
+
   return (
     <>
 
@@ -586,7 +559,7 @@ setTimeout(() => {
     gameStore.isSpectator ? <></> :      <div className='mt-3 self-center'>
     {user_details.id === host_user_id ?  <button className="btn btn-outline btn-success mr-1" disabled={disableButton} onClick={startTheGame}>Start the Game</button> : <div></div>}
    { updateStatusRequestSent ?  <span className="loading loading-spinner loading-md mr-1 ml-1"></span> :
-        !readyState ?        <button className="btn btn-outline btn-success mr-1 ml-1" onClick={() => updatePlayerStatus("ready")} disabled={disableUpdateStatusButton}>Ready! <> <span className='ml-2'>{minutes}</span>: {seconds < 10 ? <span>0:{seconds}</span> :  <span>{seconds}</span>} </> </button>  : <button className="btn btn-outline btn-error mr-1 ml-1" onClick={() => updatePlayerStatus("not-ready")} disabled={disableUpdateStatusButton}>Not Ready</button> }
+        !readyState ?        <button className="btn btn-outline btn-success mr-1 ml-1" onClick={() => updatePlayerStatus("ready")} disabled={disableUpdateStatusButton}>Ready! <><span>{minutes}</span>:{seconds === 0?<span>00</span>:<span>{seconds}</span>} </> </button>  : <button className="btn btn-outline btn-error mr-1 ml-1" onClick={() => updatePlayerStatus("not-ready")} disabled={disableUpdateStatusButton}>Not Ready</button> }
    
    {gameStore.game_type === "staked" ?   <button className="btn btn-outline btn-success mr-1" disabled={disbaleStakeButton} onClick={() => document.getElementById("stake_money_modal")!.showModal()}>Stake in the game <> <span className='ml-2'>{stakeMinutes}</span>: {stakeSeconds < 10 ? <span>0:{stakeSeconds}</span> :  <span>{stakeSeconds}</span>} </></button> : <></>}
     <button className="btn btn-outline btn-info mr-1 ml-1" onClick={() => document.getElementById("online_friend_invite_modal")!.showModal()} disabled={disableInviteFriendsButton}>Invite Friends</button>

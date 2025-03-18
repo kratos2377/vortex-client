@@ -16,10 +16,7 @@ const DefaultUserWinModal: React.FC<DefaultUserWinModalProps> = ({ user_id_who_l
 
     const {setChannel , setSpectatorChannel , chann , spectatorChannel} = useContext(WebSocketContext)
       const navigator = useNavigate()
-          const currentTime = new Date();
-          currentTime.setTime(currentTime.getSeconds() + 30)
-          const [time , setTime] = useState(currentTime)
-    
+            
 
 
   return (

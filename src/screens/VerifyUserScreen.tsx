@@ -11,7 +11,6 @@ import { motion } from 'framer-motion'
 import { AuroraBackground } from '../components/backgrounds/aurora-background'
 import { LabelInputContainer } from '../components/ui/LabelInputContainer'
 import { useTimer } from 'react-timer-hook';
-import { Socket } from 'phoenix'
 import { socket } from '../socket/socket'
 import { WebSocketContext } from '../socket/websocket_provider'
 

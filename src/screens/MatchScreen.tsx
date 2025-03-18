@@ -17,7 +17,11 @@ import { useTimer } from 'react-timer-hook';
 
 const MatchScreen = () => {
   const current_time = new Date()
-  current_time.setTime(current_time.getSeconds() + 60)
+  current_time.setSeconds(current_time.getSeconds() + 60)
+
+
+  //time state
+  const [time , setTime] = useState(current_time)
   const {chann , spectatorChannel , setSpectatorChannel} = useContext(WebSocketContext)
   const navigate = useNavigate()
   let {game_id , gameType} = useParams()
@@ -47,7 +51,7 @@ const MatchScreen = () => {
         minutes,
         restart,
         pause
-      } = useTimer({ autoStart: true , expiryTimestamp: current_time , onExpire: () => {
+      } = useTimer({ autoStart: true, expiryTimestamp: time , onExpire: () => {
         //Remove Circular clock screen
 
         if (gameStore.game_type === "staked") {
@@ -64,7 +68,7 @@ const MatchScreen = () => {
         minutes: stakeMinutes,
         restart: stakeRestart,
         pause: stakePause
-      } = useTimer({ autoStart: false , expiryTimestamp: current_time , onExpire: () => {
+      } = useTimer({ autoStart: false , expiryTimestamp: time , onExpire: () => {
         //Remove Circular clock screen
         setDisbaleStakeButton(true)
         
@@ -109,7 +113,7 @@ const MatchScreen = () => {
 
      chann?.on("player-staking-available-user" , async (msg) => {
       let new_time = new Date()
-      new_time.setTime(new_time.getSeconds() + 180)
+      new_time.setSeconds(new_time.getSeconds() + 180)
       stakeStart()
       stakeRestart(new_time)
         setDisbaleStakeButton(false)
@@ -401,7 +405,7 @@ const MatchScreen = () => {
 
           if(!gameStore.isSpectator) {
             const new_time = new Date()
-            new_time.setTime(new_time.getSeconds() + 20)
+            new_time.setSeconds(new_time.getSeconds() + 60)
             restart(new_time)
           }
 
