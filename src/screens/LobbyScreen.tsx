@@ -55,7 +55,7 @@ const LobbyScreen = () => {
     minutes,
     seconds,
     restart: timeRestart
-  } = useTimer({ autoStart: false, expiryTimestamp: time , onExpire: () => {
+  } = useTimer({ autoStart: true, expiryTimestamp: time , onExpire: () => {
 
     if (gameStore.game_type === "staked") {
       setDisableButton(true)
