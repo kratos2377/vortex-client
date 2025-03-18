@@ -3,9 +3,7 @@ import { ErrorAlert, SuccessAlert } from '../../../components/ui/AlertMessage'
 import { WebSocketContext } from '../../../socket/websocket_provider'
 import { replay_game } from '../../../helper_functions/apiCall'
 import { getUserTokenFromStore } from '../../../persistent_storage/save_user_details'
-import { useTimer } from 'react-timer-hook'
 import { useChessMainStore, useGameStore } from '../../../state/UserAndGameState'
-import useChessGameStore from '../../../state/chess_store/game'
 import { useNavigate } from 'react-router-dom'
 import { Color } from '../../models/Piece/types'
 import StakeMoneyModal from '../../../components/screens/StakeMoneyModal'
@@ -29,31 +27,6 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
           currentTime.setSeconds(currentTime.getSeconds() + 60)
           const [time , setTime] = useState(currentTime)
     
-          const {
-            totalSeconds,
-            seconds,
-            restart: timeRestart
-          } = useTimer({ autoStart: true , expiryTimestamp: time , onExpire: () => {
-            //Remove Circular clock screen
-           // replayMatchAgainCall()
-
-           setLeaveReqSent(true)
-           chann?.push("replay-false" , {game_id: game_id , user_id: user_id})
-           setAlertMessage("Redirecting to Homescreen")
-           setAlertType("success")
-           setIsAlert(true)
-           gameStore.resetGameState()
-    
-           setTimeout(() => {
-            chann?.leave()
-             setChannel(null)
-             setIsAlert(false)
-             document.getElementById('game_over_modal')!.close()
-             navigator("/home")
-           } , 2000)
-
-          } });
-
     const [isAlert , setIsAlert] = useState(false)
     const [alertMessage , setAlertMessage] = useState("")
     const gameStore = useGameStore()
@@ -323,7 +296,7 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
        >Stake</button> : <></>
      }
 
-       <button type="submit" className="btn btn-outline btn-success" onClick={replayMatchAgainCall} disabled={replay_req_success || leave_req_sent} >Replay Match  <span>{seconds}</span></button>
+       <button type="submit" className="btn btn-outline btn-success" onClick={replayMatchAgainCall} disabled={replay_req_success || leave_req_sent} >Replay Match</button>
       <button type="button" className="ml-2 btn btn-outline btn-error" onClick={() => {
        setLeaveReqSent(true)
        chann?.push("replay-false" , {game_id: game_id , user_id: user_id})

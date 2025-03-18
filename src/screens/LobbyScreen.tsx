@@ -306,8 +306,7 @@ setTimeout(() => {
 
      chann?.on("player-staking-available-user" , async (msg) => {
       let new_time = new Date()
-      new_time.setSeconds(new_time.getSeconds() + 190)
-      timeRestart(new_time)
+      new_time.setSeconds(new_time.getSeconds() + 180)
         setDisbaleStakeButton(false)
         setDisableLeaveLobbyButton(true)
         setDisableInviteFriendsButton(true)
