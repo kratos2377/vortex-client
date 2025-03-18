@@ -116,7 +116,7 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
 
 
         chann?.on("start-the-replay-match-for-users" , (msg) => {
-            restart()
+           
             setReplayReqSuccess(false)
             setWonUserReplay(false)
             setWonUserStaked(false)
@@ -126,6 +126,7 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
             setBlackTimeLeft(900)
             setGameCurrentStatus("IN-PROGRESS")
             setCurrentTurn(Color.WHITE)
+            restart()
             document.getElementById('game_over_modal')!.close()
         })
 
@@ -262,14 +263,6 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ winner_username , winner_
           spectatorChannel?.off("user-game-bet-spectator-event")
         }
     })
-
-
-    useEffect(() => {
-      setReplayReqSuccess(false)
-      const new_time = new Date()
-      new_time.setSeconds(new_time.getSeconds() + 60)
-      timeRestart(new_time)
-    } , [])
 
 
   return (

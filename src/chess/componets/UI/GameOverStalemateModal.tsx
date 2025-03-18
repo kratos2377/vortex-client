@@ -264,13 +264,6 @@ const GameOverStalemateModal: React.FC<GameOverStalemateModalProps> = ({ player_
     })
 
 
-    useEffect(() => {
-   //   setReplayReqSuccess(false)
-      const new_time = new Date()
-      new_time.setSeconds(new_time.getSeconds() + 60)
-      timeRestart(new_time)
-    } , [])
-
 
   return (
      <>
