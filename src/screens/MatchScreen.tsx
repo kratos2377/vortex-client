@@ -51,13 +51,15 @@ const MatchScreen = () => {
         minutes,
         restart,
         pause
-      } = useTimer({ autoStart: true, expiryTimestamp: time , onExpire: () => {
+      } = useTimer({ autoStart: true, expiryTimestamp: time , onExpire: async () => {
         //Remove Circular clock screen
 
         if (gameStore.game_type === "staked") {
+
+         await  updatePlayerStatus("ready")
           setDisableButton(true)
         } else {
-          updatePlayerStatus("ready")
+          await updatePlayerStatus("ready")
         }
       } });
 

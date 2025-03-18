@@ -55,21 +55,19 @@ const LobbyScreen = () => {
     minutes,
     seconds,
     restart: timeRestart
-  } = useTimer({ autoStart: true, expiryTimestamp: time , onExpire: () => {
+  } = useTimer({ autoStart: true, expiryTimestamp: time , onExpire: async () => {
 
     if (gameStore.game_type === "staked") {
+
+      await updatePlayerStatus("ready")
       setDisableButton(true)
     } else {
-      updatePlayerStatus("ready")
+      await updatePlayerStatus("ready")
     }
 
   } });
 
 
-  console.log("START TIME FOR LOBBY IS")
-  console.log(minutes)
-  console.log(seconds)
-  
   
 //Stake timer
 const {
