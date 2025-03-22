@@ -96,7 +96,6 @@ const VerifyUserScreen = () => {
       }
 
          const userToken =  await getUserTokenFromStore()
-         const {user_details} = useUserStore()
 
       let payload = JSON.stringify( {user_key: user_key_string, id: user_details.id  } )
       let res = await verify_user_request_call(payload);
