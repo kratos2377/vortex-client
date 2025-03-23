@@ -43,7 +43,8 @@ const QRCodeModal = () => {
               game_id: game_id,
               user_who_is_betting: user_details.id,
               is_player: false,
-              is_replay: false
+              is_replay: false,
+              is_match: false
           }
             let res = await invoke('generate_qr_for_bet', {gameRoomData: JSON.stringify(game_room_data)})
 
