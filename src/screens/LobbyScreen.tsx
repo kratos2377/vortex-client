@@ -554,7 +554,7 @@ setTimeout(() => {
 
   {
     gameStore.isSpectator ? <></> :      <div className='mt-3 self-center'>
-    {user_details.id === host_user_id ?  <button className="btn btn-outline btn-success mr-1" disabled={disableButton} onClick={startTheGame}>Start the Game</button> : <div></div>}
+    {user_details.id === host_user_id ?  <button className="btn btn-outline btn-success mr-1" disabled={false} onClick={startTheGame}>Start the Game</button> : <div></div>}
    { updateStatusRequestSent ?  <span className="loading loading-spinner loading-md mr-1 ml-1"></span> :
         !readyState ?        <button className="btn btn-outline btn-success mr-1 ml-1" onClick={() => updatePlayerStatus("ready")} disabled={disableUpdateStatusButton}>Ready! <><span>{minutes}</span>:{seconds === 0?<span>00</span>:<span>{seconds}</span>} </> </button>  : <button className="btn btn-outline btn-error mr-1 ml-1" onClick={() => updatePlayerStatus("not-ready")} disabled={disableUpdateStatusButton}>Not Ready</button> }
    
