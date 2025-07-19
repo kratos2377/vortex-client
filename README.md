@@ -1,6 +1,21 @@
 ## Vortex Client
 This is a desktop client made using tauri framework. This client is used by users to play/spectate the games.
 
+## Features
+
+- **State Management:**  
+  Implemented using [Zustand](https://github.com/pmndrs/zustand) for efficient and scalable state handling across the app.
+
+- **Custom WebSocket Context:**  
+  Developed a custom WebSocket context to handle three distinct channels:
+  - **User Events**
+  - **Player Events**
+  - **Spectator Events**
+
+- **Smooth Animations:**  
+  UI animations are powered by [Framer Motion](https://www.framer.com/motion/) for a polished and responsive user experience.
+
+
 [Vortex Project Demo](https://drive.google.com/file/d/1lKqdKbO27KRdyTNZOglrE2yBy8Z1vdj7/view?usp=sharing)
 
 [Architecture Design (Lucid Chart)](https://lucid.app/lucidchart/7da583bc-493c-45dc-80b7-34f6002b7646/edit?viewport_loc=-6565%2C-2146%2C8975%2C4355%2C0_0&invitationId=inv_0f90b33d-902f-4d79-b65c-6f4ab7641f46)
