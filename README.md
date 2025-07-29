@@ -64,7 +64,8 @@ This is a desktop client made using tauri framework. This client is used by user
 | :-------------------- | :-----------------------: |
 | [Vortex](https://github.com/kratos2377/vortex)    |    Contains Axum APIs for Auth and other services for necessary processing |
 | [Vortex-Client](https://github.com/kratos2377/vortex-client)    |  Tauri Client Used to Play/Join Games as Players or specate any games          |
-| [Vortex-Mobile](github.com/kratos2377/vortex-mobile)            |      React Native App to scan QR codes and stake in the game and check status of any previous bets       |
+| [Vortex-Mobile](https://github.com/kratos2377/vortex-mobile)            |      React Native App to scan QR codes and stake in the game and check status of any previous bets       |
 | [Vortex-Pub-Sub](https://github.com/kratos2377/vortex-pub-sub)|  Elixir Service to broadcast realtime events to players and spectators    |
-| [Vortex-Exchange](github.com/kratos2377/vortex-exchange)        |  Smart Contracts made using Anchor framework so that players/spectators can place their bets |
+| [Vortex-Exchange](https://github.com/kratos2377/vortex-exchange)        |  Smart Contracts made using Anchor framework so that players/spectators can place their bets |
 | [Executor-Bots](https://github.com/kratos2377/executor-bots)        |  Bots which consume game result events and settle bets for the players |
+| [Vortex-Matchmaker](https://github.com/kratos2377/vortex-matchmaker) | Matchmaking Service which matches any two players with similar ratings |
